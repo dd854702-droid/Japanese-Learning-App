@@ -70,7 +70,7 @@
         <p class="text-xs text-muji-sub mt-2 tracking-wide">載入中...</p>
     </div>
 
-    <!-- Init Screen (Auth) - Force Show on Load if no user -->
+    <!-- Init Screen (Auth) -->
     <div id="auth-screen" class="fixed inset-0 bg-muji-bg z-[90] flex flex-col items-center justify-center transition-opacity duration-500 p-6 hidden">
         <div class="mb-8 text-center">
             <h1 class="text-4xl font-rounded font-bold text-muji-text tracking-widest mb-2">日日</h1>
@@ -293,7 +293,7 @@
             }
         };
 
-        const STORAGE_KEY = 'hibi_app_state_v11';
+        const STORAGE_KEY = 'hibi_app_state_v12';
         let state = { nickname: "", currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], srsData: {}, settings: { showRomaji: true, ttsSpeed: 0.65 } };
         let autoPlayInterval = null; let isAutoPlaying = false; let jpVoice = null;
         let user = null; let db = null; let auth = null; let isOffline = false; let appId = '';
@@ -348,6 +348,7 @@
                     document.getElementById('auth-screen').classList.add('hidden');
                     document.getElementById('main-app').classList.remove('hidden');
                 } else {
+                    // New user -> Show Login
                     document.getElementById('auth-screen').classList.remove('hidden');
                 }
             } catch(e) { console.error(e); loadState(); }
@@ -379,7 +380,16 @@
 
         function saveState() {
             try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
-            if (user && db && !isOffline) { setDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'data', 'progress'), state).catch(e=>{}); }
+            if (user && db && !isOffline) { 
+                setDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'data', 'progress'), state).catch(e=>{});
+                if(state.nickname) {
+                     setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'leaderboard', user.uid), {
+                        name: state.nickname,
+                        score: state.points,
+                        streak: state.streak
+                    }).catch(e=>{});
+                }
+            }
             updateUI();
         }
 
@@ -387,7 +397,6 @@
             const name = document.getElementById('input-nickname').value.trim();
             if(!name) return alert('請輸入暱稱');
             state.nickname = name;
-            // FIX: Init stats on first login
             if (!state.lastLoginDate) {
                 state.lastLoginDate = getTodayString();
                 state.streak = 1;
@@ -398,6 +407,46 @@
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             updateUI();
+        }
+
+        async function fetchLeaderboard() {
+            if(isOffline) {
+                document.getElementById('leaderboard-list').innerHTML = '<div class="text-center text-muji-sub py-4">離線模式無法讀取排行榜</div>';
+                return;
+            }
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = '<div class="text-center text-muji-sub py-4">載入中...</div>';
+            
+            try {
+                const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard')); 
+                const querySnapshot = await getDocs(q);
+                let scores = [];
+                querySnapshot.forEach((doc) => {
+                    scores.push(doc.data());
+                });
+                
+                scores.sort((a, b) => b.score - a.score);
+                scores = scores.slice(0, 10);
+                
+                list.innerHTML = scores.map((p, i) => `
+                    <div class="flex items-center justify-between p-3 rounded-xl ${p.name===state.nickname ? 'bg-white border border-muji-green/50 shadow-sm' : 'border-b border-gray-100 last:border-0'}">
+                        <div class="flex items-center gap-3">
+                            <span class="font-bold w-6 text-center text-muji-sub">${i+1}</span>
+                            <div class="flex flex-col">
+                                <span class="font-medium text-muji-text text-sm">${p.name}</span>
+                                <span class="text-[10px] text-muji-sub">連勝 ${p.streak} 日</span>
+                            </div>
+                        </div>
+                        <span class="font-bold text-muji-gold text-sm">${p.score}</span>
+                    </div>
+                `).join('');
+                
+                if(scores.length === 0) list.innerHTML = '<div class="text-center text-muji-sub py-4">目前無人上榜</div>';
+                
+            } catch (e) {
+                console.error("Fetch LB failed", e);
+                list.innerHTML = '<div class="text-center text-red-300 py-4">載入失敗</div>';
+            }
         }
 
         // --- Gameplay Logic ---
@@ -520,11 +569,12 @@
             document.getElementById('profile-modal').classList.remove('opacity-0','pointer-events-none'); 
             document.getElementById('profile-streak').textContent = state.streak;
             document.getElementById('profile-total').textContent = state.masteredCards.length;
-            const l = document.getElementById('leaderboard-list');
-            // Mock leaderboard logic for UI
-            l.innerHTML = [850,720,690,540,state.points].sort((a,b)=>b-a).map((s,i) => `<div class="flex items-center justify-between p-2 ${s===state.points?'bg-white border border-muji-green/30':''}"><div class="flex items-center gap-3"><span class="font-bold w-6 text-center text-muji-sub">${i+1}</span><span class="font-medium text-muji-text">${s===state.points?(state.nickname||'You'):'User'}</span></div><span class="font-bold text-muji-gold">${s}</span></div>`).join('');
-            document.getElementById('badge-container').innerHTML = (state.streak>=3?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="flame" class="text-red-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">3連勝</span></div>`:'') + (state.points>=100?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="star" class="text-yellow-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">百分</span></div>`:'');
+            
+            const badgeContainer = document.getElementById('badge-container');
+            badgeContainer.innerHTML = (state.streak>=3?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="flame" class="text-red-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">3連勝</span></div>`:'') + (state.points>=100?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="star" class="text-yellow-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">百分</span></div>`:'');
             lucide.createIcons();
+            
+            fetchLeaderboard(); 
         }
         function closeProfile() { document.getElementById('profile-modal').classList.add('opacity-0','pointer-events-none'); }
         function showSettings() { document.getElementById('settings-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('settings-content').classList.remove('scale-95'); }
