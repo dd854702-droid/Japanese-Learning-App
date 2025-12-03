@@ -16,15 +16,14 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js" type="module"></script>
 
-    <!-- Confetti -->
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&family=Shippori+Mincho:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
@@ -32,49 +31,19 @@
             theme: {
                 extend: {
                     colors: {
-                        muji: {
-                            bg: '#FDFCFA',      // 米白
-                            card: '#FFFFFF',    // 純白
-                            text: '#373C38',    // 墨黑
-                            sub: '#9CA3AF',     // 淺灰
-                            green: '#8F9E8B',   // 抹茶綠
-                            brown: '#8D7462',   // 木頭褐
-                            red: '#D99386',     // 赤陶紅
-                            gold: '#D4AF37',    // 金色
-                            vermilion: '#E34234' // 鳥居紅
-                        }
+                        muji: { bg: '#FDFCFA', card: '#FFFFFF', text: '#373C38', sub: '#9CA3AF', green: '#8F9E8B', brown: '#8D7462', red: '#D99386', gold: '#D4AF37', vermilion: '#E34234' }
                     },
                     fontFamily: {
-                        sans: ['"Noto Sans JP"', 'sans-serif'],
-                        rounded: ['"Zen Maru Gothic"', 'sans-serif'],
-                        serif: ['"Shippori Mincho"', 'serif'],
+                        sans: ['"Noto Sans JP"', 'sans-serif'], rounded: ['"Zen Maru Gothic"', 'sans-serif'], serif: ['"Shippori Mincho"', 'serif'],
                     },
-                    boxShadow: {
-                        'soft': '0 8px 30px -6px rgba(0, 0, 0, 0.04)',
-                        'float': '0 10px 40px -10px rgba(0, 0, 0, 0.08)',
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out',
-                        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 3s ease-in-out infinite',
-                        'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
-                        'unfold': 'unfold 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards'
-                    },
+                    boxShadow: { soft: '0 8px 30px -6px rgba(0, 0, 0, 0.04)', float: '0 10px 40px -10px rgba(0, 0, 0, 0.08)' },
+                    animation: { 'fade-in': 'fadeIn 0.5s ease-out', 'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)', 'float': 'float 3s ease-in-out infinite', 'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both', 'unfold': 'unfold 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards' },
                     keyframes: {
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
                         slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
                         float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-5px)' } },
-                        shake: {
-                            '10%, 90%': { transform: 'translate3d(-1px, 0, 0) rotate(-1deg)' },
-                            '20%, 80%': { transform: 'translate3d(2px, 0, 0) rotate(2deg)' },
-                            '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0) rotate(-4deg)' },
-                            '40%, 60%': { transform: 'translate3d(4px, 0, 0) rotate(4deg)' }
-                        },
-                        unfold: {
-                            '0%': { transform: 'scaleY(0.1) scaleX(0.8)', opacity: '0' },
-                            '100%': { transform: 'scaleY(1) scaleX(1)', opacity: '1' }
-                        }
+                        shake: { '10%, 90%': { transform: 'translate3d(-1px, 0, 0) rotate(-1deg)' }, '20%, 80%': { transform: 'translate3d(2px, 0, 0) rotate(2deg)' }, '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0) rotate(-4deg)' }, '40%, 60%': { transform: 'translate3d(4px, 0, 0) rotate(4deg)' } },
+                        unfold: { '0%': { transform: 'scaleY(0.1) scaleX(0.8)', opacity: '0' }, '100%': { transform: 'scaleY(1) scaleX(1)', opacity: '1' } }
                     }
                 }
             }
@@ -82,36 +51,15 @@
     </script>
 
     <style>
-        body {
-            background-color: #FDFCFA;
-            color: #373C38;
-            -webkit-font-smoothing: antialiased;
-            overscroll-behavior-y: none;
-            touch-action: pan-y;
-        }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .perspective-1000 { perspective: 1000px; }
-        .preserve-3d { transform-style: preserve-3d; }
-        .backface-hidden { backface-visibility: hidden; }
-        .rotate-y-180 { transform: rotateY(180deg); }
-        .pt-safe-top { padding-top: max(16px, env(safe-area-inset-top)); }
-        .pb-safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
-        * { -webkit-tap-highlight-color: transparent; }
-        .select-none { user-select: none; -webkit-user-select: none; }
-        
-        .washi-paper {
-            background-color: #ffffff;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
-
-        .vertical-text {
-            writing-mode: vertical-rl;
-            text-orientation: upright;
-            letter-spacing: 0.15em;
-        }
-        
+        body { background-color: #FDFCFA; color: #373C38; -webkit-font-smoothing: antialiased; overscroll-behavior-y: none; touch-action: pan-y; }
+        .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .perspective-1000 { perspective: 1000px; } .preserve-3d { transform-style: preserve-3d; } .backface-hidden { backface-visibility: hidden; } .rotate-y-180 { transform: rotateY(180deg); }
+        .pt-safe-top { padding-top: max(16px, env(safe-area-inset-top)); } .pb-safe-bottom { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+        * { -webkit-tap-highlight-color: transparent; } .select-none { user-select: none; -webkit-user-select: none; }
+        .vertical-text { writing-mode: vertical-rl; text-orientation: upright; letter-spacing: 0.15em; }
         button:active { transform: scale(0.96); }
+        .toggle-checkbox:checked { right: 0; border-color: #8F9E8B; } .toggle-checkbox:checked + .toggle-label { background-color: #8F9E8B; }
+        .washi-paper { background-color: #ffffff; background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E"); }
     </style>
 </head>
 <body class="h-[100dvh] w-full overflow-hidden flex flex-col font-sans select-none">
@@ -122,809 +70,555 @@
         <p class="text-xs text-muji-sub mt-2 tracking-wide">載入中...</p>
     </div>
 
-    <!-- Header -->
-    <header class="flex-none px-6 pt-safe-top py-4 flex justify-between items-center bg-muji-bg/95 backdrop-blur-sm z-10 border-b border-muji-border/50 sticky top-0 transition-all duration-500" id="app-header">
-        <div onclick="vibrate(5)" class="active:opacity-70 transition-opacity">
-            <h1 class="text-xl font-rounded font-bold text-muji-text tracking-wide cursor-pointer flex items-center gap-2" onclick="resetAppDebug()">
-                日日 <span class="text-xs font-normal text-muji-sub">Hibi</span>
-            </h1>
-            <div class="flex items-center gap-3 mt-1">
-                <div class="flex items-center gap-1 text-muji-brown bg-muji-brown/10 px-2 py-0.5 rounded-md">
-                    <i data-lucide="footprints" class="w-3 h-3"></i>
-                    <span id="header-streak" class="text-xs font-bold">0</span>
-                </div>
-                <div class="flex items-center gap-1 text-muji-green bg-muji-green/10 px-2 py-0.5 rounded-md">
-                    <i data-lucide="leaf" class="w-3 h-3"></i>
-                    <span id="header-points" class="text-xs font-bold">0</span>
-                </div>
-            </div>
+    <!-- Init Screen (Auth) - RESTORED -->
+    <div id="auth-screen" class="fixed inset-0 bg-muji-bg z-[90] flex flex-col items-center justify-center transition-opacity duration-500 p-6 hidden">
+        <div class="mb-8 text-center">
+            <h1 class="text-4xl font-rounded font-bold text-muji-text tracking-widest mb-2">日日</h1>
+            <span class="text-sm text-muji-sub tracking-wider">Hibi Daily Japanese</span>
         </div>
-        <div class="flex items-center gap-3">
-             <button onclick="addToCalendar(); vibrate(5)" class="p-3 rounded-full text-muji-sub hover:bg-gray-100 active:bg-gray-200 transition-colors">
-                <i data-lucide="bell" class="w-5 h-5"></i>
-             </button>
-             <button onclick="showHelp(); vibrate(5)" class="p-3 rounded-full text-muji-sub hover:bg-gray-100 active:bg-gray-200 transition-colors">
-                <i data-lucide="help-circle" class="w-5 h-5"></i>
-             </button>
-             <div class="relative w-10 h-10 flex items-center justify-center cursor-pointer active:scale-90 transition-transform" onclick="showShareModal(); vibrate(10)">
-                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                    <path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
-                    <path id="goal-progress-ring" class="text-muji-green transition-all duration-1000 ease-out" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
-                </svg>
-                <div class="absolute text-[10px] font-bold text-muji-sub" id="goal-text">0/5</div>
-             </div>
+        <div class="w-full max-w-xs bg-white p-6 rounded-2xl shadow-float border border-gray-100">
+            <div class="mb-4 text-center">
+                <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-3 flex items-center justify-center text-2xl">👋</div>
+                <h2 class="text-lg font-bold text-muji-text">歡迎回來</h2>
+                <p class="text-xs text-muji-sub mt-1">請輸入暱稱以同步雲端進度</p>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="input-nickname" placeholder="您的暱稱 (例如: Alex)" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-muji-green text-center font-medium">
+                <button onclick="handleLogin()" class="w-full py-3 bg-muji-text text-white rounded-xl font-bold shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> 開始學習
+                </button>
+            </div>
+            <p class="mt-4 text-[10px] text-center text-gray-400"><i data-lucide="cloud" class="w-3 h-3 inline mr-1"></i>支援 Google Cloud 同步</p>
         </div>
-    </header>
+    </div>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 overflow-y-auto no-scrollbar relative w-full max-w-md mx-auto" id="app-container">
-        
-        <!-- Tab 1: 旅 (Travel/Study) -->
-        <div id="view-travel" class="view-section px-6 py-4 space-y-6 animate-fade-in pb-32">
-            
-            <!-- Heatmap -->
-            <div class="flex justify-between items-center px-2 py-3">
-                <div class="text-xs font-bold text-muji-sub tracking-widest uppercase">本週足跡</div>
-                <div class="flex gap-1.5" id="heatmap-container"></div>
-            </div>
-
-            <div class="text-center mb-6 relative">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-green/10 mb-2">
-                    <span class="text-muji-green text-xs font-bold tracking-widest">TRAVEL</span>
-                    <span class="w-1 h-1 rounded-full bg-muji-green"></span>
-                    <span id="count-travel" class="text-muji-green text-[10px] font-medium">全 -- 句</span>
+    <!-- Main App (Hidden Initially) -->
+    <div id="main-app" class="hidden h-full flex flex-col">
+        <!-- Header -->
+        <header class="flex-none px-6 pt-safe-top py-4 flex justify-between items-center bg-muji-bg/95 backdrop-blur-sm z-10 border-b border-muji-border/50 sticky top-0 transition-all duration-500">
+            <div onclick="showProfile(); vibrate(5)" class="active:opacity-70 transition-opacity cursor-pointer">
+                <div class="flex items-center gap-2">
+                    <h1 class="text-xl font-rounded font-bold text-muji-text tracking-wide">日日</h1>
+                    <span id="user-badge" class="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full">Guest</span>
                 </div>
-                <h2 id="card-category" class="text-lg font-rounded text-muji-text">載入中...</h2>
-                
-                <!-- Auto Play Button (Fixed: Using wrapper div for ID stability) -->
-                <button id="btn-autoplay" onclick="toggleAutoPlay()" class="absolute right-0 top-2 p-3 rounded-full border border-muji-border text-muji-sub hover:text-muji-green hover:bg-white hover:shadow-sm transition-all flex items-center gap-1 active:scale-95">
-                    <div class="relative w-4 h-4">
-                        <div id="wrapper-icon-play" class="absolute inset-0 transition-opacity duration-200">
-                            <i data-lucide="headphones" class="w-4 h-4"></i>
-                        </div>
-                        <div id="wrapper-icon-pause" class="absolute inset-0 transition-opacity duration-200 opacity-0">
-                            <i data-lucide="pause" class="w-4 h-4"></i>
-                        </div>
-                    </div>
-                    <span class="text-[10px] hidden sm:inline" id="text-autoplay">聽流</span>
-                </button>
-            </div>
-
-            <!-- Card Container -->
-            <div id="flashcard-container" class="perspective-1000 w-full h-80 cursor-pointer group relative" onclick="flipCard(this)">
-                <div id="hint-left" class="absolute inset-y-0 left-4 flex items-center opacity-0 transition-opacity z-10 pointer-events-none">
-                    <div class="bg-gray-300/80 text-white p-3 rounded-full shadow-lg backdrop-blur-sm"><i data-lucide="x" class="w-8 h-8"></i></div>
-                </div>
-                <div id="hint-right" class="absolute inset-y-0 right-4 flex items-center opacity-0 transition-opacity z-10 pointer-events-none">
-                    <div class="bg-muji-green/80 text-white p-3 rounded-full shadow-lg backdrop-blur-sm"><i data-lucide="check" class="w-8 h-8"></i></div>
-                </div>
-
-                <div class="card-inner relative w-full h-full transition-all duration-500 preserve-3d shadow-soft rounded-2xl bg-white">
-                    <!-- Front -->
-                    <div class="absolute w-full h-full backface-hidden bg-muji-card rounded-2xl flex flex-col items-center justify-center p-6 border border-muji-border">
-                        <span id="card-desc" class="text-sm text-muji-sub mb-4">...</span>
-                        <h3 id="card-jp" class="text-3xl font-bold text-muji-text mb-2 text-center leading-relaxed">...</h3>
-                        <div class="mt-6 px-6 py-2.5 rounded-full bg-muji-bg text-muji-green animate-float flex items-center gap-2 shadow-sm border border-muji-green/20">
-                            <span class="text-sm font-bold tracking-widest">聽答案</span>
-                            <i data-lucide="rotate-cw" class="w-4 h-4"></i>
-                        </div>
-                    </div>
-                    <!-- Back -->
-                    <div class="absolute w-full h-full backface-hidden bg-muji-text text-white rounded-2xl rotate-y-180 flex flex-col items-center justify-center p-6">
-                        <p id="card-romaji" class="text-2xl font-bold mb-2 text-center">...</p>
-                        <p id="card-kana" class="text-sm text-gray-300 mb-2 text-center">...</p>
-                        <p id="card-sorami" class="text-xs text-muji-green font-medium mb-6 tracking-wide opacity-90 text-center">...</p>
-                        
-                        <button onclick="playAudioCurrentCard(event)" class="flex items-center gap-2 px-6 py-3 rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-sm active:scale-95">
-                            <i data-lucide="volume-2" class="w-5 h-5"></i>
-                            <span class="text-sm">播放</span>
-                        </button>
-                    </div>
+                <div class="flex items-center gap-3 mt-1">
+                    <div class="flex items-center gap-1 text-muji-brown bg-muji-brown/10 px-2 py-0.5 rounded-md"><i data-lucide="flame" class="w-3 h-3"></i><span id="header-streak" class="text-xs font-bold">0</span></div>
+                    <div class="flex items-center gap-1 text-muji-green bg-muji-green/10 px-2 py-0.5 rounded-md"><i data-lucide="star" class="w-3 h-3"></i><span id="header-points" class="text-xs font-bold">0</span></div>
                 </div>
             </div>
-
-            <!-- Controls -->
-            <div class="flex justify-center gap-8 mt-6">
-                <button class="w-16 h-16 rounded-full border border-muji-border bg-white flex items-center justify-center text-gray-300 hover:text-muji-sub shadow-sm active:scale-90 transition-transform" onclick="handleCardResult(false); vibrate(10)">
-                    <i data-lucide="x" class="w-8 h-8"></i>
-                </button>
-                <button class="w-16 h-16 rounded-full bg-muji-text text-white flex items-center justify-center shadow-float active:scale-90 transition-transform" onclick="handleCardResult(true); vibrate(15)">
-                    <i data-lucide="check" class="w-8 h-8"></i>
-                </button>
-            </div>
-            
-            <div class="mt-8">
-                <h3 class="text-sm font-bold text-muji-sub mb-3 uppercase tracking-wider">相關單字</h3>
-                <div id="vocab-list" class="bg-white rounded-xl p-4 shadow-sm border border-muji-border space-y-3"></div>
-            </div>
-        </div>
-
-        <!-- Tab 2: 習 (Practice) -->
-        <div id="view-practice" class="view-section hidden px-6 py-4 space-y-6 pb-32">
-            <div class="text-center mb-6">
-                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-brown/10 mb-2">
-                    <span class="text-muji-brown text-xs font-bold tracking-widest">PRACTICE</span>
-                    <span class="w-1 h-1 rounded-full bg-muji-brown"></span>
-                    <span id="count-practice" class="text-muji-brown text-[10px] font-medium">全 -- 情境</span>
-                </div>
-                <h2 id="practice-title" class="text-lg font-rounded text-muji-text">...</h2>
-                <p id="practice-desc" class="text-xs text-muji-sub mt-1">...</p>
-                <button onclick="nextPractice(); vibrate(5)" class="mt-2 text-[10px] text-muji-sub border border-muji-border px-3 py-1.5 rounded-full flex items-center gap-1 mx-auto hover:bg-gray-50 active:bg-gray-100">
-                    <i data-lucide="refresh-ccw" class="w-3 h-3"></i> 切換情境
-                </button>
-            </div>
-
-            <div class="space-y-4 mb-20" id="chat-container">
-                <div class="flex gap-3 animate-slide-up">
-                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0">彼</div>
-                    <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-muji-border max-w-[85%]">
-                        <p id="practice-npc-text" class="text-base text-muji-text font-medium mb-1">...</p>
-                        <p id="practice-npc-mean" class="text-xs text-muji-sub mb-2">...</p>
-                        <button onclick="playAudio(document.getElementById('practice-npc-text').innerText, event)" class="text-muji-green hover:text-muji-text active:scale-110 transition-transform p-2 -ml-2">
-                            <i data-lucide="volume-2" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex justify-end gap-3 animate-slide-up" style="animation-delay: 0.1s;">
-                     <div class="bg-muji-green/10 p-4 rounded-2xl rounded-tr-none border border-muji-green/20 max-w-[85%] text-right w-full">
-                        <p class="text-xs text-muji-sub mb-1">目標回答</p>
-                        <p id="practice-target-text" class="text-lg text-muji-text font-bold leading-relaxed">...</p>
-                        <p id="practice-target-mean" class="text-[10px] text-muji-sub mb-3 opacity-70">...</p>
-                        
-                        <div class="mt-3 flex justify-end gap-2 flex-wrap">
-                             <button onclick="playAudio(document.getElementById('practice-target-text').innerText, event)" class="px-4 py-2.5 bg-white rounded-full text-xs shadow-sm flex items-center gap-1 text-muji-text border border-muji-border active:bg-gray-50">
-                                <i data-lucide="ear" class="w-3 h-3"></i> 範例
-                            </button>
-                            <button id="btn-record" onclick="toggleRecording(); vibrate(10)" class="px-5 py-2.5 bg-muji-green text-white rounded-full text-xs shadow-sm flex items-center gap-1 transition-all active:scale-95 active:bg-green-700">
-                                <i data-lucide="mic" class="w-3 h-3"></i> <span id="btn-record-text">按此說話</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="w-10 h-10 rounded-full bg-muji-brown text-white flex items-center justify-center text-sm font-bold flex-shrink-0">我</div>
-                </div>
-                 
-                 <div id="feedback-area" class="hidden p-4 bg-gray-50 rounded-xl text-center text-xs text-muji-sub border border-dashed border-gray-300 transition-all">
-                    <p id="feedback-text" class="mb-1">...</p>
-                    <p id="transcript-text" class="text-muji-text font-bold text-base min-h-[1.5em]"></p>
+            <div class="flex items-center gap-3">
+                 <button onclick="showSettings(); vibrate(5)" class="p-3 rounded-full text-muji-sub hover:bg-gray-100 active:bg-gray-200 transition-colors"><i data-lucide="settings" class="w-5 h-5"></i></button>
+                 <div class="relative w-10 h-10 flex items-center justify-center cursor-pointer active:scale-90 transition-transform" onclick="showShareModal(); vibrate(10)">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36"><path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" /><path id="goal-progress-ring" class="text-muji-green transition-all duration-1000 ease-out" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" /></svg>
+                    <div class="absolute text-[10px] font-bold text-muji-sub" id="goal-text">0/5</div>
                  </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Tab 3: 磨 (Master) -->
-        <div id="view-master" class="view-section hidden px-6 py-4 space-y-6 pb-32">
-             <div class="text-center mb-6">
-                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-text/10 mb-2">
-                    <span class="text-muji-text text-xs font-bold tracking-widest">MASTER</span>
-                    <span class="w-1 h-1 rounded-full bg-muji-text"></span>
-                    <span id="count-master" class="text-muji-text text-[10px] font-medium">全 -- 題</span>
+        <!-- Content -->
+        <main class="flex-1 overflow-y-auto no-scrollbar relative w-full max-w-md mx-auto" id="app-container">
+            <!-- Tab 1: 旅 (Travel) -->
+            <div id="view-travel" class="view-section px-6 py-4 space-y-6 animate-fade-in pb-32">
+                <div class="text-center mb-6 relative">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-green/10 mb-2"><span class="text-muji-green text-xs font-bold tracking-widest">TRAVEL</span><span class="w-1 h-1 rounded-full bg-muji-green"></span><span id="count-travel" class="text-muji-green text-[10px] font-medium">-- 句</span></div>
+                    <h2 id="card-category" class="text-lg font-rounded text-muji-text">載入中...</h2>
+                    <button id="btn-autoplay" onclick="toggleAutoPlay()" class="absolute right-0 top-2 p-3 rounded-full border border-muji-border text-muji-sub hover:text-muji-green hover:bg-white hover:shadow-sm transition-all flex items-center gap-1 active:scale-95">
+                        <div class="relative w-4 h-4"><div id="wrapper-icon-play" class="absolute inset-0 transition-opacity duration-200"><i data-lucide="headphones" class="w-4 h-4"></i></div><div id="wrapper-icon-pause" class="absolute inset-0 transition-opacity duration-200 opacity-0"><i data-lucide="pause" class="w-4 h-4"></i></div></div><span class="text-[10px] hidden sm:inline" id="text-autoplay">聽流</span>
+                    </button>
                 </div>
-                <h2 class="text-lg font-rounded text-muji-text">敬語與常體的切換</h2>
-                <p class="text-xs text-muji-sub mt-1">根據對象切換適當的日語</p>
-            </div>
-            <div id="quiz-container" class="space-y-6 animate-fade-in"></div>
-        </div>
-
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="flex-none bg-white border-t border-muji-border pb-safe-bottom z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
-        <div class="flex justify-around items-center h-16">
-            <button onclick="switchTab('travel'); vibrate(5)" class="nav-btn active group flex flex-col items-center justify-center w-full h-full space-y-1 active:bg-gray-50" data-target="view-travel">
-                <i data-lucide="map" class="w-6 h-6 transition-colors text-muji-green"></i>
-                <span class="text-[10px] font-medium tracking-wide transition-colors text-muji-green">旅 Tabi</span>
-            </button>
-            <button onclick="switchTab('practice'); vibrate(5)" class="nav-btn group flex flex-col items-center justify-center w-full h-full space-y-1 active:bg-gray-50" data-target="view-practice">
-                <i data-lucide="message-circle" class="w-6 h-6 transition-colors text-muji-sub group-hover:text-muji-brown"></i>
-                <span class="text-[10px] font-medium tracking-wide transition-colors text-muji-sub group-hover:text-muji-brown">習 Narau</span>
-            </button>
-            <button onclick="switchTab('master'); vibrate(5)" class="nav-btn group flex flex-col items-center justify-center w-full h-full space-y-1 active:bg-gray-50" data-target="view-master">
-                <i data-lucide="sparkles" class="w-6 h-6 transition-colors text-muji-sub group-hover:text-muji-text"></i>
-                <span class="text-[10px] font-medium tracking-wide transition-colors text-muji-sub group-hover:text-muji-text">磨 Migaku</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Toast -->
-    <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium opacity-0 transition-all duration-300 pointer-events-none z-50 shadow-float translate-y-[-10px] flex items-center gap-2 backdrop-blur-md">
-        <span>Message</span>
-    </div>
-
-    <!-- Help Modal -->
-    <div id="help-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-6">
-        <div class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl transform scale-90 transition-transform duration-300 relative overflow-hidden" id="help-modal-content">
-            <button onclick="closeHelp()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 active:bg-gray-100 rounded-full z-10">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-            <h3 class="text-xl font-bold text-muji-text mb-6 flex items-center gap-2">
-                <i data-lucide="info" class="w-5 h-5 text-muji-green"></i> 使用說明
-            </h3>
-            <div class="space-y-6">
-                <div class="space-y-3">
-                    <h4 class="text-sm font-bold text-muji-sub tracking-widest uppercase border-b border-gray-100 pb-1">手勢操作</h4>
-                    <div class="grid grid-cols-2 gap-4 text-xs text-muji-text">
-                        <div class="flex flex-col items-center gap-2 bg-gray-50 p-3 rounded-xl">
-                            <i data-lucide="move-left" class="w-5 h-5 text-muji-red"></i>
-                            <span>左滑：稍後複習</span>
+                <div id="flashcard-container" class="perspective-1000 w-full h-80 cursor-pointer group relative" onclick="flipCard(this)">
+                    <div id="hint-left" class="absolute inset-y-0 left-4 flex items-center opacity-0 transition-opacity z-10 pointer-events-none"><div class="bg-gray-300/80 text-white p-3 rounded-full shadow-lg backdrop-blur-sm"><i data-lucide="x" class="w-8 h-8"></i></div></div>
+                    <div id="hint-right" class="absolute inset-y-0 right-4 flex items-center opacity-0 transition-opacity z-10 pointer-events-none"><div class="bg-muji-green/80 text-white p-3 rounded-full shadow-lg backdrop-blur-sm"><i data-lucide="check" class="w-8 h-8"></i></div></div>
+                    <div class="card-inner relative w-full h-full transition-all duration-500 preserve-3d shadow-soft rounded-2xl bg-white">
+                        <div class="absolute w-full h-full backface-hidden bg-muji-card rounded-2xl flex flex-col items-center justify-center p-6 border border-muji-border">
+                            <span id="card-desc" class="text-sm text-muji-sub mb-4">...</span><h3 id="card-jp" class="text-3xl font-bold text-muji-text mb-2 text-center leading-relaxed">...</h3>
+                            <div class="mt-6 px-6 py-2.5 rounded-full bg-muji-bg text-muji-green animate-float flex items-center gap-2 shadow-sm border border-muji-green/20"><span class="text-sm font-bold tracking-widest">聽答案</span><i data-lucide="rotate-cw" class="w-4 h-4"></i></div>
                         </div>
-                        <div class="flex flex-col items-center gap-2 bg-gray-50 p-3 rounded-xl">
-                            <i data-lucide="move-right" class="w-5 h-5 text-muji-green"></i>
-                            <span>右滑：已熟記</span>
-                        </div>
-                        <div class="col-span-2 flex items-center justify-center gap-2 bg-gray-50 p-3 rounded-xl">
-                            <i data-lucide="touchpad" class="w-4 h-4 text-muji-brown"></i>
-                            <span>點擊卡片：翻轉查看發音</span>
+                        <div class="absolute w-full h-full backface-hidden bg-muji-text text-white rounded-2xl rotate-y-180 flex flex-col items-center justify-center p-6">
+                            <p id="card-romaji" class="text-2xl font-bold mb-2 text-center transition-opacity duration-300">...</p><p id="card-kana" class="text-sm text-gray-300 mb-2 text-center">...</p><p id="card-sorami" class="text-xs text-muji-green font-medium mb-6 tracking-wide opacity-90 text-center">...</p>
+                            <button onclick="playAudioCurrentCard(event)" class="flex items-center gap-2 px-6 py-3 rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-sm active:scale-95"><i data-lucide="volume-2" class="w-5 h-5"></i><span class="text-sm">播放</span></button>
                         </div>
                     </div>
                 </div>
-                <!-- Features -->
-                <div class="space-y-3">
-                    <h4 class="text-sm font-bold text-muji-sub tracking-widest uppercase border-b border-gray-100 pb-1">特色功能</h4>
-                    <ul class="text-xs text-muji-text space-y-3">
-                        <li class="flex items-center gap-3">
-                            <div class="p-2 bg-muji-green/10 rounded-full text-muji-green"><i data-lucide="headphones" class="w-4 h-4"></i></div>
-                            <span><b>聽流模式</b>：自動輪播朗讀，適合通勤聆聽。</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <div class="p-2 bg-muji-vermilion/10 rounded-full text-muji-vermilion"><i data-lucide="gift" class="w-4 h-4"></i></div>
-                            <span><b>每日御神籤</b>：每日首次開啟可搖籤祈福。</span>
-                        </li>
-                    </ul>
-                </div>
+                <div class="flex justify-center gap-8 mt-6"><button class="w-16 h-16 rounded-full border border-muji-border bg-white flex items-center justify-center text-gray-300 hover:text-muji-sub shadow-sm active:scale-90 transition-transform" onclick="handleCardResult(false); vibrate(10)"><i data-lucide="x" class="w-8 h-8"></i></button><button class="w-16 h-16 rounded-full bg-muji-text text-white flex items-center justify-center shadow-float active:scale-90 transition-transform" onclick="handleCardResult(true); vibrate(15)"><i data-lucide="check" class="w-8 h-8"></i></button></div>
+                <div class="mt-8"><h3 class="text-sm font-bold text-muji-sub mb-3 uppercase tracking-wider">相關單字</h3><div id="vocab-list" class="bg-white rounded-xl p-4 shadow-sm border border-muji-border space-y-3"></div></div>
             </div>
-            <button onclick="closeHelp()" class="w-full mt-8 py-3 bg-muji-text text-white rounded-xl font-medium shadow-lg active:scale-95 transition-transform text-sm">
-                開始學習
-            </button>
-        </div>
-    </div>
 
-    <!-- Omikuji Modal -->
-    <div id="omikuji-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-500">
-        <div id="omikuji-box-state" class="flex flex-col items-center text-center cursor-pointer transition-all duration-300" onclick="drawOmikuji()">
-            <div id="omikuji-shaker" class="w-32 h-64 bg-muji-vermilion rounded-lg relative flex flex-col items-center justify-between py-4 shadow-2xl border-4 border-red-800">
-                <div class="w-24 h-4 bg-black/20 rounded-full"></div>
-                <div class="text-white font-serif vertical-text text-3xl font-bold tracking-widest opacity-90">御神籤</div>
-                <div class="w-24 h-4 bg-black/20 rounded-full"></div>
-                <div class="absolute -top-3 w-8 h-4 bg-black rounded-full"></div>
+            <!-- Tab 2: 習 (Practice) -->
+            <div id="view-practice" class="view-section hidden px-6 py-4 space-y-6 pb-32">
+                <div class="text-center mb-6"><div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-brown/10 mb-2"><span class="text-muji-brown text-xs font-bold tracking-widest">PRACTICE</span><span class="w-1 h-1 rounded-full bg-muji-brown"></span><span id="count-practice" class="text-muji-brown text-[10px] font-medium">-- 情境</span></div><h2 id="practice-title" class="text-lg font-rounded text-muji-text">...</h2><p id="practice-desc" class="text-xs text-muji-sub mt-1">...</p><button onclick="nextPractice(); vibrate(5)" class="mt-2 text-[10px] text-muji-sub border border-muji-border px-3 py-1.5 rounded-full flex items-center gap-1 mx-auto hover:bg-gray-50 active:bg-gray-100"><i data-lucide="refresh-ccw" class="w-3 h-3"></i> 切換情境</button></div>
+                <div class="space-y-4 mb-20" id="chat-container">
+                    <div class="flex gap-3 animate-slide-up"><div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-500 flex-shrink-0">彼</div><div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-muji-border max-w-[85%]"><p id="practice-npc-text" class="text-base text-muji-text font-medium mb-1">...</p><p id="practice-npc-mean" class="text-xs text-muji-sub mb-2">...</p><button onclick="playAudio(document.getElementById('practice-npc-text').innerText, event)" class="text-muji-green hover:text-muji-text active:scale-110 transition-transform p-2 -ml-2"><i data-lucide="volume-2" class="w-5 h-5"></i></button></div></div>
+                    <div class="flex justify-end gap-3 animate-slide-up" style="animation-delay: 0.1s;"><div class="bg-muji-green/10 p-4 rounded-2xl rounded-tr-none border border-muji-green/20 max-w-[85%] text-right w-full"><p class="text-xs text-muji-sub mb-1">目標回答</p><p id="practice-target-text" class="text-lg text-muji-text font-bold leading-relaxed">...</p><p id="practice-target-mean" class="text-[10px] text-muji-sub mb-3 opacity-70">...</p><div class="mt-3 flex justify-end gap-2 flex-wrap"><button onclick="playAudio(document.getElementById('practice-target-text').innerText, event)" class="px-4 py-2.5 bg-white rounded-full text-xs shadow-sm flex items-center gap-1 text-muji-text border border-muji-border active:bg-gray-50"><i data-lucide="ear" class="w-3 h-3"></i> 範例</button><button id="btn-record" onclick="toggleRecording(); vibrate(10)" class="px-5 py-2.5 bg-muji-green text-white rounded-full text-xs shadow-sm flex items-center gap-1 transition-all active:scale-95 active:bg-green-700"><i data-lucide="mic" class="w-3 h-3"></i> <span id="btn-record-text">按此說話</span></button></div></div><div class="w-10 h-10 rounded-full bg-muji-brown text-white flex items-center justify-center text-sm font-bold flex-shrink-0">我</div></div>
+                    <div id="feedback-area" class="hidden p-4 bg-gray-50 rounded-xl text-center text-xs text-muji-sub border border-dashed border-gray-300 transition-all"><p id="feedback-text" class="mb-1">...</p><p id="transcript-text" class="text-muji-text font-bold text-base min-h-[1.5em]"></p></div>
+                </div>
             </div>
-            <p class="mt-8 text-white font-bold text-lg animate-pulse tracking-widest">點擊籤筒求籤</p>
-        </div>
-        <div id="omikuji-result-state" class="hidden washi-paper w-[85%] max-w-sm p-1 shadow-2xl transform scale-90 opacity-0 transition-all duration-1000 origin-top" style="min-height: 480px;">
-            <div class="h-full border-2 border-muji-vermilion p-6 flex flex-col items-center text-center relative">
-                <div class="text-muji-vermilion mb-4 opacity-50"><i data-lucide="flower" class="w-6 h-6"></i></div>
-                <h3 class="text-lg text-muji-text font-serif tracking-widest mb-6 border-b border-gray-200 pb-2 w-full">日日運勢</h3>
-                <div class="flex-1 flex justify-center items-center py-4">
-                    <p id="omikuji-text" class="text-5xl font-serif font-bold text-muji-vermilion vertical-text leading-tight drop-shadow-sm">大吉</p>
-                </div>
-                <div class="w-full bg-gray-50 p-4 rounded-sm my-6 border border-gray-100">
-                    <p id="omikuji-quote" class="text-sm text-muji-text font-serif leading-loose tracking-wide">一期一会</p>
-                </div>
-                <div class="flex justify-between w-full text-[10px] text-muji-sub border-t border-gray-200 pt-3">
-                    <div class="flex flex-col items-center"><span class="mb-1">幸運色</span><span id="omikuji-color" class="font-bold text-muji-text">朱紅</span></div>
-                    <div class="flex flex-col items-center"><span class="mb-1">幸運物</span><span id="omikuji-item" class="font-bold text-muji-text">手帕</span></div>
-                </div>
-                <button onclick="closeOmikuji()" class="absolute -bottom-16 text-white border border-white/50 px-6 py-2 rounded-full hover:bg-white hover:text-muji-text transition-colors">收下祝福</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Share Modal -->
-    <div id="share-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-6">
-        <div class="bg-white rounded-3xl w-full max-w-sm p-0 shadow-2xl transform scale-90 transition-transform duration-300 flex flex-col relative overflow-hidden" id="share-modal-content">
-            <button onclick="closeShareModal()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 active:bg-gray-100 rounded-full z-10 bg-white/50 backdrop-blur-sm">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-            <div id="share-card-container" class="w-full aspect-square bg-gray-100 relative">
-                <canvas id="share-canvas" width="600" height="600" class="w-full h-full object-cover"></canvas>
-                <div id="loading-canvas" class="absolute inset-0 flex items-center justify-center text-muji-sub bg-white">製作卡片中...</div>
+            <!-- Tab 3: 磨 (Master) -->
+            <div id="view-master" class="view-section hidden px-6 py-4 space-y-6 pb-32">
+                 <div class="text-center mb-4"><div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-text/10 mb-2"><span class="text-muji-text text-xs font-bold tracking-widest">MASTER</span><span class="w-1 h-1 rounded-full bg-muji-text"></span><span id="count-master" class="text-muji-text text-[10px] font-medium">-- 題</span></div><h2 class="text-lg font-rounded text-muji-text">敬語與常體的切換</h2></div>
+                <div class="relative"><i data-lucide="search" class="absolute left-3 top-3 w-4 h-4 text-gray-400"></i><input type="text" id="master-search" placeholder="搜尋情境..." oninput="renderMasterQuiz()" class="w-full bg-gray-50 border border-gray-100 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-muji-text transition-colors"></div>
+                <div id="quiz-container" class="space-y-6 animate-fade-in"></div>
             </div>
+        </main>
+
+        <!-- Nav -->
+        <nav class="flex-none bg-white border-t border-muji-border pb-safe-bottom z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
+            <div class="flex justify-around items-center h-16">
+                <button onclick="switchTab('travel'); vibrate(5)" class="nav-btn active group flex flex-col items-center justify-center w-full h-full space-y-1 active:bg-gray-50" data-target="view-travel"><i data-lucide="map" class="w-6 h-6 transition-colors text-muji-green"></i><span class="text-[10px] font-medium tracking-wide transition-colors text-muji-green">旅 Tabi</span></button>
+                <button onclick="switchTab('practice'); vibrate(5)" class="nav-btn group flex flex-col items-center justify-center w-full h-full space-y-1 active:bg-gray-50" data-target="view-practice"><i data-lucide="message-circle" class="w-6 h-6 transition-colors text-muji-sub group-hover:text-muji-brown"></i><span class="text-[10px] font-medium tracking-wide transition-colors text-muji-sub group-hover:text-muji-brown">習 Narau</span></button>
+                <button onclick="switchTab('master'); vibrate(5)" class="nav-btn group flex flex-col items-center justify-center w-full h-full space-y-1 active:bg-gray-50" data-target="view-master"><i data-lucide="sparkles" class="w-6 h-6 transition-colors text-muji-sub group-hover:text-muji-text"></i><span class="text-[10px] font-medium tracking-wide transition-colors text-muji-sub group-hover:text-muji-text">磨 Migaku</span></button>
+            </div>
+        </nav>
+
+        <!-- Modals -->
+        <div id="bigtext-modal" class="fixed inset-0 bg-white z-[60] flex flex-col items-center justify-center p-6 opacity-0 pointer-events-none transition-opacity duration-300"><button onclick="closeBigText()" class="absolute top-6 right-6 p-3 bg-gray-100 rounded-full"><i data-lucide="x" class="w-6 h-6"></i></button><p class="text-sm text-muji-sub mb-4 tracking-widest">請展示給對方看</p><h2 id="bigtext-content" class="text-5xl font-bold text-muji-text text-center leading-snug break-words">...</h2></div>
+
+        <div id="settings-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-6">
+            <div class="bg-white rounded-3xl w-full max-w-sm p-6 shadow-2xl relative overflow-hidden transform scale-95 transition-transform" id="settings-content">
+                <button onclick="closeSettings()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <h3 class="text-xl font-bold text-muji-text mb-6">設定</h3>
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between"><span class="text-sm font-medium text-muji-text">顯示羅馬拼音</span><div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"><input type="checkbox" name="toggle" id="toggle-romaji" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300 transition-all duration-300 top-0 left-0" onclick="toggleRomajiSetting()"/><label for="toggle-romaji" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer transition-colors duration-300"></label></div></div>
+                    <div class="space-y-2"><div class="flex justify-between text-sm font-medium text-muji-text"><span>語音速度</span><span id="speed-val">0.65</span></div><input type="range" min="0.5" max="1.0" step="0.05" id="speed-slider" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-muji-green" oninput="updateSpeed(this.value)"></div>
+                    <div class="pt-4 border-t border-gray-100 space-y-3"><h4 class="text-xs font-bold text-muji-sub uppercase tracking-widest">資料管理</h4><button onclick="exportData()" class="w-full py-2 border border-muji-border rounded-lg text-sm text-muji-text flex items-center justify-center gap-2"><i data-lucide="download" class="w-4 h-4"></i> 備份進度</button><button onclick="importData()" class="w-full py-2 border border-muji-border rounded-lg text-sm text-muji-text flex items-center justify-center gap-2"><i data-lucide="upload" class="w-4 h-4"></i> 還原進度</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="profile-modal" class="fixed inset-0 bg-white z-[55] flex flex-col opacity-0 pointer-events-none transition-opacity duration-300 overflow-y-auto">
             <div class="p-6">
-                <h3 class="text-xl font-bold text-muji-text mb-1" id="share-title">今日成就</h3>
-                <div class="grid grid-cols-2 gap-3 mt-4">
-                     <button onclick="downloadShareImage()" class="py-3 bg-gray-100 text-muji-text rounded-xl font-medium shadow-sm active:bg-gray-200 transition-colors flex items-center justify-center gap-2 text-sm"><i data-lucide="download" class="w-4 h-4"></i> 儲存</button>
-                    <button onclick="shareProgress()" class="py-3 bg-muji-text text-white rounded-xl font-medium shadow-lg hover:bg-gray-800 active:scale-95 transition-transform flex items-center justify-center gap-2 text-sm"><i data-lucide="share-2" class="w-4 h-4"></i> 分享</button>
+                <div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-muji-text">學習成就</h2><button onclick="closeProfile()" class="p-2 bg-gray-100 rounded-full"><i data-lucide="x" class="w-6 h-6"></i></button></div>
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-orange-50 p-4 rounded-2xl text-center"><i data-lucide="flame" class="w-8 h-8 text-orange-400 mx-auto mb-2"></i><div class="text-2xl font-bold text-muji-text" id="profile-streak">0</div><div class="text-xs text-muji-sub">連續天數</div></div>
+                    <div class="bg-blue-50 p-4 rounded-2xl text-center"><i data-lucide="award" class="w-8 h-8 text-blue-400 mx-auto mb-2"></i><div class="text-2xl font-bold text-muji-text" id="profile-total">0</div><div class="text-xs text-muji-sub">已熟記單字</div></div>
+                </div>
+                <h3 class="text-lg font-bold text-muji-text mb-4">徽章牆</h3><div class="grid grid-cols-3 gap-3 mb-8" id="badge-container"></div>
+                <h3 class="text-lg font-bold text-muji-text mb-4">本週排行榜</h3><div class="bg-gray-50 rounded-2xl p-4 space-y-4" id="leaderboard-list"></div>
+            </div>
+        </div>
+
+        <div id="share-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-6">
+            <div class="bg-white rounded-3xl w-full max-w-sm p-0 shadow-2xl transform scale-90 transition-transform duration-300 flex flex-col relative overflow-hidden" id="share-modal-content">
+                <button onclick="closeShareModal()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 active:bg-gray-100 rounded-full z-10 bg-white/50 backdrop-blur-sm"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <div id="share-card-container" class="w-full aspect-square bg-gray-100 relative"><canvas id="share-canvas" width="600" height="600" class="w-full h-full object-cover"></canvas><div id="loading-canvas" class="absolute inset-0 flex items-center justify-center text-muji-sub bg-white">製作卡片中...</div></div>
+                <div class="p-6"><h3 class="text-xl font-bold text-muji-text mb-1" id="share-title">今日成就</h3><div class="grid grid-cols-2 gap-3 mt-4"><button onclick="downloadShareImage()" class="py-3 bg-gray-100 text-muji-text rounded-xl font-medium shadow-sm active:bg-gray-200 transition-colors flex items-center justify-center gap-2 text-sm"><i data-lucide="download" class="w-4 h-4"></i> 儲存</button><button onclick="shareProgress()" class="py-3 bg-muji-text text-white rounded-xl font-medium shadow-lg hover:bg-gray-800 active:scale-95 transition-transform flex items-center justify-center gap-2 text-sm"><i data-lucide="share-2" class="w-4 h-4"></i> 分享</button></div></div>
+            </div>
+        </div>
+
+        <div id="omikuji-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-500">
+            <div id="omikuji-box-state" class="flex flex-col items-center text-center cursor-pointer transition-all duration-300" onclick="drawOmikuji()">
+                <div id="omikuji-shaker" class="w-32 h-64 bg-muji-vermilion rounded-lg relative flex flex-col items-center justify-between py-4 shadow-2xl border-4 border-red-800"><div class="w-24 h-4 bg-black/20 rounded-full"></div><div class="text-white font-serif vertical-text text-3xl font-bold tracking-widest opacity-90">御神籤</div><div class="w-24 h-4 bg-black/20 rounded-full"></div><div class="absolute -top-3 w-8 h-4 bg-black rounded-full"></div></div><p class="mt-8 text-white font-bold text-lg animate-pulse tracking-widest">點擊籤筒求籤</p>
+            </div>
+            <div id="omikuji-result-state" class="hidden washi-paper w-[85%] max-w-sm p-1 shadow-2xl transform scale-90 opacity-0 transition-all duration-1000 origin-top" style="min-height: 480px;">
+                <div class="h-full border-2 border-muji-vermilion p-6 flex flex-col items-center text-center relative">
+                    <div class="text-muji-vermilion mb-4 opacity-50"><i data-lucide="flower" class="w-6 h-6"></i></div><h3 class="text-lg text-muji-text font-serif tracking-widest mb-6 border-b border-gray-200 pb-2 w-full">日日運勢</h3><div class="flex-1 flex justify-center items-center py-4"><p id="omikuji-text" class="text-5xl font-serif font-bold text-muji-vermilion vertical-text leading-tight drop-shadow-sm">大吉</p></div><div class="w-full bg-gray-50 p-4 rounded-sm my-6 border border-gray-100"><p id="omikuji-quote" class="text-sm text-muji-text font-serif leading-loose tracking-wide">一期一会</p></div><div class="flex justify-between w-full text-[10px] text-muji-sub border-t border-gray-200 pt-3"><div class="flex flex-col items-center"><span class="mb-1">幸運色</span><span id="omikuji-color" class="font-bold text-muji-text">朱紅</span></div><div class="flex flex-col items-center"><span class="mb-1">幸運物</span><span id="omikuji-item" class="font-bold text-muji-text">手帕</span></div></div><button onclick="closeOmikuji()" class="absolute -bottom-16 text-white border border-white/50 px-6 py-2 rounded-full hover:bg-white hover:text-muji-text transition-colors">收下祝福</button>
                 </div>
             </div>
         </div>
+
+        <div id="toast" class="fixed top-24 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium opacity-0 transition-all duration-300 pointer-events-none z-[99] shadow-float translate-y-[-10px] flex items-center gap-2 backdrop-blur-md"><span>Message</span></div>
     </div>
 
     <!-- Logic -->
-    <script>
-        window.onerror = function(msg, url, lineNo, columnNo, error) {
-            const toast = document.getElementById('toast');
-            if (toast) {
-                toast.innerHTML = "⚠️ 發生錯誤: " + msg;
-                toast.classList.remove('opacity-0', 'pointer-events-none');
-                toast.classList.remove('bg-muji-green');
-                toast.classList.add('bg-red-500', 'text-white');
-            }
-            return false;
-        };
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const DB = {
             travel: [
+                // Basic
                 { id: 1, jp: "すみません", romaji: "Sumimasen", kana: "すみません", sorami: "蘇咪媽線", desc: "不好意思 / 請問... (萬用起手式)", category: "基本禮貌", vocab: [{ jp: "はい", reading: "Hai", mean: "是" }] },
                 { id: 2, jp: "これをください", romaji: "Kore o kudasai", kana: "これ を ください", sorami: "口內 喔 哭打賽", desc: "請給我這個 (點餐/購物)", category: "購物", vocab: [{ jp: "これ", reading: "Kore", mean: "這個" }] },
                 { id: 3, jp: "いくらですか", romaji: "Ikura desu ka", kana: "いくら です か", sorami: "以哭啦", desc: "請問多少錢？", category: "購物", vocab: [{ jp: "円", reading: "En", mean: "日圓" }] },
-                { id: 4, jp: "カードは使えますか", romaji: "Kaado wa tsukaemasu ka", kana: "かーど は つかえます か", sorami: "卡多 哇 此卡ㄟ瑪蘇 卡", desc: "可以使用信用卡嗎？", category: "結帳", vocab: [{ jp: "現金", reading: "Genkin", mean: "現金" }, { jp: "ICカード", reading: "IC Kaado", mean: "交通卡" }, { jp: "別々で", reading: "Betsubetsu de", mean: "分開結帳" }] },
-                { id: 5, jp: "お会計をお願いします", romaji: "Okaikei o onegaishimasu", kana: "おかいけい を おねがいします", sorami: "歐開K 喔 歐內該洗媽蘇", desc: "麻煩結帳", category: "結帳", vocab: [{ jp: "ごちそうさま", reading: "Gochisousama", mean: "多謝款待" }, { jp: "美味しい", reading: "Oishii", mean: "好吃的" }] },
-                { id: 6, jp: "英語のメニューはありますか", romaji: "Eigo no menyuu wa arimasu ka", kana: "えいご の めにゅー は あります か", sorami: "A-Go NO 梅紐 哇 阿哩媽蘇 卡", desc: "請問有英文菜單嗎？", category: "餐廳", vocab: [{ jp: "英語", reading: "Eigo", mean: "英文" }, { jp: "中国語", reading: "Chuugokugo", mean: "中文" }, { jp: "写真", reading: "Shashin", mean: "照片" }] },
-                { id: 7, jp: "トイレはどこですか", romaji: "Toire wa doko desu ka", kana: "といれ は どこ です か", sorami: "拖衣蕾 哇 豆口", desc: "請問洗手間在哪裡？", category: "問路", vocab: [{ jp: "ここ", reading: "Koko", mean: "這裡" }, { jp: "駅", reading: "Eki", mean: "車站" }, { jp: "コンビニ", reading: "Konbini", mean: "便利商店" }] },
-                { id: 8, jp: "Wi-Fiはありますか", romaji: "Wi-Fi wa arimasu ka", kana: "わいふぁい は あります か", sorami: "歪Fai 哇 阿哩媽蘇 卡", desc: "請問有 Wi-Fi 嗎？", category: "設施", vocab: [{ jp: "パスワード", reading: "Pasuwaado", mean: "密碼" }, { jp: "充電", reading: "Juuden", mean: "充電" }] },
-                { id: 9, jp: "写真を撮ってもいいですか", romaji: "Shashin o totte mo ii desu ka", kana: "しゃしん を とって も いい です か", sorami: "瞎心 喔 偷貼 摸 一", desc: "請問可以拍照嗎？", category: "觀光", vocab: [{ jp: "写真", reading: "Shashin", mean: "照片" }, { jp: "大丈夫", reading: "Daijoubu", mean: "沒問題" }, { jp: "ダメ", reading: "Dame", mean: "不行" }] },
-                { id: 10, jp: "日本語がわかりません", romaji: "Nihongo ga wakarimasen", kana: "にほんご が わかりません", sorami: "你紅豆 尬 哇咖哩媽線", desc: "我不懂日文 (緊急/求助)", category: "緊急", vocab: [{jp: "助けて", reading: "Tasukete", mean: "救命/幫忙"}, {jp: "警察", reading: "Keisatsu", mean: "警察"}, {jp: "病院", reading: "Byouin", mean: "醫院"}] },
+                { id: 4, jp: "ありがとうございます", romaji: "Arigatou gozaimasu", kana: "ありがとう ございます", sorami: "阿哩嘎多 狗在媽蘇", desc: "謝謝", category: "基本禮貌", vocab: [{ jp: "感謝", reading: "Kansha", mean: "感謝" }] },
+                { id: 5, jp: "トイレはどこですか", romaji: "Toire wa doko desu ka", kana: "といれ は どこ です か", sorami: "拖衣蕾 哇 豆口", desc: "廁所在哪裡？", category: "緊急", vocab: [{ jp: "場所", reading: "Basho", mean: "地點" }] },
+                
+                // Airport & Transport
                 { id: 11, jp: "荷物が出てきません", romaji: "Nimotsu ga dete kimasen", kana: "にもつ が でて きません", sorami: "尼默此 尬 得貼 Ki媽線", desc: "我的行李沒有出來", category: "機場", vocab: [{jp: "荷物", reading: "Nimotsu", mean: "行李"}] },
-                { id: 12, jp: "バス乗り場はどこですか", romaji: "Basu noriba wa doko desu ka", kana: "ばす のりば は どこ です か", sorami: "巴蘇 ノー里巴 哇 豆口", desc: "巴士乘車處在哪裡？", category: "機場", vocab: [{jp: "バス", reading: "Basu", mean: "巴士"}] },
-                { id: 13, jp: "チェックインをお願いします", romaji: "Chekkuin o onegaishimasu", kana: "ちぇっくいん を おねがいします", sorami: "切苦印 喔 歐內該洗媽蘇", desc: "我要辦理入住", category: "住宿", vocab: [{jp: "予約", reading: "Yoyaku", mean: "預約"}] },
-                { id: 14, jp: "荷物を預かってもらえますか", romaji: "Nimotsu o azukatte moraemasu ka", kana: "にもつ を あずかって もらえます か", sorami: "尼默此 喔 阿茲卡貼 摩拉A媽蘇 卡", desc: "可以寄放行李嗎？", category: "住宿", vocab: [{jp: "預かる", reading: "Azukaru", mean: "保管"}] },
-                { id: 15, jp: "Wi-Fiのパスワードは何ですか", romaji: "Wi-Fi no pasuwaado wa nan desu ka", kana: "わいふぁい の ぱすわーど は なん です か", sorami: "歪Fai NO Pass挖多 哇 難 得死 卡", desc: "Wi-Fi 密碼是多少？", category: "住宿", vocab: [{jp: "パスワード", reading: "Pasuwaado", mean: "密碼"}] },
-                { id: 16, jp: "おすすめは何ですか", romaji: "Osusume wa nan desu ka", kana: "おすすめ は なん です か", sorami: "歐蘇蘇妹 哇 難 得死 卡", desc: "有什麼推薦的嗎？", category: "餐廳", vocab: [{jp: "おすすめ", reading: "Osusume", mean: "推薦"}] },
-                { id: 17, jp: "お水をお願いします", romaji: "Omizu o onegaishimasu", kana: "おみず を おねがいします", sorami: "歐咪茲 喔 歐內該洗媽蘇", desc: "請給我水", category: "餐廳", vocab: [{jp: "水", reading: "Mizu", mean: "水"}] },
-                { id: 18, jp: "わさび抜きでお願いします", romaji: "Wasabi nuki de onegaishimasu", kana: "わさび ぬき で おねがいします", sorami: "哇沙比 奴Ki de", desc: "請不要加芥末", category: "餐廳", vocab: [{jp: "抜き", reading: "Nuki", mean: "去除"}] },
-                { id: 19, jp: "お会計をお願いします", romaji: "Okaikei o onegaishimasu", kana: "おかいけい を おねがいします", sorami: "歐開K 喔 歐內該洗媽蘇", desc: "麻煩結帳", category: "結帳", vocab: [{jp: "別々", reading: "Betsubetsu", mean: "分開付"}] },
-                { id: 20, jp: "試着してもいいですか", romaji: "Shichaku shite mo ii desu ka", kana: "しちゃく して も いい です か", sorami: "洗恰苦 吸貼 摸 一 得死 卡", desc: "可以試穿嗎？", category: "購物", vocab: [{jp: "試着", reading: "Shichaku", mean: "試穿"}] },
-                { id: 21, jp: "免税になりますか", romaji: "Menzei ni narimasu ka", kana: "めんぜい に なります か", sorami: "免賊 尼 那里媽蘇 卡", desc: "可以退稅嗎？", category: "購物", vocab: [{jp: "免税", reading: "Menzei", mean: "免稅"}] },
-                { id: 22, jp: "新しいのはありますか", romaji: "Atarashii no wa arimasu ka", kana: "あたらしい の は あります か", sorami: "阿塔拉吸 NO 哇 阿哩媽蘇 卡", desc: "有新的嗎？", category: "購物", vocab: [{jp: "新しい", reading: "Atarashii", mean: "新的"}] },
-                { id: 23, jp: "この電車は新宿に行きますか", romaji: "Kono densha wa Shinjuku ni ikimasu ka", kana: "この でんしゃ は しんじゅく に いきます か", sorami: "口諾 電瞎 哇 新宿 尼 一ki媽蘇 卡", desc: "這班電車會到新宿嗎？", category: "交通", vocab: [{jp: "電車", reading: "Densha", mean: "電車"}] },
-                { id: 24, jp: "切符をなくしました", romaji: "Kippu o nakushimashita", kana: "きっぷ を なくしました", sorami: "Ki噗 喔 那哭洗媽希塔", desc: "我的票不見了", category: "交通", vocab: [{jp: "切符", reading: "Kippu", mean: "車票"}] },
-                { id: 25, jp: "気分が悪いです", romaji: "Kibun ga warui desu", kana: "きぶん が わるい です", sorami: "Ki不恩 尬 瓦魯一 得死", desc: "我不舒服", category: "緊急", vocab: [{jp: "気分", reading: "Kibun", mean: "感覺"}] },
-                { id: 26, jp: "パスポートを落としました", romaji: "Pasupooto o otoshimashita", kana: "ぱすぽーと を おとしました", sorami: "Pass波多 喔 歐偷洗媽希塔", desc: "我弄丟護照了", category: "緊急", vocab: [{jp: "落とす", reading: "Otosu", mean: "弄丟"}] },
-                { id: 27, jp: "病院に連れて行ってください", romaji: "Byouin ni tsurete itte kudasai", kana: "びょういん に つれて いって ください", sorami: "Byo院 尼 此蕾貼 一貼 哭打賽", desc: "請帶我去醫院", category: "緊急", vocab: [{jp: "病院", reading: "Byouin", mean: "醫院"}] },
-                { id: 28, jp: "道に迷いました", romaji: "Michi ni mayoimashita", kana: "みち に まよい ました", sorami: "米七 尼 馬優衣 媽希塔", desc: "我迷路了", category: "緊急", vocab: [{jp: "道", reading: "Michi", mean: "路"}] },
-                { id: 29, jp: "これをお願いします", romaji: "Kore o onegaishimasu", kana: "これ を おねがいします", sorami: "口內 喔 歐內該洗媽蘇", desc: "麻煩這個(遞出東西時)", category: "萬用", vocab: [{jp: "お願い", reading: "Onegai", mean: "拜託"}] },
-                { id: 30, jp: "もう一度お願いします", romaji: "Mou ichido onegaishimasu", kana: "もう いちど おねがいします", sorami: "末 一七多 歐內該洗媽蘇", desc: "請再說一次", category: "溝通", vocab: [{jp: "もう一度", reading: "Mou ichido", mean: "再一次"}] }
+                { id: 12, jp: "バス乗り場はどこですか", romaji: "Basu noriba wa doko desu ka", kana: "ばす のりば は どこ です か", sorami: "巴蘇 ノー里巴", desc: "巴士站在哪裡？", category: "交通", vocab: [{jp: "バス", reading: "Basu", mean: "巴士"}] },
+                { id: 13, jp: "この電車は新宿に行きますか", romaji: "Kono densha wa Shinjuku ni ikimasu ka", kana: "この でんしゃ は しんじゅく に いきます か", sorami: "口諾 電瞎 哇...", desc: "這班車去新宿嗎？", category: "交通", vocab: [{jp: "電車", reading: "Densha", mean: "電車"}] },
+                { id: 14, jp: "切符をなくしました", romaji: "Kippu o nakushimashita", kana: "きっぷ を なくしました", sorami: "Ki噗 喔 那哭洗媽希塔", desc: "票不見了", category: "交通", vocab: [{jp: "切符", reading: "Kippu", mean: "車票"}] },
+                { id: 15, jp: "タクシーを呼んでください", romaji: "Takushii o yonde kudasai", kana: "たくしー を よんで ください", sorami: "Taxi 喔 用得 哭打賽", desc: "請幫我叫計程車", category: "交通", vocab: [{jp: "呼ぶ", reading: "Yobu", mean: "叫/呼喊"}] },
+                { id: 16, jp: "路線図はありますか", romaji: "Rosenzu wa arimasu ka", kana: "ろせんず は あります か", sorami: "羅仙茲 哇 阿哩媽蘇 卡", desc: "有路線圖嗎？", category: "交通", vocab: [{jp: "地図", reading: "Chizu", mean: "地圖"}] },
+                { id: 17, jp: "次の駅はどこですか", romaji: "Tsugi no eki wa doko desu ka", kana: "つぎ の えき は どこ です か", sorami: "次基 諾 A-Ki 哇 豆口", desc: "下一站是哪裡？", category: "交通", vocab: [{jp: "次", reading: "Tsugi", mean: "下一個"}] },
+
+                // Hotel
+                { id: 21, jp: "チェックインをお願いします", romaji: "Chekkuin o onegaishimasu", kana: "ちぇっくいん を おねがいします", sorami: "切苦印", desc: "我要辦理入住", category: "住宿", vocab: [{jp: "予約", reading: "Yoyaku", mean: "預約"}] },
+                { id: 22, jp: "荷物を預かってもらえますか", romaji: "Nimotsu o azukatte moraemasu ka", kana: "にもつ を あずかって もらえます か", sorami: "阿茲卡貼 摩拉A媽蘇", desc: "可以寄放行李嗎？", category: "住宿", vocab: [{jp: "預かる", reading: "Azukaru", mean: "保管"}] },
+                { id: 23, jp: "Wi-Fiのパスワードは何ですか", romaji: "Wi-Fi no pasuwaado wa nan desu ka", kana: "わいふぁい の ぱすわーど は なん です か", sorami: "Pass挖多", desc: "Wi-Fi 密碼是多少？", category: "住宿", vocab: [{jp: "パスワード", reading: "Pasuwaado", mean: "密碼"}] },
+                { id: 24, jp: "朝食は何時からですか", romaji: "Choushoku wa nanji kara desu ka", kana: "ちょうしょく は なんじ から です か", sorami: "秋修苦 哇 難機", desc: "早餐幾點開始？", category: "住宿", vocab: [{jp: "朝食", reading: "Choushoku", mean: "早餐"}] },
+                { id: 25, jp: "お湯が出ません", romaji: "Oyu ga demasen", kana: "おゆ が でません", sorami: "歐U 尬 得媽線", desc: "沒有熱水", category: "住宿", vocab: [{jp: "お湯", reading: "Oyu", mean: "熱水"}] },
+
+                // Dining
+                { id: 31, jp: "おすすめは何ですか", romaji: "Osusume wa nan desu ka", kana: "おすすめ は なん です か", sorami: "歐蘇蘇妹", desc: "有推薦的嗎？", category: "餐廳", vocab: [{jp: "おすすめ", reading: "Osusume", mean: "推薦"}] },
+                { id: 32, jp: "お水をお願いします", romaji: "Omizu o onegaishimasu", kana: "おみず を おねがいします", sorami: "歐咪茲", desc: "請給我水", category: "餐廳", vocab: [{jp: "水", reading: "Mizu", mean: "水"}] },
+                { id: 33, jp: "お会計をお願いします", romaji: "Okaikei o onegaishimasu", kana: "おかいけい を おねがいします", sorami: "歐開K", desc: "麻煩結帳", category: "結帳", vocab: [{jp: "会計", reading: "Kaikei", mean: "結帳"}] },
+                { id: 34, jp: "カードは使えますか", romaji: "Kaado wa tsukaemasu ka", kana: "かーど は つかえます か", sorami: "卡多 哇 此卡A媽蘇", desc: "可用信用卡嗎？", category: "結帳", vocab: [{jp: "カード", reading: "Kaado", mean: "卡片"}] },
+                { id: 35, jp: "辛くしないでください", romaji: "Karaku shinaide kudasai", kana: "からく しないで ください", sorami: "卡拉哭 吸奈得", desc: "請不要做太辣", category: "餐廳", vocab: [{jp: "辛い", reading: "Karai", mean: "辣"}] },
+
+                // Shopping
+                { id: 41, jp: "試着してもいいですか", romaji: "Shichaku shite mo ii desu ka", kana: "しちゃく して も いい です か", sorami: "洗恰苦", desc: "可以試穿嗎？", category: "購物", vocab: [{jp: "試着", reading: "Shichaku", mean: "試穿"}] },
+                { id: 42, jp: "免税になりますか", romaji: "Menzei ni narimasu ka", kana: "めんぜい に なります か", sorami: "免賊", desc: "可以退稅嗎？", category: "購物", vocab: [{jp: "免税", reading: "Menzei", mean: "免稅"}] },
+                { id: 43, jp: "袋はいりません", romaji: "Fukuro wa irimasen", kana: "ふくろ は いりません", sorami: "福口 哇 伊拉奈", desc: "不用袋子", category: "購物", vocab: [{jp: "袋", reading: "Fukuro", mean: "袋子"}] },
+                { id: 44, jp: "これの新しいのはありますか", romaji: "Kore no atarashii no wa arimasu ka", kana: "これ の あたらしい の は あります か", sorami: "阿塔拉吸 NO", desc: "有新的嗎？", category: "購物", vocab: [{jp: "新しい", reading: "Atarashii", mean: "新"}] },
+
+                // Emergency & Health
+                { id: 51, jp: "気分が悪いです", romaji: "Kibun ga warui desu", kana: "きぶん が わるい です", sorami: "Ki不恩 尬 瓦魯一", desc: "我不舒服", category: "緊急", vocab: [{jp: "気分", reading: "Kibun", mean: "感覺"}] },
+                { id: 53, jp: "パスポートをなくしました", romaji: "Pasupooto o nakushimashita", kana: "ぱすぽーと を なくしました", sorami: "Pass波多", desc: "護照不見了", category: "緊急", vocab: [{jp: "なくす", reading: "Nakusu", mean: "遺失"}] },
+                { id: 54, jp: "日本語がわかりません", romaji: "Nihongo ga wakarimasen", kana: "にほんご が わかりません", sorami: "你紅豆 尬 哇咖哩媽線", desc: "我不懂日文", category: "緊急", vocab: [{jp: "わかる", reading: "Wakaru", mean: "懂"}] },
+                { id: 55, jp: "薬局はどこですか", romaji: "Yakkyoku wa doko desu ka", kana: "やっきょく は どこ です か", sorami: "亞Q庫", desc: "藥局在哪裡？", category: "緊急", vocab: [{jp: "薬局", reading: "Yakkyoku", mean: "藥局"}] }
             ],
             practice: [
-                { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱便當", npc: "お弁当、温めますか？", npc_mean: "便當需要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします", "onegaishimasu", "hai"] },
-                { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー", "ありますか", "menu", "eigo"] },
-                { id: 'p3', title: "飯店入住", desc: "告知櫃台要辦理入住", npc: "いらっしゃいませ。", npc_mean: "歡迎光臨。", target: "チェックインをお願いします。", target_mean: "麻煩幫我辦理入住。", keywords: ["チェックイン", "お願いします", "check-in", "checkin"] },
-                { id: 'p4', title: "問路", desc: "詢問這附近是否有車站", npc: "何かお困りですか？", npc_mean: "有什麼需要幫忙的嗎？", target: "近くに駅はありますか？", target_mean: "請問這附近有車站嗎？", keywords: ["近く", "駅", "ありますか", "eki", "chikaku"] },
-                { id: 'p5', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします", "jusho", "address"] },
-                { id: 'p6', title: "藥妝店", desc: "詢問有無感冒藥", npc: "何かお探しですか？", npc_mean: "請問在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬", "ありますか", "kaze", "kusuri"] },
-                { id: 'p7', title: "咖啡廳", desc: "點一杯冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーを一つください。", target_mean: "請給我一杯冰咖啡。", keywords: ["アイス", "コーヒー", "ください", "coffee"] },
-                { id: 'p8', title: "結帳", desc: "詢問能否用西瓜卡", npc: "お支払いはどうされますか？", npc_mean: "請問要怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用 Suica 付款嗎？", keywords: ["Suica", "払えますか", "haraemasuka"] },
-                { id: 'p9', title: "遺失物", desc: "在車站詢問遺失物", npc: "どうされましたか？", npc_mean: "怎麼了嗎？", target: "財布をなくしてしまいました。", target_mean: "我不小心弄丟錢包了。", keywords: ["財布", "なくして", "saifu", "lost"] },
-                { id: 'p10', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼呢？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。(道地說法)", keywords: ["生", "nama", "beer"] }
+                // Basic
+                { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱", npc: "お弁当、温めますか？", npc_mean: "便當要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします"] },
+                { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー"] },
+                // Transport
+                { id: 'p3', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします"] },
+                { id: 'p4', title: "問路", desc: "詢問車站位置", npc: "何かお困りですか？", npc_mean: "需要幫忙嗎？", target: "駅はどこですか？", target_mean: "請問車站在哪裡？", keywords: ["駅", "どこ"] },
+                // Shopping
+                { id: 'p5', title: "藥妝店", desc: "尋找感冒藥", npc: "何かお探しですか？", npc_mean: "在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬"] },
+                { id: 'p6', title: "結帳", desc: "使用交通卡付款", npc: "お支払いは？", npc_mean: "怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用Suica嗎？", keywords: ["Suica", "払えますか"] },
+                // Dining
+                { id: 'p7', title: "咖啡廳", desc: "點冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーをください。", target_mean: "請給我冰咖啡。", keywords: ["アイス", "コーヒー"] },
+                { id: 'p8', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。", keywords: ["生", "nama"] },
+                // Hotel
+                { id: 'p9', title: "飯店櫃台", desc: "寄放行李", npc: "いらっしゃいませ。", npc_mean: "歡迎光臨。", target: "荷物を預かってください。", target_mean: "請幫我保管行李。", keywords: ["荷物", "預かって"] },
+                { id: 'p10', title: "遺失物", desc: "尋找錢包", npc: "どうされましたか？", npc_mean: "怎麼了嗎？", target: "財布を落としました。", target_mean: "我弄丟錢包了。", keywords: ["財布", "落としました"] },
+                // Life
+                { id: 'p11', title: "問天氣", desc: "詢問明天天氣", npc: "明日の予定は？", npc_mean: "明天有什麼計畫？", target: "明日の天気はどうですか？", target_mean: "明天的天氣如何？", keywords: ["天気", "どう"] },
+                { id: 'p12', title: "拍照", desc: "請求幫忙拍照", npc: "（目が合った）", npc_mean: "(眼神交會)", target: "写真を撮ってもらえますか？", target_mean: "可以幫我拍照嗎？", keywords: ["写真", "撮って"] }
             ],
             master: [
-                { id: 'm1', situation: "拒絕邀請", casual: { text: "ちょっと都合が悪いんだ。", audio: "ちょっと都合が悪いんだ" }, polite: { text: "あいにく都合がつきませんで...", audio: "あいにく都合がつきませんで" }, tip: "朋友之間用「悪い (warui)」直接表達不便；對上司則使用「あいにく (ainiku)」作為緩衝詞，並用「つきません」這種委婉的否定。" },
-                { id: 'm2', situation: "請求協助 (借筆)", casual: { text: "ペン、貸してくれない？", audio: "ペン、貸してくれない" }, polite: { text: "ペンをお借りしてもよろしいですか？", audio: "ペンをお借りしてもよろしいですか" }, tip: "朋友間用「〜くれない？」(能...嗎？)；正式場合用「お借りしても」(借用一下) 加上「よろしいですか」(可以嗎？) 展現極高禮貌。" },
-                { id: 'm3', situation: "表達感謝 (受人照顧)", casual: { text: "いろいろありがとう！", audio: "いろいろありがとう" }, polite: { text: "いろいろとお世話になりました。", audio: "いろいろとお世話になりました" }, tip: "一般的謝謝用「ありがとう」；但如果是受了長輩或客戶的長期照顧，必須用固定句型「お世話になりました」(承蒙您照顧了)。" },
-                { id: 'm4', situation: "道歉 (遲到)", casual: { text: "ごめん、遅れる！", audio: "ごめん、遅れる" }, polite: { text: "申し訳ございません、遅れます。", audio: "申し訳ございません、遅れます" }, tip: "朋友間用「ごめん (Gomen)」即可；商務場合必須用最高級的道歉「申し訳ございません (Moushiwake gozaimasen)」。" },
-                { id: 'm5', situation: "確認理解", casual: { text: "わかった？", audio: "わかった" }, polite: { text: "ご理解いただけましたでしょうか。", audio: "ご理解いただけましたでしょうか" }, tip: "對朋友用「わかった (Wakatta)」；對客戶要用尊敬語「ご理解 (Gorikai)」加上詢問句型，避免給人上對下的感覺。" },
-                { id: 'm6', situation: "請求稍等", casual: { text: "ちょっと待って。", audio: "ちょっと待って" }, polite: { text: "少々お待ちいただけますか。", audio: "少々お待ちいただけますか" }, tip: "「待って (Matte)」其實是命令形，對長輩不禮貌。正式場合請用「少々 (Shoushou)」代替「ちょっと」，並用疑問句結尾。" },
-                { id: 'm7', situation: "表達意見 (反對)", casual: { text: "それは違うと思う。", audio: "それは違うと思う" }, polite: { text: "その点については、少し異論がございます。", audio: "その点については、少し異論がございます" }, tip: "直接說「不一樣 (違う)」太強烈。商務日語會說「關於那一點 (その点については)」，我有「些許異議 (異論がございます)」，非常委婉。" },
-                { id: 'm8', situation: "電話應對 (不在位子上)", casual: { text: "今、いないよ。", audio: "今、いないよ" }, polite: { text: "ただいま席を外しております。", audio: "ただいま席を外しております" }, tip: "接聽公司電話時，同事不在不能說「いない (Inai)」，要說「席を外しております (Seki o hazushite orimasu)」，表示暫時離開。" }
+                { id: 'm1', situation: "拒絕邀請", casual: { text: "ちょっと都合が悪いんだ。", audio: "ちょっと都合が悪いんだ" }, polite: { text: "あいにく都合がつきませんで...", audio: "あいにく都合がつきませんで" }, tip: "朋友間用「悪い」；對上司用「あいにく」緩衝。" },
+                { id: 'm2', situation: "道歉 (遲到)", casual: { text: "ごめん、遅れる！", audio: "ごめん、遅れる" }, polite: { text: "申し訳ございません、遅れます。", audio: "申し訳ございません、遅れます" }, tip: "商務場合必須用最高級的道歉「申し訳ございません」。" },
+                { id: 'm3', situation: "請求稍等", casual: { text: "ちょっと待って。", audio: "ちょっと待って" }, polite: { text: "少々お待ちいただけますか。", audio: "少々お待ちいただけますか" }, tip: "「待って」是命令形。正式場合請用「少々」並用疑問句。" },
+                { id: 'm4', situation: "表達反對", casual: { text: "それは違うよ。", audio: "それは違うよ" }, polite: { text: "その点については、異論がございます。", audio: "その点については、異論がございます" }, tip: "商務上不直接說「不一樣」，而是說「關於那點，我有些異議」。" },
+                { id: 'm5', situation: "確認理解", casual: { text: "わかった？", audio: "わかった" }, polite: { text: "ご理解いただけましたでしょうか。", audio: "ご理解いただけましたでしょうか" }, tip: "對上司或客戶，確認對方是否理解時要非常小心，用「ご理解」並用敬語結尾。" },
+                { id: 'm6', situation: "電話應對 (不在位子上)", casual: { text: "今、いないよ。", audio: "今、いないよ" }, polite: { text: "ただいま席を外しております。", audio: "ただいま席を外しております" }, tip: "接聽公司電話時，同事不在不能說「いない」，要說「席を外しております」。" },
+                { id: 'm7', situation: "表達感謝", casual: { text: "ありがとう！", audio: "ありがとう" }, polite: { text: "誠にありがとうございます。", audio: "誠にありがとうございます" }, tip: "加上「誠に (Makoto ni)」能大幅提升感謝的誠意與正式感。" },
+                { id: 'm8', situation: "請求幫忙", casual: { text: "手伝って。", audio: "手伝って" }, polite: { text: "お力添えをいただけますでしょうか。", audio: "お力添えをいただけますでしょうか" }, tip: "「お力添え (Ochikara zoe)」是請求協助的高級說法，非常有教養。" }
             ],
-            quotes: [
-                { jp: "継続は力なり", reading: "Keizoku wa chikara nari", mean: "堅持就是力量" },
-                { jp: "一期一会", reading: "Ichigo Ichie", mean: "一生只有一次的相遇" },
-                { jp: "七転び八起き", reading: "Nanakorobi Yaoki", mean: "跌倒七次，爬起來八次 (百折不撓)" },
-                { jp: "日日是好日", reading: "Nichi nichi kore koujitsu", mean: "每一天都是好日子" }
-            ],
-            lucky: {
-                colors: ["桜色 (櫻花粉)", "若草色 (嫩綠)", "瑠璃色 (深藍)", "山吹色 (金黃)", "藤色 (淡紫)", "生成り (米白)"],
-                items: ["手帕", "御守", "筆記本", "熱茶", "手錶", "硬幣", "耳機"]
-            }
+            quotes: [ { jp: "一期一会", reading: "Ichigo Ichie", mean: "一生只有一次的相遇" }, { jp: "日日是好日", reading: "Nichi nichi kore koujitsu", mean: "每一天都是好日子" } ],
+            lucky: { colors: ["桜色", "若草色", "瑠璃色", "山吹色", "藤色"], items: ["手帕", "御守", "筆記本", "熱茶", "硬幣"] }
         };
 
-        const STORAGE_KEY = 'hibi_app_state_v6';
-        let state = { currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], hasSeenOmikuji: false };
-        let autoPlayInterval = null;
-        let isAutoPlaying = false;
+        const STORAGE_KEY = 'hibi_app_state_v10';
+        let state = { nickname: "", currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], srsData: {}, settings: { showRomaji: true, ttsSpeed: 0.65 } };
+        let autoPlayInterval = null; let isAutoPlaying = false; let jpVoice = null;
+        let user = null; let db = null; let auth = null; let isOffline = false; let appId = '';
 
+        // --- Core Helpers ---
         function getTodayString() { return new Date().toISOString().split('T')[0]; }
         function vibrate(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+
+        // --- Initialization ---
+        function initApp() {
+            try {
+                if (typeof __firebase_config !== 'undefined') {
+                    const config = JSON.parse(__firebase_config);
+                    const fbApp = initializeApp(config);
+                    auth = getAuth(fbApp);
+                    db = getFirestore(fbApp);
+                    appId = typeof __app_id !== 'undefined' ? __app_id : 'hibi-demo';
+                    
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        signInWithCustomToken(auth, __initial_auth_token).catch(e => console.warn('Token auth failed', e));
+                    } else {
+                        signInAnonymously(auth).catch(e => console.warn('Anon auth failed', e));
+                    }
+
+                    onAuthStateChanged(auth, (u) => {
+                        if (u) { user = u; loadCloudData(); }
+                    });
+                } else { throw new Error("No config"); }
+            } catch (e) {
+                console.warn("Offline Mode", e);
+                isOffline = true;
+                loadState();
+                document.getElementById('app-loading').classList.add('hidden');
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+            }
+        }
+
+        async function loadCloudData() {
+            if(!user || isOffline) return;
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'users', user.uid, 'data', 'progress');
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    state = { ...state, ...docSnap.data() };
+                    checkDailyStreak();
+                    document.getElementById('auth-screen').classList.add('hidden');
+                    document.getElementById('main-app').classList.remove('hidden');
+                } else {
+                    document.getElementById('auth-screen').classList.remove('hidden');
+                }
+            } catch(e) { console.error(e); loadState(); }
+            updateUI();
+            document.getElementById('app-loading').classList.add('hidden');
+        }
 
         function loadState() {
             try {
                 const saved = localStorage.getItem(STORAGE_KEY);
-                const today = getTodayString();
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    state = { ...state, ...parsed };
-                    if (state.lastLoginDate !== today) {
-                        const lastDate = new Date(state.lastLoginDate);
-                        const currDate = new Date(today);
-                        const diffDays = Math.ceil(Math.abs(currDate - lastDate) / (1000 * 60 * 60 * 24));
-                        if (diffDays === 1) { state.streak += 1; state.points += 50; } 
-                        else if (diffDays > 1) { state.streak = 1; }
-                        if (!state.history.includes(today)) state.history.push(today);
-                        state.progress = 0;
-                        state.lastLoginDate = today;
-                        state.hasSeenOmikuji = false; 
-                        saveState();
-                    }
-                } else {
-                    state.lastLoginDate = today;
-                    state.streak = 1;
-                    state.history = [today];
-                    saveState();
-                }
-                if (!state.hasSeenOmikuji) showOmikuji();
-            } catch (e) { console.warn("Storage failed", e); }
+                if (saved) state = { ...state, ...JSON.parse(saved) };
+                checkDailyStreak();
+            } catch (e) {}
+            updateUI();
         }
 
-        function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {} updateUI(); }
-        
-        function addPoints(amount) {
-            state.points += amount;
-            const ptEl = document.getElementById('header-points');
-            if (ptEl) { ptEl.classList.add('scale-125', 'text-green-600'); setTimeout(() => ptEl.classList.remove('scale-125', 'text-green-600'), 200); }
+        function checkDailyStreak() {
+            const today = getTodayString();
+            if(!state.lastLoginDate) { state.lastLoginDate = today; state.streak = 1; state.history=[today]; saveState(); return; }
+            if (state.lastLoginDate !== today) {
+                const d = Math.ceil(Math.abs(new Date(today) - new Date(state.lastLoginDate)) / (86400000));
+                if (d === 1) { state.streak++; state.points += 50; } else if (d > 1) state.streak = 1;
+                if (!state.history.includes(today)) state.history.push(today);
+                state.progress = 0; state.lastLoginDate = today;
+                saveState();
+            }
+            if (!state.hasSeenOmikuji) showOmikuji();
+        }
+
+        function saveState() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+            if (user && db && !isOffline) { setDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'data', 'progress'), state).catch(e=>{}); }
+            updateUI();
+        }
+
+        async function handleLogin() {
+            const name = document.getElementById('input-nickname').value.trim();
+            if(!name) return alert('請輸入暱稱');
+            state.nickname = name;
             saveState();
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            updateUI();
         }
 
-        function updateUI() {
-            const headerPoints = document.getElementById('header-points');
-            if(headerPoints) headerPoints.textContent = state.points;
-            const headerStreak = document.getElementById('header-streak');
-            if(headerStreak) headerStreak.textContent = state.streak;
-            const goalText = document.getElementById('goal-text');
-            if(goalText) goalText.textContent = `${state.progress}/${state.dailyGoal}`;
-            const percent = Math.min(100, (state.progress / state.dailyGoal) * 100);
-            const ring = document.getElementById('goal-progress-ring');
-            if(ring) ring.style.strokeDasharray = `${percent}, 100`;
-
-            // Update Counts
-            const countTravel = document.getElementById('count-travel');
-            if(countTravel) countTravel.textContent = `全 ${DB.travel.length} 句`;
-            
-            const countPractice = document.getElementById('count-practice');
-            if(countPractice) countPractice.textContent = `全 ${DB.practice.length} 情境`;
-            
-            const countMaster = document.getElementById('count-master');
-            if(countMaster) countMaster.textContent = `全 ${DB.master.length} 題`;
-
+        // --- Gameplay Logic ---
+        function handleCardResult(isCorrect) {
+            const cid = DB.travel[state.currentCardIndex].id;
+            let s = state.srsData[cid] || { level: 0, nextReview: 0 };
+            if (isCorrect) { s.level++; state.points+=10; state.progress++; if(!state.masteredCards.includes(cid)) state.masteredCards.push(cid); showToast("✨ 熟記！", "bg-muji-green"); }
+            else { s.level=0; showToast("💪 稍後再複習", "bg-muji-red"); }
+            state.srsData[cid] = s; 
+            state.currentCardIndex = (state.currentCardIndex + 1) % DB.travel.length;
+            saveState();
+            const inner = document.querySelector('.card-inner');
+            if(inner) { inner.style.transition='none'; inner.classList.remove('rotate-y-180','animate-swipe-left','animate-swipe-right'); inner.style.transform=''; setTimeout(()=>inner.style.transition='all 0.5s ease',50); }
             renderCurrentCard();
-            renderPractice();
-            renderMasterQuiz();
-            renderHeatmap();
         }
 
-        function renderHeatmap() {
-            const container = document.getElementById('heatmap-container');
-            if(!container) return;
-            container.innerHTML = '';
-            const today = new Date();
-            for(let i = 6; i >= 0; i--) {
-                const d = new Date(today);
-                d.setDate(today.getDate() - i);
-                const dateString = d.toISOString().split('T')[0];
-                const isActive = state.history.includes(dateString);
-                const dot = document.createElement('div');
-                dot.className = `w-2 h-2 rounded-full transition-all ${isActive ? 'bg-muji-green' : 'bg-gray-200'}`;
-                container.appendChild(dot);
+        // --- UI Update ---
+        function updateUI() {
+            if(state.nickname) document.getElementById('user-badge').textContent = state.nickname;
+            document.getElementById('header-points').textContent = state.points;
+            document.getElementById('header-streak').textContent = state.streak;
+            document.getElementById('goal-text').textContent = `${state.progress}/${state.dailyGoal}`;
+            document.getElementById('goal-progress-ring').style.strokeDasharray = `${Math.min(100, (state.progress/state.dailyGoal)*100)}, 100`;
+            document.getElementById('count-travel').textContent = `全 ${DB.travel.length} 句`;
+            document.getElementById('count-practice').textContent = `全 ${DB.practice.length} 情境`;
+            document.getElementById('count-master').textContent = `全 ${DB.master.length} 題`;
+            
+            // Sync settings UI
+            document.getElementById('toggle-romaji').checked = state.settings.showRomaji;
+            document.getElementById('speed-slider').value = state.settings.ttsSpeed;
+            document.getElementById('speed-val').textContent = state.settings.ttsSpeed;
+            
+            renderCurrentCard(); renderPractice(); renderMasterQuiz(); renderHeatmap();
+        }
+
+        // --- Renderers ---
+        function renderCurrentCard() {
+            const d = DB.travel[state.currentCardIndex]; if(!d) return;
+            document.getElementById('card-category').textContent = d.category;
+            document.getElementById('card-desc').textContent = d.desc;
+            document.getElementById('card-jp').textContent = d.jp;
+            document.getElementById('card-kana').textContent = d.kana;
+            document.getElementById('card-romaji').textContent = d.romaji;
+            document.getElementById('card-romaji').style.opacity = state.settings.showRomaji ? '1' : '0';
+            document.getElementById('card-sorami').textContent = "💡 空耳：" + d.sorami;
+            document.getElementById('bigtext-content').textContent = d.jp;
+            document.getElementById('vocab-list').innerHTML = d.vocab.map(v => `<div class="flex justify-between items-center pb-2 border-b border-gray-100 last:border-0" onclick="playAudio('${v.jp}', event)"><span class="text-muji-text font-medium text-sm">${v.jp}</span><div class="text-right text-[10px] text-gray-400">${v.reading}<br>${v.mean}</div></div>`).join('');
+            lucide.createIcons();
+        }
+        function renderPractice() {
+            const d = DB.practice[state.currentPracticeIndex]; if(!d) return;
+            document.getElementById('practice-title').textContent = d.title;
+            document.getElementById('practice-desc').textContent = d.desc;
+            document.getElementById('practice-npc-text').textContent = d.npc;
+            document.getElementById('practice-npc-mean').textContent = d.npc_mean;
+            document.getElementById('practice-target-text').textContent = d.target;
+            document.getElementById('practice-target-mean').textContent = d.target_mean;
+        }
+        function renderMasterQuiz() {
+            const c = document.getElementById('quiz-container'); const s = document.getElementById('master-search').value.toLowerCase(); c.innerHTML = '';
+            const f = DB.master.filter(d => d.situation.toLowerCase().includes(s));
+            if(f.length===0) c.innerHTML='<div class="text-center text-muji-sub py-8">無結果</div>';
+            f.forEach(d => { c.innerHTML += `<div class="bg-white rounded-2xl p-6 shadow-soft border border-muji-border mb-4"><div class="flex justify-between items-center mb-4"><span class="text-sm font-bold text-muji-sub">${d.situation}</span><i data-lucide="arrow-right-left" class="w-4 h-4 text-muji-sub"></i></div><div class="space-y-4"><div class="p-3 bg-gray-50 rounded-lg active:bg-gray-100 transition-colors" onclick="playAudio('${d.casual.audio}', event)"><p class="font-medium text-muji-text">${d.casual.text}</p><span class="text-[10px] text-muji-sub">Casual</span></div><div class="p-3 bg-muji-bg rounded-lg border border-muji-brown/30 active:bg-orange-50 transition-colors" onclick="playAudio('${d.polite.audio}', event)"><p class="font-medium text-muji-text">${d.polite.text}</p><span class="text-[10px] text-muji-sub">Polite</span></div></div></div>`; });
+            lucide.createIcons();
+        }
+        function renderHeatmap() { const c=document.getElementById('heatmap-container'); if(c) { c.innerHTML=''; const t=new Date(); for(let i=6;i>=0;i--){ const d=new Date(t); d.setDate(t.getDate()-i); const s=d.toISOString().split('T')[0]; c.innerHTML+=`<div class="w-2 h-2 rounded-full transition-all ${state.history.includes(s)?'bg-muji-green':'bg-gray-200'}"></div>`; } } }
+
+        // --- Audio ---
+        function loadVoices() { if('speechSynthesis' in window) { const vs=window.speechSynthesis.getVoices(); jpVoice=vs.find(v=>v.lang.includes('ja'))||null; } }
+        function playAudio(text, e) {
+            if(e) e.stopPropagation();
+            if('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'ja-JP'; u.rate = state.settings.ttsSpeed;
+                if(jpVoice) u.voice = jpVoice; else loadVoices();
+                window.speechSynthesis.speak(u);
             }
         }
-
-        // --- Improved Omikuji Feature ---
-        function showOmikuji() {
-            const modal = document.getElementById('omikuji-modal');
-            const boxState = document.getElementById('omikuji-box-state');
-            const resultState = document.getElementById('omikuji-result-state');
-            
-            if(!modal) return;
-            
-            // Reset States
-            boxState.classList.remove('hidden');
-            resultState.classList.add('hidden', 'opacity-0');
-            resultState.classList.remove('animate-unfold');
-
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-        }
-
-        function drawOmikuji() {
-            vibrate([50, 50, 50]); // Haptic feedback
-            const shaker = document.getElementById('omikuji-shaker');
-            shaker.classList.add('animate-shake');
-
-            // Wait for shake animation
-            setTimeout(() => {
-                shaker.classList.remove('animate-shake');
-                
-                // Transition
-                document.getElementById('omikuji-box-state').classList.add('hidden');
-                const resultState = document.getElementById('omikuji-result-state');
-                resultState.classList.remove('hidden');
-                
-                // Set Content
-                const fortunes = ["大吉", "中吉", "小吉", "吉", "末吉"];
-                const quote = DB.quotes[Math.floor(Math.random() * DB.quotes.length)];
-                const color = DB.lucky.colors[Math.floor(Math.random() * DB.lucky.colors.length)];
-                const item = DB.lucky.items[Math.floor(Math.random() * DB.lucky.items.length)];
-
-                document.getElementById('omikuji-text').textContent = fortunes[Math.floor(Math.random() * fortunes.length)];
-                document.getElementById('omikuji-quote').textContent = quote.jp + "\n" + quote.mean;
-                document.getElementById('omikuji-color').textContent = color;
-                document.getElementById('omikuji-item').textContent = item;
-
-                // Animate Paper
-                setTimeout(() => {
-                    resultState.classList.remove('opacity-0', 'scale-90');
-                    resultState.classList.add('animate-unfold');
-                }, 100);
-
-            }, 600);
-        }
-
-        function closeOmikuji() {
-            const modal = document.getElementById('omikuji-modal');
-            if(!modal) return;
-            modal.classList.add('opacity-0', 'pointer-events-none');
-            state.hasSeenOmikuji = true;
-            saveState();
-        }
-
-        // --- Auto Play (Listen Mode) - OPTIMIZED: Pre-rendering ---
+        function playAudioCurrentCard(e) { playAudio(DB.travel[state.currentCardIndex].jp, e); }
         function toggleAutoPlay() {
-            const btn = document.getElementById('btn-autoplay');
-            if (!btn) return;
-
-            const text = document.getElementById('text-autoplay');
-            const iconPlay = document.getElementById('wrapper-icon-play');
-            const iconPause = document.getElementById('wrapper-icon-pause');
-
-            if (isAutoPlaying) {
-                // Stop logic
-                isAutoPlaying = false;
-                clearTimeout(autoPlayInterval);
-                window.speechSynthesis.cancel();
-                
-                if (text) text.textContent = '聽流';
-                btn.classList.remove('bg-muji-green', 'text-white');
-                btn.classList.add('text-muji-sub');
-
-                if(iconPlay) iconPlay.classList.remove('opacity-0');
-                if(iconPause) iconPause.classList.add('opacity-0');
-
+            const btn=document.getElementById('btn-autoplay'); if(!btn) return;
+            const txt=document.getElementById('text-autoplay');
+            if(isAutoPlaying) {
+                isAutoPlaying=false; clearTimeout(autoPlayInterval); window.speechSynthesis.cancel();
+                if(txt) txt.textContent='聽流';
+                btn.classList.remove('bg-muji-green','text-white'); btn.classList.add('text-muji-sub');
+                document.getElementById('wrapper-icon-play').classList.remove('opacity-0');
+                document.getElementById('wrapper-icon-pause').classList.add('opacity-0');
             } else {
-                // Start logic
-                isAutoPlaying = true;
-                
-                if (text) text.textContent = '播放中';
-                btn.classList.add('bg-muji-green', 'text-white');
-                btn.classList.remove('text-muji-sub');
-
-                if(iconPlay) iconPlay.classList.add('opacity-0');
-                if(iconPause) iconPause.classList.remove('opacity-0');
-
+                isAutoPlaying=true;
+                if(txt) txt.textContent='播放中';
+                btn.classList.add('bg-muji-green','text-white'); btn.classList.remove('text-muji-sub');
+                document.getElementById('wrapper-icon-play').classList.add('opacity-0');
+                document.getElementById('wrapper-icon-pause').classList.remove('opacity-0');
+                if(!jpVoice) loadVoices();
                 playNextAuto();
             }
         }
-
         function playNextAuto() {
-            if (!isAutoPlaying) return;
-            
-            const data = DB.travel[state.currentCardIndex];
-            const u = new SpeechSynthesisUtterance(data.jp);
-            u.lang = 'ja-JP';
-            u.rate = 0.65; // Lowered speed
-            
-            u.onend = () => {
-                if(!isAutoPlaying) return;
-                autoPlayInterval = setTimeout(() => {
-                    state.currentCardIndex = (state.currentCardIndex + 1) % DB.travel.length;
-                    renderCurrentCard(); 
-                    playNextAuto(); 
-                }, 2500);
-            };
-            
+            if(!isAutoPlaying) return;
+            const d=DB.travel[state.currentCardIndex];
+            const u=new SpeechSynthesisUtterance(d.jp);
+            u.lang='ja-JP'; u.rate=state.settings.ttsSpeed; if(jpVoice) u.voice=jpVoice;
+            u.onend = () => { if(isAutoPlaying) autoPlayInterval = setTimeout(() => { state.currentCardIndex=(state.currentCardIndex+1)%DB.travel.length; renderCurrentCard(); playNextAuto(); }, 2500); };
             window.speechSynthesis.speak(u);
         }
 
-        // --- Help Modal Logic ---
-        function showHelp() {
-            const modal = document.getElementById('help-modal');
-            const content = document.getElementById('help-modal-content');
-            if(!modal) return;
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            content.classList.remove('scale-90');
-            content.classList.add('scale-100');
-        }
+        // --- Interactions ---
+        function flipCard(el) { el.querySelector('.card-inner').classList.toggle('rotate-y-180'); }
+        function switchTab(t) { state.currentTab=t; document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.target===`view-${t}`)); document.querySelectorAll('.view-section').forEach(s=>s.classList.toggle('hidden',s.id!==`view-${t}`)); saveState(); }
+        function nextPractice() { state.currentPracticeIndex=(state.currentPracticeIndex+1)%DB.practice.length; saveState(); }
+        function showToast(m,c) { const t=document.getElementById('toast'); if(t){ t.innerHTML=m; t.className=`fixed top-24 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium opacity-100 transition-all duration-300 z-[99] shadow-float translate-y-0 text-white ${c}`; setTimeout(()=>{ t.classList.remove('opacity-100','translate-y-0'); t.classList.add('opacity-0','translate-y-[-10px]'); },2000); } }
+        function resetAppDebug() { if(confirm('重置？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
+        function showBigText(e) { e.stopPropagation(); document.getElementById('bigtext-modal').classList.remove('opacity-0','pointer-events-none'); }
+        function closeBigText() { document.getElementById('bigtext-modal').classList.add('opacity-0','pointer-events-none'); }
 
-        function closeHelp() {
-            const modal = document.getElementById('help-modal');
-            const content = document.getElementById('help-modal-content');
-            if(!modal) return;
-            modal.classList.add('opacity-0', 'pointer-events-none');
-            content.classList.remove('scale-100');
-            content.classList.add('scale-90');
-        }
-
-        // --- Remainder & Share Logic ---
-        function addToCalendar() {
-            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=日日+Hibi+學習&details=每天5分鐘，累積日語力。&recur=RRULE:FREQ=DAILY`;
-            window.open(url, '_blank');
-        }
-        function generateShareImage() {
-            const canvas = document.getElementById('share-canvas');
-            const ctx = canvas.getContext('2d');
-            const w = canvas.width; const h = canvas.height;
-            const cardData = DB.travel[state.currentCardIndex];
-            
-            ctx.fillStyle = '#FDFCFA'; ctx.fillRect(0, 0, w, h);
-            ctx.shadowColor = "rgba(0,0,0,0.1)"; ctx.shadowBlur = 20; ctx.fillStyle = "#FFFFFF"; ctx.fillRect(40, 40, w-80, h-160); ctx.shadowBlur = 0;
-            ctx.textAlign = 'center'; ctx.fillStyle = '#373C38';
-            ctx.font = 'bold 48px "Zen Maru Gothic", sans-serif'; ctx.fillText(cardData.jp, w/2, h/2 - 20);
-            ctx.fillStyle = '#888888'; ctx.font = '24px "Noto Sans JP", sans-serif'; ctx.fillText(cardData.desc, w/2, h/2 + 30);
-            ctx.fillStyle = '#373C38'; ctx.font = 'bold 24px "Zen Maru Gothic", sans-serif'; ctx.fillText(`累積 ${state.streak} 日`, w/2, h - 80);
-            ctx.fillStyle = '#8F9E8B'; ctx.beginPath(); ctx.arc(w/2, h - 40, 6, 0, 2 * Math.PI); ctx.fill();
-            document.getElementById('loading-canvas').style.display = 'none';
-        }
-        function downloadShareImage() { const link = document.createElement('a'); link.download = `hibi-share.png`; link.href = document.getElementById('share-canvas').toDataURL(); link.click(); }
-        async function shareProgress() { try { await navigator.share({ title: '日日', text: '今日日語：' + DB.travel[state.currentCardIndex].jp, url: window.location.href }); } catch (e) {} }
-        
-        function showShareModal() {
-            const modal = document.getElementById('share-modal'); const content = document.getElementById('share-modal-content');
-            if(!modal) return;
-            modal.classList.remove('opacity-0', 'pointer-events-none'); content.classList.remove('scale-90'); content.classList.add('scale-100');
-            setTimeout(generateShareImage, 300);
-        }
-        function closeShareModal() {
-            const modal = document.getElementById('share-modal'); const content = document.getElementById('share-modal-content');
-            if(!modal) return;
-            modal.classList.add('opacity-0', 'pointer-events-none'); content.classList.remove('scale-100'); content.classList.add('scale-90');
-        }
-
-        // --- Core Renders ---
-        function renderCurrentCard() {
-            const cardData = DB.travel[state.currentCardIndex]; if (!cardData) return;
-            document.getElementById('card-category').textContent = cardData.category;
-            document.getElementById('card-desc').textContent = cardData.desc;
-            document.getElementById('card-jp').textContent = cardData.jp;
-            document.getElementById('card-romaji').textContent = cardData.romaji;
-            document.getElementById('card-kana').textContent = cardData.kana;
-            
-            // Render Sorami
-            const soramiEl = document.getElementById('card-sorami');
-            if(soramiEl) soramiEl.textContent = "💡 空耳：" + cardData.sorami;
-
-            const vocabList = document.getElementById('vocab-list');
-            if(vocabList) {
-                vocabList.innerHTML = cardData.vocab.map(v => `<div class="flex justify-between items-center pb-2 border-b border-gray-100 last:border-0" onclick="playAudio('${v.jp}', event)"><span class="text-muji-text font-medium text-sm">${v.jp}</span><div class="text-right text-[10px] text-gray-400">${v.reading}<br>${v.mean}</div></div>`).join('');
-            }
-            const inner = document.querySelector('.card-inner'); if(inner) { inner.classList.remove('rotate-y-180'); inner.style.transform = ''; }
-            const hintLeft = document.getElementById('hint-left');
-            const hintRight = document.getElementById('hint-right');
-            if(hintLeft) hintLeft.style.opacity = '0'; 
-            if(hintRight) hintRight.style.opacity = '0';
-        }
-        function renderPractice() {
-            const data = DB.practice[state.currentPracticeIndex]; if(!data) return;
-            document.getElementById('practice-title').textContent = data.title;
-            document.getElementById('practice-desc').textContent = data.desc;
-            document.getElementById('practice-npc-text').textContent = data.npc;
-            document.getElementById('practice-npc-mean').textContent = data.npc_mean;
-            document.getElementById('practice-target-text').textContent = data.target;
-            document.getElementById('practice-target-mean').textContent = data.target_mean;
-        }
-        function nextPractice() { state.currentPracticeIndex = (state.currentPracticeIndex + 1) % DB.practice.length; saveState(); }
-        function renderMasterQuiz() {
-            const container = document.getElementById('quiz-container'); if(!container) return; container.innerHTML = '';
-            DB.master.forEach(data => {
-                container.innerHTML += `<div class="bg-white rounded-2xl p-6 shadow-soft border border-muji-border mb-4"><div class="flex justify-between items-center mb-4"><span class="text-sm font-bold text-muji-sub">${data.situation}</span><i data-lucide="arrow-right-left" class="w-4 h-4 text-muji-sub"></i></div><div class="space-y-4"><div class="p-3 bg-gray-50 rounded-lg" onclick="playAudio('${data.casual.audio}', event)"><p class="font-medium text-muji-text">${data.casual.text}</p><span class="text-[10px] text-muji-sub">Casual</span></div><div class="p-3 bg-muji-bg rounded-lg border border-muji-brown/30" onclick="playAudio('${data.polite.audio}', event)"><p class="font-medium text-muji-text">${data.polite.text}</p><span class="text-[10px] text-muji-sub">Polite</span></div></div></div>`;
-            });
+        // --- Modals & Settings ---
+        function showProfile() { 
+            document.getElementById('profile-modal').classList.remove('opacity-0','pointer-events-none'); 
+            document.getElementById('profile-streak').textContent = state.streak;
+            document.getElementById('profile-total').textContent = state.masteredCards.length;
+            const l = document.getElementById('leaderboard-list');
+            // Mock leaderboard logic for UI
+            l.innerHTML = [850,720,690,540,state.points].sort((a,b)=>b-a).map((s,i) => `<div class="flex items-center justify-between p-2 ${s===state.points?'bg-white border border-muji-green/30':''}"><div class="flex items-center gap-3"><span class="font-bold w-6 text-center text-muji-sub">${i+1}</span><span class="font-medium text-muji-text">${s===state.points?(state.nickname||'You'):'User'}</span></div><span class="font-bold text-muji-gold">${s}</span></div>`).join('');
+            document.getElementById('badge-container').innerHTML = (state.streak>=3?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="flame" class="text-red-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">3連勝</span></div>`:'') + (state.points>=100?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="star" class="text-yellow-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">百分</span></div>`:'');
             lucide.createIcons();
+        }
+        function closeProfile() { document.getElementById('profile-modal').classList.add('opacity-0','pointer-events-none'); }
+        function showSettings() { document.getElementById('settings-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('settings-content').classList.remove('scale-95'); }
+        function closeSettings() { document.getElementById('settings-modal').classList.add('opacity-0','pointer-events-none'); document.getElementById('settings-content').classList.add('scale-95'); }
+        function toggleRomajiSetting() { state.settings.showRomaji = !state.settings.showRomaji; saveState(); }
+        function updateSpeed(v) { state.settings.ttsSpeed = parseFloat(v); document.getElementById('speed-val').textContent=v; saveState(); }
+        function exportData() { navigator.clipboard.writeText(JSON.stringify(state)).then(()=>alert("已複製")); }
+        function importData() { const d=prompt("貼上代碼"); if(d) { try{ state=JSON.parse(d); saveState(); alert("成功"); location.reload(); }catch(e){alert("無效");} } }
+        function showShareModal() { document.getElementById('share-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('share-modal-content').classList.add('scale-100'); setTimeout(generateShareImage,300); }
+        function closeShareModal() { document.getElementById('share-modal').classList.add('opacity-0','pointer-events-none'); document.getElementById('share-modal-content').classList.remove('scale-100'); }
+        function generateShareImage() { const c=document.getElementById('share-canvas'); const ctx=c.getContext('2d'); const w=c.width; const h=c.height; const d=DB.travel[state.currentCardIndex]; ctx.fillStyle='#FDFCFA'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#FFF'; ctx.fillRect(40,40,w-80,h-160); ctx.textAlign='center'; ctx.fillStyle='#373C38'; ctx.font='bold 48px sans-serif'; ctx.fillText(d.jp,w/2,h/2-20); ctx.fillStyle='#888'; ctx.font='24px sans-serif'; ctx.fillText(d.desc,w/2,h/2+30); document.getElementById('loading-canvas').style.display='none'; }
+        function downloadShareImage() { const l=document.createElement('a'); l.download='hibi.png'; l.href=document.getElementById('share-canvas').toDataURL(); l.click(); }
+        async function shareProgress() { try { await navigator.share({title:'Hibi', text:'學習日語中', url:window.location.href}); } catch(e){} }
+        function addToCalendar() { window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=日日+Hibi&details=學習日語&recur=RRULE:FREQ=DAILY`, '_blank'); }
+        function showHelp() { document.getElementById('help-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('help-modal-content').classList.add('scale-100'); }
+        function closeHelp() { document.getElementById('help-modal').classList.add('opacity-0','pointer-events-none'); document.getElementById('help-modal-content').classList.remove('scale-100'); }
+
+        // --- Speech Recog ---
+        let rec; let isRec=false;
+        function initSpeech() { 
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(SR) { rec=new SR(); rec.lang='ja-JP'; rec.onresult=e=>{ const t=e.results[0][0].transcript; document.getElementById('transcript-text').textContent=t; if(e.results[0].isFinal) validateSpeech(t); }; rec.onend=()=>{ isRec=false; const fb=document.getElementById('feedback-area'); if(fb&&!fb.classList.contains('hidden')) updateRecordUI('idle'); }; } 
+            else { const b=document.getElementById('btn-record'); if(b) b.style.display='none'; } 
+        }
+        function toggleRecording() { if(!rec) return alert('不支援'); if(isRec) rec.stop(); else { rec.start(); document.getElementById('feedback-area').classList.remove('hidden'); document.getElementById('feedback-text').textContent="聽取中..."; isRec=true; updateRecordUI('listening'); } }
+        function validateSpeech(t) { const k=DB.practice[state.currentPracticeIndex].keywords; if(k.some(w=>t.toLowerCase().includes(w))) { updateRecordUI('success'); addPoints(20); } else updateRecordUI('retry'); }
+        function updateRecordUI(s) { const b=document.getElementById('btn-record'); const t=document.getElementById('btn-record-text'); if(!b) return; if(s==='listening') { b.classList.replace('bg-muji-green','bg-muji-red'); t.textContent='停止'; } else if(s==='success') { b.classList.replace('bg-muji-red','bg-muji-green'); t.textContent='試著說'; document.getElementById('feedback-text').textContent='太棒了！'; } else { b.classList.replace('bg-muji-red','bg-muji-green'); t.textContent='試著說'; } }
+
+        // --- Omikuji ---
+        function drawOmikuji() {
+            vibrate([50, 50, 50]);
+            document.getElementById('omikuji-shaker').classList.add('animate-shake');
+            setTimeout(() => {
+                document.getElementById('omikuji-shaker').classList.remove('animate-shake');
+                document.getElementById('omikuji-box-state').classList.add('hidden');
+                const res = document.getElementById('omikuji-result-state');
+                res.classList.remove('hidden');
+                const f = ["大吉", "中吉", "小吉", "吉", "末吉"];
+                document.getElementById('omikuji-text').textContent = f[Math.floor(Math.random()*f.length)];
+                setTimeout(() => { res.classList.remove('opacity-0', 'scale-90'); res.classList.add('animate-unfold'); }, 100);
+            }, 600);
+        }
+        function closeOmikuji() { document.getElementById('omikuji-modal').classList.add('opacity-0', 'pointer-events-none'); state.hasSeenOmikuji = true; saveState(); }
+        function showOmikuji() { 
+            const m=document.getElementById('omikuji-modal'); const b=document.getElementById('omikuji-box-state'); const r=document.getElementById('omikuji-result-state');
+            b.classList.remove('hidden'); r.classList.add('hidden','opacity-0'); r.classList.remove('animate-unfold');
+            m.classList.remove('opacity-0', 'pointer-events-none'); 
         }
 
         // --- Gestures ---
         let tsX=0, tsY=0, isDrag=false, isScroll=false;
-        const cc = document.getElementById('flashcard-container');
+        const cc=document.getElementById('flashcard-container');
         if(cc) {
-            cc.addEventListener('touchstart', e=>{ tsX=e.touches[0].clientX; tsY=e.touches[0].clientY; isDrag=true; isScroll=false; const inner=cc.querySelector('.card-inner'); if(inner) inner.style.transition='none'; }, {passive:false});
-            cc.addEventListener('touchmove', e=>{ if(!isDrag) return; const dx=e.touches[0].clientX-tsX; const dy=e.touches[0].clientY-tsY; if(!isScroll) { if(Math.abs(dx)>Math.abs(dy)) e.preventDefault(); else { isScroll=true; return; } } if(isScroll) return; const inner=cc.querySelector('.card-inner'); if(inner) { inner.style.transform=`translateX(${dx}px) rotate(${dx*0.1}deg)`; if(dx>50) { document.getElementById('hint-right').style.opacity=Math.min(1,(dx-50)/100); } else if(dx<-50) { document.getElementById('hint-left').style.opacity=Math.min(1,(-dx-50)/100); } } }, {passive:false});
-            cc.addEventListener('touchend', e=>{ 
-                isDrag=false; 
-                if(isScroll) return; 
-                const dx=e.changedTouches[0].clientX-tsX; 
-                const inner=cc.querySelector('.card-inner'); 
-                if(inner) { 
-                    inner.style.transition='all 0.5s ease'; 
-                    // UPDATED: Removed tap toggle logic from here to avoid double-firing with onclick
-                    if (Math.abs(dx) >= 10 || Math.abs(e.changedTouches[0].clientY-tsY) >= 10) {
-                        if(dx>100) { inner.classList.add('animate-swipe-right'); setTimeout(()=>handleCardResult(true),300); } 
-                        else if(dx<-100) { inner.classList.add('animate-swipe-left'); setTimeout(()=>handleCardResult(false),300); } 
-                        else { inner.style.transform=''; document.getElementById('hint-left').style.opacity='0'; document.getElementById('hint-right').style.opacity='0'; } 
-                    }
-                } 
-            });
+            cc.addEventListener('touchstart',e=>{ tsX=e.touches[0].clientX; tsY=e.touches[0].clientY; isDrag=true; isScroll=false; const inr=cc.querySelector('.card-inner'); if(inr) inr.style.transition='none'; }, {passive:false});
+            cc.addEventListener('touchmove',e=>{ if(!isDrag) return; const dx=e.touches[0].clientX-tsX; const dy=e.touches[0].clientY-tsY; if(!isScroll) { if(Math.abs(dx)>Math.abs(dy)) e.preventDefault(); else { isScroll=true; return; } } if(isScroll) return; const inr=cc.querySelector('.card-inner'); if(inr) { inr.style.transform=`translateX(${dx}px) rotate(${dx*0.1}deg)`; if(dx>50) document.getElementById('hint-right').style.opacity=Math.min(1,(dx-50)/100); else if(dx<-50) document.getElementById('hint-left').style.opacity=Math.min(1,(-dx-50)/100); } }, {passive:false});
+            cc.addEventListener('touchend',e=>{ isDrag=false; if(isScroll) return; const dx=e.changedTouches[0].clientX-tsX; const inr=cc.querySelector('.card-inner'); if(inr) { inr.style.transition='all 0.5s ease'; if(Math.abs(dx)>=100) { if(dx>0) { inr.classList.add('animate-swipe-right'); setTimeout(()=>handleCardResult(true),300); } else { inr.classList.add('animate-swipe-left'); setTimeout(()=>handleCardResult(false),300); } } else { inr.style.transform=''; document.getElementById('hint-left').style.opacity='0'; document.getElementById('hint-right').style.opacity='0'; } } });
         }
 
-        // Global function for container click
-        function flipCard(element) {
-            const inner = element.querySelector('.card-inner');
-            if(inner) inner.classList.toggle('rotate-y-180');
-        }
-
-        function handleCardResult(isCorrect) {
-            if(isCorrect) { addPoints(10); state.progress = Math.min(state.progress + 1, state.dailyGoal); if(state.progress===state.dailyGoal) { confetti({particleCount:100,spread:70,origin:{y:0.6}}); showShareModal(); } if(!state.masteredCards.includes(DB.travel[state.currentCardIndex].id)) state.masteredCards.push(DB.travel[state.currentCardIndex].id); }
-            setTimeout(() => { state.currentCardIndex = (state.currentCardIndex + 1) % DB.travel.length; saveState(); }, 50);
-        }
-        function switchTab(t) { state.currentTab=t; document.querySelectorAll('.nav-btn').forEach(b=>{ if(b.dataset.target===`view-${t}`) b.classList.add('active'); else b.classList.remove('active'); }); document.querySelectorAll('.view-section').forEach(s=>{ if(s.id===`view-${t}`) s.classList.remove('hidden'); else s.classList.add('hidden'); }); saveState(); }
-        
-        function playAudioCurrentCard(e) { playAudio(DB.travel[state.currentCardIndex].jp, e); }
-        let jpVoice = null;
-        function loadVoices() { if (!('speechSynthesis' in window)) return; const voices = window.speechSynthesis.getVoices(); jpVoice = voices.find(v => v.lang.includes('ja')) || null; }
-        function playAudio(text, event) { if(event) event.stopPropagation(); if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='ja-JP'; u.rate=0.65; if (jpVoice) { u.voice = jpVoice; } else { loadVoices(); if(jpVoice) u.voice = jpVoice; } window.speechSynthesis.speak(u); } }
-        
-        function resetAppDebug() { if(confirm('重置進度？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
-        
-        // Init Speech with Safe Checks
-        let rec; let isRec=false;
-        function initSpeech() { 
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SpeechRecognition) { 
-                rec = new SpeechRecognition(); 
-                rec.lang = 'ja-JP'; 
-                rec.interimResults = true; 
-                rec.maxAlternatives = 1; 
-                rec.onstart = () => { isRec = true; updateRecordUI('listening'); }; 
-                rec.onresult = (e) => { 
-                    const t = e.results[0][0].transcript; 
-                    const transEl = document.getElementById('transcript-text');
-                    if(transEl) transEl.textContent = t; 
-                    if (e.results[0].isFinal) validateSpeech(t); 
-                }; 
-                rec.onerror = (e) => { console.error(e); updateRecordUI('error'); }; 
-                rec.onend = () => { 
-                    isRec = false; 
-                    const feedback = document.getElementById('feedback-area');
-                    if(feedback && !feedback.classList.contains('hidden')) updateRecordUI('idle'); 
-                }; 
-            } else { 
-                const btn = document.getElementById('btn-record');
-                if(btn) btn.style.display = 'none'; 
-            } 
-        }
-        function toggleRecording() { 
-            if (!rec) return alert("瀏覽器不支援"); 
-            if (isRec) rec.stop(); 
-            else { 
-                rec.start(); 
-                document.getElementById('feedback-area').classList.remove('hidden'); 
-                document.getElementById('feedback-text').textContent="聽取中..."; 
-            } 
-        }
-        function validateSpeech(t) { 
-            const k = DB.practice[state.currentPracticeIndex].keywords; 
-            if (k.some(w => t.toLowerCase().includes(w))) { updateRecordUI('success'); addPoints(20); } 
-            else updateRecordUI('retry'); 
-        }
-        function updateRecordUI(s) { 
-            const b=document.getElementById('btn-record'); 
-            const t=document.getElementById('btn-record-text'); 
-            if(!b || !t) return;
-            if(s==='listening') { b.classList.replace('bg-muji-green','bg-muji-red'); t.textContent='停止'; } 
-            else if(s==='success') { b.classList.replace('bg-muji-red','bg-muji-green'); t.textContent='試著說'; document.getElementById('feedback-text').textContent='太棒了！'; } 
-            else { b.classList.replace('bg-muji-red','bg-muji-green'); t.textContent='試著說'; } 
-        }
-
-        function injectManifest() { 
-            const manifest = { "name": "日日 Hibi", "short_name": "Hibi", "start_url": ".", "display": "standalone", "background_color": "#FDFCFA", "theme_color": "#FDFCFA", "icons": [ { "src": "https://cdn-icons-png.flaticon.com/512/7864/7864294.png", "sizes": "192x192", "type": "image/png" }, { "src": "https://cdn-icons-png.flaticon.com/512/7864/7864294.png", "sizes": "512x512", "type": "image/png" } ] }; 
-            const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'}); 
-            const link = document.createElement('link'); 
-            link.rel = 'manifest'; 
-            link.href = URL.createObjectURL(blob); 
-            document.head.appendChild(link); 
+        // --- Expose & Boot ---
+        function exposeGlobals() {
+            window.handleLogin = handleLogin;
+            window.handleCardResult = handleCardResult;
+            window.playAudioCurrentCard = playAudioCurrentCard;
+            window.playAudio = playAudio;
+            window.toggleAutoPlay = toggleAutoPlay;
+            window.flipCard = flipCard;
+            window.switchTab = switchTab;
+            window.nextPractice = nextPractice;
+            window.renderMasterQuiz = renderMasterQuiz;
+            window.showShareModal = showShareModal;
+            window.closeShareModal = closeShareModal;
+            window.downloadShareImage = downloadShareImage;
+            window.shareProgress = shareProgress;
+            window.addToCalendar = addToCalendar;
+            window.showHelp = showHelp;
+            window.closeHelp = closeHelp;
+            window.toggleRecording = toggleRecording;
+            window.resetAppDebug = resetAppDebug;
+            window.drawOmikuji = drawOmikuji;
+            window.closeOmikuji = closeOmikuji;
+            window.showProfile = showProfile;
+            window.closeProfile = closeProfile;
+            window.showSettings = showSettings;
+            window.closeSettings = closeSettings;
+            window.toggleRomajiSetting = toggleRomajiSetting;
+            window.updateSpeed = updateSpeed;
+            window.exportData = exportData;
+            window.importData = importData;
+            window.showBigText = showBigText;
+            window.closeBigText = closeBigText;
         }
 
         window.addEventListener('DOMContentLoaded', () => { 
-            loadState(); 
-            updateUI(); 
-            initSpeech(); 
-            injectManifest(); 
-            lucide.createIcons(); 
-            switchTab(state.currentTab); 
+            initApp(); exposeGlobals(); initSpeech(); lucide.createIcons(); switchTab(state.currentTab); 
             if ('speechSynthesis' in window) { loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices; }
-            
-            // Remove loading screen
-            setTimeout(() => {
-                const loader = document.getElementById('app-loading');
-                if(loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => loader.remove(), 500);
-                }
-            }, 800);
         });
     </script>
 </body>
