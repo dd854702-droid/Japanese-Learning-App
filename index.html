@@ -70,7 +70,7 @@
         <p class="text-xs text-muji-sub mt-2 tracking-wide">載入中...</p>
     </div>
 
-    <!-- Init Screen (Auth) - RESTORED -->
+    <!-- Init Screen (Auth) - Force Show on Load if no user -->
     <div id="auth-screen" class="fixed inset-0 bg-muji-bg z-[90] flex flex-col items-center justify-center transition-opacity duration-500 p-6 hidden">
         <div class="mb-8 text-center">
             <h1 class="text-4xl font-rounded font-bold text-muji-text tracking-widest mb-2">日日</h1>
@@ -228,83 +228,72 @@
 
         const DB = {
             travel: [
-                // Basic
                 { id: 1, jp: "すみません", romaji: "Sumimasen", kana: "すみません", sorami: "蘇咪媽線", desc: "不好意思 / 請問... (萬用起手式)", category: "基本禮貌", vocab: [{ jp: "はい", reading: "Hai", mean: "是" }] },
                 { id: 2, jp: "これをください", romaji: "Kore o kudasai", kana: "これ を ください", sorami: "口內 喔 哭打賽", desc: "請給我這個 (點餐/購物)", category: "購物", vocab: [{ jp: "これ", reading: "Kore", mean: "這個" }] },
                 { id: 3, jp: "いくらですか", romaji: "Ikura desu ka", kana: "いくら です か", sorami: "以哭啦", desc: "請問多少錢？", category: "購物", vocab: [{ jp: "円", reading: "En", mean: "日圓" }] },
-                { id: 4, jp: "ありがとうございます", romaji: "Arigatou gozaimasu", kana: "ありがとう ございます", sorami: "阿哩嘎多 狗在媽蘇", desc: "謝謝", category: "基本禮貌", vocab: [{ jp: "感謝", reading: "Kansha", mean: "感謝" }] },
-                { id: 5, jp: "トイレはどこですか", romaji: "Toire wa doko desu ka", kana: "といれ は どこ です か", sorami: "拖衣蕾 哇 豆口", desc: "廁所在哪裡？", category: "緊急", vocab: [{ jp: "場所", reading: "Basho", mean: "地點" }] },
-                
-                // Airport & Transport
+                { id: 4, jp: "カードは使えますか", romaji: "Kaado wa tsukaemasu ka", kana: "かーど は つかえます か", sorami: "卡多 哇 此卡ㄟ瑪蘇 卡", desc: "可以使用信用卡嗎？", category: "結帳", vocab: [{ jp: "現金", reading: "Genkin", mean: "現金" }, { jp: "ICカード", reading: "IC Kaado", mean: "交通卡" }, { jp: "別々で", reading: "Betsubetsu de", mean: "分開結帳" }] },
+                { id: 5, jp: "お会計をお願いします", romaji: "Okaikei o onegaishimasu", kana: "おかいけい を おねがいします", sorami: "歐開K 喔 歐內該洗媽蘇", desc: "麻煩結帳", category: "結帳", vocab: [{ jp: "ごちそうさま", reading: "Gochisousama", mean: "多謝款待" }, { jp: "美味しい", reading: "Oishii", mean: "好吃的" }] },
+                { id: 6, jp: "英語のメニューはありますか", romaji: "Eigo no menyuu wa arimasu ka", kana: "えいご の めにゅー は あります か", sorami: "A-Go NO 梅紐 哇 阿哩媽蘇 卡", desc: "請問有英文菜單嗎？", category: "餐廳", vocab: [{ jp: "英語", reading: "Eigo", mean: "英文" }, { jp: "中国語", reading: "Chuugokugo", mean: "中文" }, { jp: "写真", reading: "Shashin", mean: "照片" }] },
+                { id: 7, jp: "トイレはどこですか", romaji: "Toire wa doko desu ka", kana: "といれ は どこ です か", sorami: "拖衣蕾 哇 豆口", desc: "請問洗手間在哪裡？", category: "問路", vocab: [{ jp: "ここ", reading: "Koko", mean: "這裡" }, { jp: "駅", reading: "Eki", mean: "車站" }, { jp: "コンビニ", reading: "Konbini", mean: "便利商店" }] },
+                { id: 8, jp: "Wi-Fiはありますか", romaji: "Wi-Fi wa arimasu ka", kana: "わいふぁい は あります か", sorami: "歪Fai 哇 阿哩媽蘇 卡", desc: "請問有 Wi-Fi 嗎？", category: "設施", vocab: [{ jp: "パスワード", reading: "Pasuwaado", mean: "密碼" }, { jp: "充電", reading: "Juuden", mean: "充電" }] },
+                { id: 9, jp: "写真を撮ってもいいですか", romaji: "Shashin o totte mo ii desu ka", kana: "しゃしん を とって も いい です か", sorami: "瞎心 喔 偷貼 摸 一", desc: "請問可以拍照嗎？", category: "觀光", vocab: [{ jp: "写真", reading: "Shashin", mean: "照片" }, { jp: "大丈夫", reading: "Daijoubu", mean: "沒問題" }, { jp: "ダメ", reading: "Dame", mean: "不行" }] },
+                { id: 10, jp: "日本語がわかりません", romaji: "Nihongo ga wakarimasen", kana: "にほんご が わかりません", sorami: "你紅豆 尬 哇咖哩媽線", desc: "我不懂日文 (緊急/求助)", category: "緊急", vocab: [{jp: "助けて", reading: "Tasukete", mean: "救命/幫忙"}, {jp: "警察", reading: "Keisatsu", mean: "警察"}, {jp: "病院", reading: "Byouin", mean: "醫院"}] },
                 { id: 11, jp: "荷物が出てきません", romaji: "Nimotsu ga dete kimasen", kana: "にもつ が でて きません", sorami: "尼默此 尬 得貼 Ki媽線", desc: "我的行李沒有出來", category: "機場", vocab: [{jp: "荷物", reading: "Nimotsu", mean: "行李"}] },
-                { id: 12, jp: "バス乗り場はどこですか", romaji: "Basu noriba wa doko desu ka", kana: "ばす のりば は どこ です か", sorami: "巴蘇 ノー里巴", desc: "巴士站在哪裡？", category: "交通", vocab: [{jp: "バス", reading: "Basu", mean: "巴士"}] },
-                { id: 13, jp: "この電車は新宿に行きますか", romaji: "Kono densha wa Shinjuku ni ikimasu ka", kana: "この でんしゃ は しんじゅく に いきます か", sorami: "口諾 電瞎 哇...", desc: "這班車去新宿嗎？", category: "交通", vocab: [{jp: "電車", reading: "Densha", mean: "電車"}] },
-                { id: 14, jp: "切符をなくしました", romaji: "Kippu o nakushimashita", kana: "きっぷ を なくしました", sorami: "Ki噗 喔 那哭洗媽希塔", desc: "票不見了", category: "交通", vocab: [{jp: "切符", reading: "Kippu", mean: "車票"}] },
-                { id: 15, jp: "タクシーを呼んでください", romaji: "Takushii o yonde kudasai", kana: "たくしー を よんで ください", sorami: "Taxi 喔 用得 哭打賽", desc: "請幫我叫計程車", category: "交通", vocab: [{jp: "呼ぶ", reading: "Yobu", mean: "叫/呼喊"}] },
-                { id: 16, jp: "路線図はありますか", romaji: "Rosenzu wa arimasu ka", kana: "ろせんず は あります か", sorami: "羅仙茲 哇 阿哩媽蘇 卡", desc: "有路線圖嗎？", category: "交通", vocab: [{jp: "地図", reading: "Chizu", mean: "地圖"}] },
-                { id: 17, jp: "次の駅はどこですか", romaji: "Tsugi no eki wa doko desu ka", kana: "つぎ の えき は どこ です か", sorami: "次基 諾 A-Ki 哇 豆口", desc: "下一站是哪裡？", category: "交通", vocab: [{jp: "次", reading: "Tsugi", mean: "下一個"}] },
-
-                // Hotel
-                { id: 21, jp: "チェックインをお願いします", romaji: "Chekkuin o onegaishimasu", kana: "ちぇっくいん を おねがいします", sorami: "切苦印", desc: "我要辦理入住", category: "住宿", vocab: [{jp: "予約", reading: "Yoyaku", mean: "預約"}] },
-                { id: 22, jp: "荷物を預かってもらえますか", romaji: "Nimotsu o azukatte moraemasu ka", kana: "にもつ を あずかって もらえます か", sorami: "阿茲卡貼 摩拉A媽蘇", desc: "可以寄放行李嗎？", category: "住宿", vocab: [{jp: "預かる", reading: "Azukaru", mean: "保管"}] },
-                { id: 23, jp: "Wi-Fiのパスワードは何ですか", romaji: "Wi-Fi no pasuwaado wa nan desu ka", kana: "わいふぁい の ぱすわーど は なん です か", sorami: "Pass挖多", desc: "Wi-Fi 密碼是多少？", category: "住宿", vocab: [{jp: "パスワード", reading: "Pasuwaado", mean: "密碼"}] },
-                { id: 24, jp: "朝食は何時からですか", romaji: "Choushoku wa nanji kara desu ka", kana: "ちょうしょく は なんじ から です か", sorami: "秋修苦 哇 難機", desc: "早餐幾點開始？", category: "住宿", vocab: [{jp: "朝食", reading: "Choushoku", mean: "早餐"}] },
-                { id: 25, jp: "お湯が出ません", romaji: "Oyu ga demasen", kana: "おゆ が でません", sorami: "歐U 尬 得媽線", desc: "沒有熱水", category: "住宿", vocab: [{jp: "お湯", reading: "Oyu", mean: "熱水"}] },
-
-                // Dining
-                { id: 31, jp: "おすすめは何ですか", romaji: "Osusume wa nan desu ka", kana: "おすすめ は なん です か", sorami: "歐蘇蘇妹", desc: "有推薦的嗎？", category: "餐廳", vocab: [{jp: "おすすめ", reading: "Osusume", mean: "推薦"}] },
-                { id: 32, jp: "お水をお願いします", romaji: "Omizu o onegaishimasu", kana: "おみず を おねがいします", sorami: "歐咪茲", desc: "請給我水", category: "餐廳", vocab: [{jp: "水", reading: "Mizu", mean: "水"}] },
-                { id: 33, jp: "お会計をお願いします", romaji: "Okaikei o onegaishimasu", kana: "おかいけい を おねがいします", sorami: "歐開K", desc: "麻煩結帳", category: "結帳", vocab: [{jp: "会計", reading: "Kaikei", mean: "結帳"}] },
-                { id: 34, jp: "カードは使えますか", romaji: "Kaado wa tsukaemasu ka", kana: "かーど は つかえます か", sorami: "卡多 哇 此卡A媽蘇", desc: "可用信用卡嗎？", category: "結帳", vocab: [{jp: "カード", reading: "Kaado", mean: "卡片"}] },
-                { id: 35, jp: "辛くしないでください", romaji: "Karaku shinaide kudasai", kana: "からく しないで ください", sorami: "卡拉哭 吸奈得", desc: "請不要做太辣", category: "餐廳", vocab: [{jp: "辛い", reading: "Karai", mean: "辣"}] },
-
-                // Shopping
-                { id: 41, jp: "試着してもいいですか", romaji: "Shichaku shite mo ii desu ka", kana: "しちゃく して も いい です か", sorami: "洗恰苦", desc: "可以試穿嗎？", category: "購物", vocab: [{jp: "試着", reading: "Shichaku", mean: "試穿"}] },
-                { id: 42, jp: "免税になりますか", romaji: "Menzei ni narimasu ka", kana: "めんぜい に なります か", sorami: "免賊", desc: "可以退稅嗎？", category: "購物", vocab: [{jp: "免税", reading: "Menzei", mean: "免稅"}] },
-                { id: 43, jp: "袋はいりません", romaji: "Fukuro wa irimasen", kana: "ふくろ は いりません", sorami: "福口 哇 伊拉奈", desc: "不用袋子", category: "購物", vocab: [{jp: "袋", reading: "Fukuro", mean: "袋子"}] },
-                { id: 44, jp: "これの新しいのはありますか", romaji: "Kore no atarashii no wa arimasu ka", kana: "これ の あたらしい の は あります か", sorami: "阿塔拉吸 NO", desc: "有新的嗎？", category: "購物", vocab: [{jp: "新しい", reading: "Atarashii", mean: "新"}] },
-
-                // Emergency & Health
-                { id: 51, jp: "気分が悪いです", romaji: "Kibun ga warui desu", kana: "きぶん が わるい です", sorami: "Ki不恩 尬 瓦魯一", desc: "我不舒服", category: "緊急", vocab: [{jp: "気分", reading: "Kibun", mean: "感覺"}] },
-                { id: 53, jp: "パスポートをなくしました", romaji: "Pasupooto o nakushimashita", kana: "ぱすぽーと を なくしました", sorami: "Pass波多", desc: "護照不見了", category: "緊急", vocab: [{jp: "なくす", reading: "Nakusu", mean: "遺失"}] },
-                { id: 54, jp: "日本語がわかりません", romaji: "Nihongo ga wakarimasen", kana: "にほんご が わかりません", sorami: "你紅豆 尬 哇咖哩媽線", desc: "我不懂日文", category: "緊急", vocab: [{jp: "わかる", reading: "Wakaru", mean: "懂"}] },
-                { id: 55, jp: "薬局はどこですか", romaji: "Yakkyoku wa doko desu ka", kana: "やっきょく は どこ です か", sorami: "亞Q庫", desc: "藥局在哪裡？", category: "緊急", vocab: [{jp: "薬局", reading: "Yakkyoku", mean: "藥局"}] }
+                { id: 12, jp: "バス乗り場はどこですか", romaji: "Basu noriba wa doko desu ka", kana: "ばす のりば は どこ です か", sorami: "巴蘇 ノー里巴 哇 豆口", desc: "巴士乘車處在哪裡？", category: "機場", vocab: [{jp: "バス", reading: "Basu", mean: "巴士"}] },
+                { id: 13, jp: "チェックインをお願いします", romaji: "Chekkuin o onegaishimasu", kana: "ちぇっくいん を おねがいします", sorami: "切苦印 喔 歐內該洗媽蘇", desc: "我要辦理入住", category: "住宿", vocab: [{jp: "予約", reading: "Yoyaku", mean: "預約"}] },
+                { id: 14, jp: "荷物を預かってもらえますか", romaji: "Nimotsu o azukatte moraemasu ka", kana: "にもつ を あずかって もらえます か", sorami: "尼默此 喔 阿茲卡貼 摩拉A媽蘇 卡", desc: "可以寄放行李嗎？", category: "住宿", vocab: [{jp: "預かる", reading: "Azukaru", mean: "保管"}] },
+                { id: 15, jp: "Wi-Fiのパスワードは何ですか", romaji: "Wi-Fi no pasuwaado wa nan desu ka", kana: "わいふぁい の ぱすわーど は なん です か", sorami: "歪Fai NO Pass挖多 哇 難 得死 卡", desc: "Wi-Fi 密碼是多少？", category: "住宿", vocab: [{jp: "パスワード", reading: "Pasuwaado", mean: "密碼"}] },
+                { id: 16, jp: "おすすめは何ですか", romaji: "Osusume wa nan desu ka", kana: "おすすめ は なん です か", sorami: "歐蘇蘇妹 哇 難 得死 卡", desc: "有什麼推薦的嗎？", category: "餐廳", vocab: [{jp: "おすすめ", reading: "Osusume", mean: "推薦"}] },
+                { id: 17, jp: "お水をお願いします", romaji: "Omizu o onegaishimasu", kana: "おみず を おねがいします", sorami: "歐咪茲 喔 歐內該洗媽蘇", desc: "請給我水", category: "餐廳", vocab: [{jp: "水", reading: "Mizu", mean: "水"}] },
+                { id: 18, jp: "わさび抜きでお願いします", romaji: "Wasabi nuki de onegaishimasu", kana: "わさび ぬき で おねがいします", sorami: "哇沙比 奴Ki de", desc: "請不要加芥末", category: "餐廳", vocab: [{jp: "抜き", reading: "Nuki", mean: "去除"}] },
+                { id: 19, jp: "お会計をお願いします", romaji: "Okaikei o onegaishimasu", kana: "おかいけい を おねがいします", sorami: "歐開K 喔 歐內該洗媽蘇", desc: "麻煩結帳", category: "結帳", vocab: [{jp: "別々", reading: "Betsubetsu", mean: "分開付"}] },
+                { id: 20, jp: "試着してもいいですか", romaji: "Shichaku shite mo ii desu ka", kana: "しちゃく して も いい です か", sorami: "洗恰苦 吸貼 摸 一 得死 卡", desc: "可以試穿嗎？", category: "購物", vocab: [{jp: "試着", reading: "Shichaku", mean: "試穿"}] },
+                { id: 21, jp: "免税になりますか", romaji: "Menzei ni narimasu ka", kana: "めんぜい に なります か", sorami: "免賊 尼 那里媽蘇 卡", desc: "可以退稅嗎？", category: "購物", vocab: [{jp: "免税", reading: "Menzei", mean: "免稅"}] },
+                { id: 22, jp: "新しいのはありますか", romaji: "Atarashii no wa arimasu ka", kana: "あたらしい の は あります か", sorami: "阿塔拉吸 NO 哇 阿哩媽蘇 卡", desc: "有新的嗎？", category: "購物", vocab: [{jp: "新しい", reading: "Atarashii", mean: "新的"}] },
+                { id: 23, jp: "この電車は新宿に行きますか", romaji: "Kono densha wa Shinjuku ni ikimasu ka", kana: "この でんしゃ は しんじゅく に いきます か", sorami: "口諾 電瞎 哇 新宿 尼 一ki媽蘇 卡", desc: "這班電車會到新宿嗎？", category: "交通", vocab: [{jp: "電車", reading: "Densha", mean: "電車"}] },
+                { id: 24, jp: "切符をなくしました", romaji: "Kippu o nakushimashita", kana: "きっぷ を なくしました", sorami: "Ki噗 喔 那哭洗媽希塔", desc: "我的票不見了", category: "交通", vocab: [{jp: "切符", reading: "Kippu", mean: "車票"}] },
+                { id: 25, jp: "気分が悪いです", romaji: "Kibun ga warui desu", kana: "きぶん が わるい です", sorami: "Ki不恩 尬 瓦魯一 得死", desc: "我不舒服", category: "緊急", vocab: [{jp: "気分", reading: "Kibun", mean: "感覺"}] },
+                { id: 26, jp: "パスポートを落としました", romaji: "Pasupooto o otoshimashita", kana: "ぱすぽーと を おとしました", sorami: "Pass波多 喔 歐偷洗媽希塔", desc: "我弄丟護照了", category: "緊急", vocab: [{jp: "落とす", reading: "Otosu", mean: "弄丟"}] },
+                { id: 27, jp: "病院に連れて行ってください", romaji: "Byouin ni tsurete itte kudasai", kana: "びょういん に つれて いって ください", sorami: "Byo院 尼 此蕾貼 一貼 哭打賽", desc: "請帶我去醫院", category: "緊急", vocab: [{jp: "病院", reading: "Byouin", mean: "醫院"}] },
+                { id: 28, jp: "道に迷いました", romaji: "Michi ni mayoimashita", kana: "みち に まよい ました", sorami: "米七 尼 馬優衣 媽希塔", desc: "我迷路了", category: "緊急", vocab: [{jp: "道", reading: "Michi", mean: "路"}] },
+                { id: 29, jp: "これをお願いします", romaji: "Kore o onegaishimasu", kana: "これ を おねがいします", sorami: "口內 喔 歐內該洗媽蘇", desc: "麻煩這個(遞出東西時)", category: "萬用", vocab: [{jp: "お願い", reading: "Onegai", mean: "拜託"}] },
+                { id: 30, jp: "もう一度お願いします", romaji: "Mou ichido onegaishimasu", kana: "もう いちど おねがいします", sorami: "末 一七多 歐內該洗媽蘇", desc: "請再說一次", category: "溝通", vocab: [{jp: "もう一度", reading: "Mou ichido", mean: "再一次"}] }
             ],
             practice: [
-                // Basic
-                { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱", npc: "お弁当、温めますか？", npc_mean: "便當要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします"] },
-                { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー"] },
-                // Transport
-                { id: 'p3', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします"] },
-                { id: 'p4', title: "問路", desc: "詢問車站位置", npc: "何かお困りですか？", npc_mean: "需要幫忙嗎？", target: "駅はどこですか？", target_mean: "請問車站在哪裡？", keywords: ["駅", "どこ"] },
-                // Shopping
-                { id: 'p5', title: "藥妝店", desc: "尋找感冒藥", npc: "何かお探しですか？", npc_mean: "在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬"] },
-                { id: 'p6', title: "結帳", desc: "使用交通卡付款", npc: "お支払いは？", npc_mean: "怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用Suica嗎？", keywords: ["Suica", "払えますか"] },
-                // Dining
-                { id: 'p7', title: "咖啡廳", desc: "點冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーをください。", target_mean: "請給我冰咖啡。", keywords: ["アイス", "コーヒー"] },
-                { id: 'p8', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。", keywords: ["生", "nama"] },
-                // Hotel
-                { id: 'p9', title: "飯店櫃台", desc: "寄放行李", npc: "いらっしゃいませ。", npc_mean: "歡迎光臨。", target: "荷物を預かってください。", target_mean: "請幫我保管行李。", keywords: ["荷物", "預かって"] },
-                { id: 'p10', title: "遺失物", desc: "尋找錢包", npc: "どうされましたか？", npc_mean: "怎麼了嗎？", target: "財布を落としました。", target_mean: "我弄丟錢包了。", keywords: ["財布", "落としました"] },
-                // Life
-                { id: 'p11', title: "問天氣", desc: "詢問明天天氣", npc: "明日の予定は？", npc_mean: "明天有什麼計畫？", target: "明日の天気はどうですか？", target_mean: "明天的天氣如何？", keywords: ["天気", "どう"] },
-                { id: 'p12', title: "拍照", desc: "請求幫忙拍照", npc: "（目が合った）", npc_mean: "(眼神交會)", target: "写真を撮ってもらえますか？", target_mean: "可以幫我拍照嗎？", keywords: ["写真", "撮って"] }
+                { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱便當", npc: "お弁当、温めますか？", npc_mean: "便當需要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします", "onegaishimasu", "hai"] },
+                { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー", "ありますか", "menu", "eigo"] },
+                { id: 'p3', title: "飯店入住", desc: "告知櫃台要辦理入住", npc: "いらっしゃいませ。", npc_mean: "歡迎光臨。", target: "チェックインをお願いします。", target_mean: "麻煩幫我辦理入住。", keywords: ["チェックイン", "お願いします", "check-in", "checkin"] },
+                { id: 'p4', title: "問路", desc: "詢問這附近是否有車站", npc: "何かお困りですか？", npc_mean: "有什麼需要幫忙的嗎？", target: "近くに駅はありますか？", target_mean: "請問這附近有車站嗎？", keywords: ["近く", "駅", "ありますか", "eki", "chikaku"] },
+                { id: 'p5', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします", "jusho", "address"] },
+                { id: 'p6', title: "藥妝店", desc: "詢問有無感冒藥", npc: "何かお探しですか？", npc_mean: "請問在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬", "ありますか", "kaze", "kusuri"] },
+                { id: 'p7', title: "咖啡廳", desc: "點一杯冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーを一つください。", target_mean: "請給我一杯冰咖啡。", keywords: ["アイス", "コーヒー", "ください", "coffee"] },
+                { id: 'p8', title: "結帳", desc: "詢問能否用西瓜卡", npc: "お支払いはどうされますか？", npc_mean: "請問要怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用 Suica 付款嗎？", keywords: ["Suica", "払えますか", "haraemasuka"] },
+                { id: 'p9', title: "遺失物", desc: "在車站詢問遺失物", npc: "どうされましたか？", npc_mean: "怎麼了嗎？", target: "財布をなくしてしまいました。", target_mean: "我不小心弄丟錢包了。", keywords: ["財布", "なくして", "saifu", "lost"] },
+                { id: 'p10', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼呢？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。(道地說法)", keywords: ["生", "nama", "beer"] }
             ],
             master: [
-                { id: 'm1', situation: "拒絕邀請", casual: { text: "ちょっと都合が悪いんだ。", audio: "ちょっと都合が悪いんだ" }, polite: { text: "あいにく都合がつきませんで...", audio: "あいにく都合がつきませんで" }, tip: "朋友間用「悪い」；對上司用「あいにく」緩衝。" },
-                { id: 'm2', situation: "道歉 (遲到)", casual: { text: "ごめん、遅れる！", audio: "ごめん、遅れる" }, polite: { text: "申し訳ございません、遅れます。", audio: "申し訳ございません、遅れます" }, tip: "商務場合必須用最高級的道歉「申し訳ございません」。" },
-                { id: 'm3', situation: "請求稍等", casual: { text: "ちょっと待って。", audio: "ちょっと待って" }, polite: { text: "少々お待ちいただけますか。", audio: "少々お待ちいただけますか" }, tip: "「待って」是命令形。正式場合請用「少々」並用疑問句。" },
-                { id: 'm4', situation: "表達反對", casual: { text: "それは違うよ。", audio: "それは違うよ" }, polite: { text: "その点については、異論がございます。", audio: "その点については、異論がございます" }, tip: "商務上不直接說「不一樣」，而是說「關於那點，我有些異議」。" },
-                { id: 'm5', situation: "確認理解", casual: { text: "わかった？", audio: "わかった" }, polite: { text: "ご理解いただけましたでしょうか。", audio: "ご理解いただけましたでしょうか" }, tip: "對上司或客戶，確認對方是否理解時要非常小心，用「ご理解」並用敬語結尾。" },
-                { id: 'm6', situation: "電話應對 (不在位子上)", casual: { text: "今、いないよ。", audio: "今、いないよ" }, polite: { text: "ただいま席を外しております。", audio: "ただいま席を外しております" }, tip: "接聽公司電話時，同事不在不能說「いない」，要說「席を外しております」。" },
-                { id: 'm7', situation: "表達感謝", casual: { text: "ありがとう！", audio: "ありがとう" }, polite: { text: "誠にありがとうございます。", audio: "誠にありがとうございます" }, tip: "加上「誠に (Makoto ni)」能大幅提升感謝的誠意與正式感。" },
-                { id: 'm8', situation: "請求幫忙", casual: { text: "手伝って。", audio: "手伝って" }, polite: { text: "お力添えをいただけますでしょうか。", audio: "お力添えをいただけますでしょうか" }, tip: "「お力添え (Ochikara zoe)」是請求協助的高級說法，非常有教養。" }
+                { id: 'm1', situation: "拒絕邀請", casual: { text: "ちょっと都合が悪いんだ。", audio: "ちょっと都合が悪いんだ" }, polite: { text: "あいにく都合がつきませんで...", audio: "あいにく都合がつきませんで" }, tip: "朋友之間用「悪い (warui)」直接表達不便；對上司則使用「あいにく (ainiku)」作為緩衝詞，並用「つきません」這種委婉的否定。" },
+                { id: 'm2', situation: "請求協助 (借筆)", casual: { text: "ペン、貸してくれない？", audio: "ペン、貸してくれない" }, polite: { text: "ペンをお借りしてもよろしいですか？", audio: "ペンをお借りしてもよろしいですか" }, tip: "朋友間用「〜くれない？」(能...嗎？)；正式場合用「お借りしても」(借用一下) 加上「よろしいですか」(可以嗎？) 展現極高禮貌。" },
+                { id: 'm3', situation: "表達感謝 (受人照顧)", casual: { text: "いろいろありがとう！", audio: "いろいろありがとう" }, polite: { text: "いろいろとお世話になりました。", audio: "いろいろとお世話になりました" }, tip: "一般的謝謝用「ありがとう」；但如果是受了長輩或客戶的長期照顧，必須用固定句型「お世話になりました」(承蒙您照顧了)。" },
+                { id: 'm4', situation: "道歉 (遲到)", casual: { text: "ごめん、遅れる！", audio: "ごめん、遅れる" }, polite: { text: "申し訳ございません、遅れます。", audio: "申し訳ございません、遅れます" }, tip: "朋友間用「ごめん (Gomen)」即可；商務場合必須用最高級的道歉「申し訳ございません (Moushiwake gozaimasen)」。" },
+                { id: 'm5', situation: "確認理解", casual: { text: "わかった？", audio: "わかった" }, polite: { text: "ご理解いただけましたでしょうか。", audio: "ご理解いただけましたでしょうか" }, tip: "對朋友用「わかった (Wakatta)」；對客戶要用尊敬語「ご理解 (Gorikai)」加上詢問句型，避免給人上對下的感覺。" },
+                { id: 'm6', situation: "請求稍等", casual: { text: "ちょっと待って。", audio: "ちょっと待って" }, polite: { text: "少々お待ちいただけますか。", audio: "少々お待ちいただけますか" }, tip: "「待って (Matte)」其實是命令形，對長輩不禮貌。正式場合請用「少々 (Shoushou)」代替「ちょっと」，並用疑問句結尾。" },
+                { id: 'm7', situation: "表達意見 (反對)", casual: { text: "それは違うと思う。", audio: "それは違うと思う" }, polite: { text: "その点については、少し異論がございます。", audio: "その点については、少し異論がございます" }, tip: "直接說「不一樣 (違う)」太強烈。商務日語會說「關於那一點 (その点については)」，我有「些許異議 (異論がございます)」，非常委婉。" },
+                { id: 'm8', situation: "電話應對 (不在位子上)", casual: { text: "今、いないよ。", audio: "今、いないよ" }, polite: { text: "ただいま席を外しております。", audio: "ただいま席を外しております" }, tip: "接聽公司電話時，同事不在不能說「いない (Inai)」，要說「席を外しております (Seki o hazushite orimasu)」，表示暫時離開。" }
             ],
-            quotes: [ { jp: "一期一会", reading: "Ichigo Ichie", mean: "一生只有一次的相遇" }, { jp: "日日是好日", reading: "Nichi nichi kore koujitsu", mean: "每一天都是好日子" } ],
-            lucky: { colors: ["桜色", "若草色", "瑠璃色", "山吹色", "藤色"], items: ["手帕", "御守", "筆記本", "熱茶", "硬幣"] }
+            quotes: [
+                { jp: "継続は力なり", reading: "Keizoku wa chikara nari", mean: "堅持就是力量" },
+                { jp: "一期一会", reading: "Ichigo Ichie", mean: "一生只有一次的相遇" },
+                { jp: "七転び八起き", reading: "Nanakorobi Yaoki", mean: "跌倒七次，爬起來八次 (百折不撓)" },
+                { jp: "日日是好日", reading: "Nichi nichi kore koujitsu", mean: "每一天都是好日子" }
+            ],
+            lucky: {
+                colors: ["桜色 (櫻花粉)", "若草色 (嫩綠)", "瑠璃色 (深藍)", "山吹色 (金黃)", "藤色 (淡紫)", "生成り (米白)"],
+                items: ["手帕", "御守", "筆記本", "熱茶", "手錶", "硬幣", "耳機"]
+            }
         };
 
-        const STORAGE_KEY = 'hibi_app_state_v10';
+        const STORAGE_KEY = 'hibi_app_state_v11';
         let state = { nickname: "", currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], srsData: {}, settings: { showRomaji: true, ttsSpeed: 0.65 } };
         let autoPlayInterval = null; let isAutoPlaying = false; let jpVoice = null;
         let user = null; let db = null; let auth = null; let isOffline = false; let appId = '';
@@ -338,8 +327,13 @@
                 isOffline = true;
                 loadState();
                 document.getElementById('app-loading').classList.add('hidden');
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
+                
+                // FIX: Force auth screen if no nickname, even offline
+                if (!state.nickname) {
+                    document.getElementById('auth-screen').classList.remove('hidden');
+                } else {
+                    document.getElementById('main-app').classList.remove('hidden');
+                }
             }
         }
 
@@ -393,6 +387,13 @@
             const name = document.getElementById('input-nickname').value.trim();
             if(!name) return alert('請輸入暱稱');
             state.nickname = name;
+            // FIX: Init stats on first login
+            if (!state.lastLoginDate) {
+                state.lastLoginDate = getTodayString();
+                state.streak = 1;
+                state.history = [state.lastLoginDate];
+                state.points = 0;
+            }
             saveState();
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
