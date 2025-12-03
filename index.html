@@ -106,11 +106,20 @@
                     <div class="flex items-center gap-1 text-muji-green bg-muji-green/10 px-2 py-0.5 rounded-md"><i data-lucide="star" class="w-3 h-3"></i><span id="header-points" class="text-xs font-bold">0</span></div>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                 <button onclick="addToCalendar(); vibrate(5)" class="p-3 rounded-full text-muji-sub hover:bg-gray-100 active:bg-gray-200 transition-colors"><i data-lucide="bell" class="w-5 h-5"></i></button>
-                 <button onclick="showOmikuji(); vibrate(5)" class="p-3 rounded-full text-muji-sub hover:bg-gray-100 active:bg-gray-200 transition-colors"><i data-lucide="gift" class="w-5 h-5"></i></button>
-                 <button onclick="showSettings(); vibrate(5)" class="p-3 rounded-full text-muji-sub hover:bg-gray-100 active:bg-gray-200 transition-colors"><i data-lucide="settings" class="w-5 h-5"></i></button>
-                 <div class="relative w-10 h-10 flex items-center justify-center cursor-pointer active:scale-90 transition-transform" onclick="showShareModal(); vibrate(10)">
+            <div class="flex items-center gap-2">
+                 <button onclick="addToCalendar(); vibrate(5)" class="flex flex-col items-center justify-center px-2 py-1 rounded-lg text-muji-sub hover:bg-gray-50 active:bg-gray-100 transition-colors">
+                    <i data-lucide="bell" class="w-5 h-5 mb-0.5"></i>
+                    <span class="text-[9px] font-medium tracking-wide">提醒</span>
+                 </button>
+                 <button onclick="showOmikuji(); vibrate(5)" class="flex flex-col items-center justify-center px-2 py-1 rounded-lg text-muji-sub hover:bg-gray-50 active:bg-gray-100 transition-colors">
+                    <i data-lucide="gift" class="w-5 h-5 mb-0.5"></i>
+                    <span class="text-[9px] font-medium tracking-wide">每日簽</span>
+                 </button>
+                 <button onclick="showSettings(); vibrate(5)" class="flex flex-col items-center justify-center px-2 py-1 rounded-lg text-muji-sub hover:bg-gray-50 active:bg-gray-100 transition-colors">
+                    <i data-lucide="settings" class="w-5 h-5 mb-0.5"></i>
+                    <span class="text-[9px] font-medium tracking-wide">設定</span>
+                 </button>
+                 <div class="relative w-10 h-10 flex items-center justify-center cursor-pointer active:scale-90 transition-transform ml-1" onclick="showShareModal(); vibrate(10)">
                     <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36"><path class="text-gray-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" /><path id="goal-progress-ring" class="text-muji-green transition-all duration-1000 ease-out" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" /></svg>
                     <div class="absolute text-[10px] font-bold text-muji-sub" id="goal-text">0/5</div>
                  </div>
@@ -119,7 +128,7 @@
 
         <!-- Content -->
         <main class="flex-1 overflow-y-auto no-scrollbar relative w-full max-w-md mx-auto" id="app-container">
-            <!-- Tab 1: 旅 -->
+            <!-- Tab 1: 旅 (Travel) -->
             <div id="view-travel" class="view-section px-6 py-4 space-y-6 animate-fade-in pb-32">
                 <div class="text-center mb-6 relative">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-green/10 mb-2"><span class="text-muji-green text-xs font-bold tracking-widest">TRAVEL</span><span class="w-1 h-1 rounded-full bg-muji-green"></span><span id="count-travel" class="text-muji-green text-[10px] font-medium">-- 句</span></div>
@@ -146,7 +155,7 @@
                 <div class="mt-8"><h3 class="text-sm font-bold text-muji-sub mb-3 uppercase tracking-wider">相關單字</h3><div id="vocab-list" class="bg-white rounded-xl p-4 shadow-sm border border-muji-border space-y-3"></div></div>
             </div>
 
-            <!-- Tab 2: 習 -->
+            <!-- Tab 2: 習 (Practice) -->
             <div id="view-practice" class="view-section hidden px-6 py-4 space-y-6 pb-32">
                 <div class="text-center mb-6"><div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-brown/10 mb-2"><span class="text-muji-brown text-xs font-bold tracking-widest">PRACTICE</span><span class="w-1 h-1 rounded-full bg-muji-brown"></span><span id="count-practice" class="text-muji-brown text-[10px] font-medium">-- 情境</span></div><h2 id="practice-title" class="text-lg font-rounded text-muji-text">...</h2><p id="practice-desc" class="text-xs text-muji-sub mt-1">...</p><button onclick="nextPractice(); vibrate(5)" class="mt-2 text-[10px] text-muji-sub border border-muji-border px-3 py-1.5 rounded-full flex items-center gap-1 mx-auto hover:bg-gray-50 active:bg-gray-100"><i data-lucide="refresh-ccw" class="w-3 h-3"></i> 切換情境</button></div>
                 <div class="space-y-4 mb-20" id="chat-container">
@@ -156,7 +165,7 @@
                 </div>
             </div>
 
-            <!-- Tab 3: 磨 -->
+            <!-- Tab 3: 磨 (Master) -->
             <div id="view-master" class="view-section hidden px-6 py-4 space-y-6 pb-32">
                  <div class="text-center mb-4"><div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-text/10 mb-2"><span class="text-muji-text text-xs font-bold tracking-widest">MASTER</span><span class="w-1 h-1 rounded-full bg-muji-text"></span><span id="count-master" class="text-muji-text text-[10px] font-medium">-- 題</span></div><h2 class="text-lg font-rounded text-muji-text">敬語與常體的切換</h2></div>
                 <div class="relative"><i data-lucide="search" class="absolute left-3 top-3 w-4 h-4 text-gray-400"></i><input type="text" id="master-search" placeholder="搜尋情境..." oninput="renderMasterQuiz()" class="w-full bg-gray-50 border border-gray-100 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-muji-text transition-colors"></div>
@@ -293,16 +302,22 @@
                 { id: 60, jp: "助けてください", romaji: "Tasukete kudasai", kana: "たすけて ください", sorami: "塔蘇K貼", desc: "請救救我", category: "緊急", vocab: [{jp: "助ける", reading: "Tasukeru", mean: "救助"}] }
             ],
             practice: [
+                // Basic
                 { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱", npc: "お弁当、温めますか？", npc_mean: "便當要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします"] },
                 { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー"] },
+                // Transport
                 { id: 'p3', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします"] },
                 { id: 'p4', title: "問路", desc: "詢問車站位置", npc: "何かお困りですか？", npc_mean: "需要幫忙嗎？", target: "駅はどこですか？", target_mean: "請問車站在哪裡？", keywords: ["駅", "どこ"] },
+                // Shopping
                 { id: 'p5', title: "藥妝店", desc: "尋找感冒藥", npc: "何かお探しですか？", npc_mean: "在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬"] },
                 { id: 'p6', title: "結帳", desc: "使用交通卡付款", npc: "お支払いは？", npc_mean: "怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用Suica嗎？", keywords: ["Suica", "払えますか"] },
+                // Dining
                 { id: 'p7', title: "咖啡廳", desc: "點冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーをください。", target_mean: "請給我冰咖啡。", keywords: ["アイス", "コーヒー"] },
                 { id: 'p8', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。", keywords: ["生", "nama"] },
+                // Hotel
                 { id: 'p9', title: "飯店櫃台", desc: "寄放行李", npc: "いらっしゃいませ。", npc_mean: "歡迎光臨。", target: "荷物を預かってください。", target_mean: "請幫我保管行李。", keywords: ["荷物", "預かって"] },
                 { id: 'p10', title: "遺失物", desc: "尋找錢包", npc: "どうされましたか？", npc_mean: "怎麼了嗎？", target: "財布を落としました。", target_mean: "我弄丟錢包了。", keywords: ["財布", "落としました"] },
+                // Life
                 { id: 'p11', title: "問天氣", desc: "詢問明天天氣", npc: "明日の予定は？", npc_mean: "明天有什麼計畫？", target: "明日の天気はどうですか？", target_mean: "明天的天氣如何？", keywords: ["天気", "どう"] },
                 { id: 'p12', title: "拍照", desc: "請求幫忙拍照", npc: "（目が合った）", npc_mean: "(眼神交會)", target: "写真を撮ってもらえますか？", target_mean: "可以幫我拍照嗎？", keywords: ["写真", "撮って"] },
                 { id: 'p13', title: "搭訕", desc: "稱讚對方", npc: "（隣に座った）", npc_mean: "(坐在旁邊)", target: "その服、素敵ですね。", target_mean: "這件衣服很好看呢。", keywords: ["服", "素敵"] },
@@ -321,11 +336,19 @@
                 { id: 'm9', situation: "初次見面", casual: { text: "よろしく！", audio: "よろしく" }, polite: { text: "お目にかかれて光栄です。", audio: "お目にかかれて光栄です" }, tip: "對尊貴的人初次見面，用「能見到您深感榮幸」。" },
                 { id: 'm10', situation: "送別", casual: { text: "またね！", audio: "またね" }, polite: { text: "今後のご活躍をお祈り申し上げます。", audio: "今後のご活躍をお祈り申し上げます" }, tip: "離職或畢業時，祝福對方前程似錦的正式說法。" }
             ],
-            quotes: [ { jp: "一期一会", reading: "Ichigo Ichie", mean: "一生只有一次的相遇" }, { jp: "日日是好日", reading: "Nichi nichi kore koujitsu", mean: "每一天都是好日子" } ],
-            lucky: { colors: ["桜色", "若草色", "瑠璃色", "山吹色", "藤色"], items: ["手帕", "御守", "筆記本", "熱茶", "硬幣"] }
+            quotes: [
+                { jp: "継続は力なり", reading: "Keizoku wa chikara nari", mean: "堅持就是力量" },
+                { jp: "一期一会", reading: "Ichigo Ichie", mean: "一生只有一次的相遇" },
+                { jp: "七転び八起き", reading: "Nanakorobi Yaoki", mean: "跌倒七次，爬起來八次 (百折不撓)" },
+                { jp: "日日是好日", reading: "Nichi nichi kore koujitsu", mean: "每一天都是好日子" }
+            ],
+            lucky: {
+                colors: ["桜色 (櫻花粉)", "若草色 (嫩綠)", "瑠璃色 (深藍)", "山吹色 (金黃)", "藤色 (淡紫)", "生成り (米白)"],
+                items: ["手帕", "御守", "筆記本", "熱茶", "手錶", "硬幣", "耳機"]
+            }
         };
 
-        const STORAGE_KEY = 'hibi_app_state_v14';
+        const STORAGE_KEY = 'hibi_app_state_v15';
         let state = { nickname: "", currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], srsData: {}, settings: { showRomaji: true, ttsSpeed: 0.65 }, omikujiData: null };
         let autoPlayInterval = null; let isAutoPlaying = false; let jpVoice = null;
         let user = null; let db = null; let auth = null; let isOffline = false; let appId = '';
@@ -403,6 +426,7 @@
                 state.progress = 0; state.lastLoginDate = today;
                 saveState();
             }
+            // Don't force omikuji here, let user click
         }
 
         function saveState() {
@@ -430,7 +454,7 @@
                 state.history = [state.lastLoginDate];
                 state.points = 0;
             }
-            saveState();
+            saveState(); // Saves immediately
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             updateUI();
@@ -451,6 +475,7 @@
                 querySnapshot.forEach((doc) => {
                     scores.push(doc.data());
                 });
+                
                 scores.sort((a, b) => b.score - a.score);
                 scores = scores.slice(0, 10);
                 
@@ -497,9 +522,11 @@
             document.getElementById('count-travel').textContent = `全 ${DB.travel.length} 句`;
             document.getElementById('count-practice').textContent = `全 ${DB.practice.length} 情境`;
             document.getElementById('count-master').textContent = `全 ${DB.master.length} 題`;
+            
             document.getElementById('toggle-romaji').checked = state.settings.showRomaji;
             document.getElementById('speed-slider').value = state.settings.ttsSpeed;
             document.getElementById('speed-val').textContent = state.settings.ttsSpeed;
+            
             renderCurrentCard(); renderPractice(); renderMasterQuiz(); renderHeatmap();
         }
 
