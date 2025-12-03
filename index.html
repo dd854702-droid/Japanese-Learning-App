@@ -10,6 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#FDFCFA">
     <meta name="application-name" content="日日 Hibi">
+    <meta name="format-detection" content="telephone=no">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/7864/7864294.png">
 
     <!-- Tailwind CSS -->
@@ -40,7 +41,7 @@
                             brown: '#8D7462',   // 木頭褐
                             red: '#D99386',     // 赤陶紅
                             gold: '#D4AF37',    // 金色
-                            vermilion: '#E34234' // 鳥居紅 (For Omikuji)
+                            vermilion: '#E34234' // 鳥居紅
                         }
                     },
                     fontFamily: {
@@ -86,7 +87,7 @@
             color: #373C38;
             -webkit-font-smoothing: antialiased;
             overscroll-behavior-y: none;
-            touch-action: pan-y;
+            touch-action: pan-y; /* 允許垂直滑動，JS 處理水平手勢 */
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -108,6 +109,11 @@
             writing-mode: vertical-rl;
             text-orientation: upright;
             letter-spacing: 0.15em;
+        }
+        
+        /* 增加按鈕點擊感 */
+        button:active {
+            transform: scale(0.96);
         }
     </style>
 </head>
@@ -137,10 +143,10 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-             <button onclick="addToCalendar(); vibrate(5)" class="p-2 rounded-full text-muji-sub hover:bg-gray-100 active:bg-gray-200 transition-colors">
+             <button onclick="addToCalendar(); vibrate(5)" class="p-3 rounded-full text-muji-sub hover:bg-gray-100 active:bg-gray-200 transition-colors">
                 <i data-lucide="bell" class="w-5 h-5"></i>
              </button>
-             <button onclick="showHelp(); vibrate(5)" class="p-2 rounded-full text-muji-sub hover:bg-gray-100 active:bg-gray-200 transition-colors">
+             <button onclick="showHelp(); vibrate(5)" class="p-3 rounded-full text-muji-sub hover:bg-gray-100 active:bg-gray-200 transition-colors">
                 <i data-lucide="help-circle" class="w-5 h-5"></i>
              </button>
              <div class="relative w-10 h-10 flex items-center justify-center cursor-pointer active:scale-90 transition-transform" onclick="showShareModal(); vibrate(10)">
@@ -166,11 +172,15 @@
             </div>
 
             <div class="text-center mb-6 relative">
-                <span class="inline-block px-3 py-1 rounded-full bg-muji-green/10 text-muji-green text-xs font-bold tracking-widest mb-2">TRAVEL</span>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-green/10 mb-2">
+                    <span class="text-muji-green text-xs font-bold tracking-widest">TRAVEL</span>
+                    <span class="w-1 h-1 rounded-full bg-muji-green"></span>
+                    <span id="count-travel" class="text-muji-green text-[10px] font-medium">全 -- 句</span>
+                </div>
                 <h2 id="card-category" class="text-lg font-rounded text-muji-text">載入中...</h2>
                 
-                <!-- Auto Play Button (Optimized: No icon flash) -->
-                <button id="btn-autoplay" onclick="toggleAutoPlay()" class="absolute right-0 top-2 p-2 rounded-full border border-muji-border text-muji-sub hover:text-muji-green hover:bg-white hover:shadow-sm transition-all flex items-center gap-1 active:scale-95">
+                <!-- Auto Play Button -->
+                <button id="btn-autoplay" onclick="toggleAutoPlay()" class="absolute right-0 top-2 p-3 rounded-full border border-muji-border text-muji-sub hover:text-muji-green hover:bg-white hover:shadow-sm transition-all flex items-center gap-1 active:scale-95">
                     <div class="relative w-4 h-4">
                         <i data-lucide="headphones" id="icon-play" class="absolute top-0 left-0 transition-opacity duration-200"></i>
                         <i data-lucide="pause" id="icon-pause" class="absolute top-0 left-0 transition-opacity duration-200 opacity-0"></i>
@@ -180,7 +190,6 @@
             </div>
 
             <!-- Card Container -->
-            <!-- FIX: Added onclick to support click-to-flip on all devices -->
             <div id="flashcard-container" class="perspective-1000 w-full h-80 cursor-pointer group relative" onclick="flipCard(this)">
                 <div id="hint-left" class="absolute inset-y-0 left-4 flex items-center opacity-0 transition-opacity z-10 pointer-events-none">
                     <div class="bg-gray-300/80 text-white p-3 rounded-full shadow-lg backdrop-blur-sm"><i data-lucide="x" class="w-8 h-8"></i></div>
@@ -194,7 +203,7 @@
                     <div class="absolute w-full h-full backface-hidden bg-muji-card rounded-2xl flex flex-col items-center justify-center p-6 border border-muji-border">
                         <span id="card-desc" class="text-sm text-muji-sub mb-4">...</span>
                         <h3 id="card-jp" class="text-3xl font-bold text-muji-text mb-2 text-center leading-relaxed">...</h3>
-                        <!-- UPDATED: Flip Button with Text "聽答案" -->
+                        <!-- Flip Button -->
                         <div class="mt-6 px-6 py-2.5 rounded-full bg-muji-bg text-muji-green animate-float flex items-center gap-2 shadow-sm border border-muji-green/20">
                             <span class="text-sm font-bold tracking-widest">聽答案</span>
                             <i data-lucide="rotate-cw" class="w-4 h-4"></i>
@@ -207,8 +216,8 @@
                         <!-- Sorami Hint -->
                         <p id="card-sorami" class="text-xs text-muji-green font-medium mb-6 tracking-wide opacity-90 text-center">...</p>
                         
-                        <button onclick="playAudioCurrentCard(event)" class="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-sm active:scale-95">
-                            <i data-lucide="volume-2" class="w-4 h-4"></i>
+                        <button onclick="playAudioCurrentCard(event)" class="flex items-center gap-2 px-6 py-3 rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-sm active:scale-95">
+                            <i data-lucide="volume-2" class="w-5 h-5"></i>
                             <span class="text-sm">播放</span>
                         </button>
                     </div>
@@ -234,7 +243,11 @@
         <!-- Tab 2: 習 (Practice) -->
         <div id="view-practice" class="view-section hidden px-6 py-4 space-y-6 pb-32">
             <div class="text-center mb-6">
-                 <span class="inline-block px-3 py-1 rounded-full bg-muji-brown/10 text-muji-brown text-xs font-bold tracking-widest mb-2">PRACTICE</span>
+                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-brown/10 mb-2">
+                    <span class="text-muji-brown text-xs font-bold tracking-widest">PRACTICE</span>
+                    <span class="w-1 h-1 rounded-full bg-muji-brown"></span>
+                    <span id="count-practice" class="text-muji-brown text-[10px] font-medium">全 -- 情境</span>
+                </div>
                 <h2 id="practice-title" class="text-lg font-rounded text-muji-text">...</h2>
                 <p id="practice-desc" class="text-xs text-muji-sub mt-1">...</p>
                 <button onclick="nextPractice(); vibrate(5)" class="mt-2 text-[10px] text-muji-sub border border-muji-border px-3 py-1.5 rounded-full flex items-center gap-1 mx-auto hover:bg-gray-50 active:bg-gray-100">
@@ -282,7 +295,11 @@
         <!-- Tab 3: 磨 (Master) -->
         <div id="view-master" class="view-section hidden px-6 py-4 space-y-6 pb-32">
              <div class="text-center mb-6">
-                 <span class="inline-block px-3 py-1 rounded-full bg-muji-text/10 text-muji-text text-xs font-bold tracking-widest mb-2">MASTER</span>
+                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-text/10 mb-2">
+                    <span class="text-muji-text text-xs font-bold tracking-widest">MASTER</span>
+                    <span class="w-1 h-1 rounded-full bg-muji-text"></span>
+                    <span id="count-master" class="text-muji-text text-[10px] font-medium">全 -- 題</span>
+                </div>
                 <h2 class="text-lg font-rounded text-muji-text">敬語與常體的切換</h2>
                 <p class="text-xs text-muji-sub mt-1">根據對象切換適當的日語</p>
             </div>
@@ -324,7 +341,6 @@
                 <i data-lucide="info" class="w-5 h-5 text-muji-green"></i> 使用說明
             </h3>
             <div class="space-y-6">
-                <!-- Gestures -->
                 <div class="space-y-3">
                     <h4 class="text-sm font-bold text-muji-sub tracking-widest uppercase border-b border-gray-100 pb-1">手勢操作</h4>
                     <div class="grid grid-cols-2 gap-4 text-xs text-muji-text">
@@ -342,20 +358,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Features -->
-                <div class="space-y-3">
-                    <h4 class="text-sm font-bold text-muji-sub tracking-widest uppercase border-b border-gray-100 pb-1">特色功能</h4>
-                    <ul class="text-xs text-muji-text space-y-3">
-                        <li class="flex items-center gap-3">
-                            <div class="p-2 bg-muji-green/10 rounded-full text-muji-green"><i data-lucide="headphones" class="w-4 h-4"></i></div>
-                            <span><b>聽流模式</b>：自動輪播朗讀，適合通勤聆聽。</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <div class="p-2 bg-muji-vermilion/10 rounded-full text-muji-vermilion"><i data-lucide="gift" class="w-4 h-4"></i></div>
-                            <span><b>每日御神籤</b>：每日首次開啟可搖籤祈福。</span>
-                        </li>
-                    </ul>
-                </div>
             </div>
             <button onclick="closeHelp()" class="w-full mt-8 py-3 bg-muji-text text-white rounded-xl font-medium shadow-lg active:scale-95 transition-transform text-sm">
                 開始學習
@@ -365,7 +367,6 @@
 
     <!-- Omikuji Modal -->
     <div id="omikuji-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-500">
-        <!-- Box -->
         <div id="omikuji-box-state" class="flex flex-col items-center text-center cursor-pointer transition-all duration-300" onclick="drawOmikuji()">
             <div id="omikuji-shaker" class="w-32 h-64 bg-muji-vermilion rounded-lg relative flex flex-col items-center justify-between py-4 shadow-2xl border-4 border-red-800">
                 <div class="w-24 h-4 bg-black/20 rounded-full"></div>
@@ -375,7 +376,6 @@
             </div>
             <p class="mt-8 text-white font-bold text-lg animate-pulse tracking-widest">點擊籤筒求籤</p>
         </div>
-        <!-- Result -->
         <div id="omikuji-result-state" class="hidden washi-paper w-[85%] max-w-sm p-1 shadow-2xl transform scale-90 opacity-0 transition-all duration-1000 origin-top" style="min-height: 480px;">
             <div class="h-full border-2 border-muji-vermilion p-6 flex flex-col items-center text-center relative">
                 <div class="text-muji-vermilion mb-4 opacity-50"><i data-lucide="flower" class="w-6 h-6"></i></div>
@@ -417,7 +417,6 @@
 
     <!-- Logic -->
     <script>
-        // Global Error Handler
         window.onerror = function(msg, url, lineNo, columnNo, error) {
             const toast = document.getElementById('toast');
             if (toast) {
@@ -431,27 +430,58 @@
 
         const DB = {
             travel: [
-                { id: 1, jp: "すみません", romaji: "Sumimasen", kana: "すみません", sorami: "蘇咪媽線", desc: "不好意思 / 請問... (萬用起手式)", category: "基本禮貌", vocab: [{ jp: "はい", reading: "Hai", mean: "是/好的" }, { jp: "いいえ", reading: "Iie", mean: "不/不是" }, { jp: "ありがとう", reading: "Arigatou", mean: "謝謝" }] },
-                { id: 2, jp: "これをください", romaji: "Kore o kudasai", kana: "これ を ください", sorami: "口內喔 哭打賽", desc: "請給我這個 (點餐/購物萬用)", category: "購物", vocab: [{ jp: "これ", reading: "Kore", mean: "這個" }, { jp: "それ", reading: "Sore", mean: "那個(近)" }, { jp: "あれ", reading: "Are", mean: "那個(遠)" }] },
-                { id: 3, jp: "いくらですか", romaji: "Ikura desu ka", kana: "いくら です か", sorami: "以哭啦", desc: "請問多少錢？", category: "購物", vocab: [{ jp: "円", reading: "En", mean: "日圓" }, { jp: "高い", reading: "Takai", mean: "貴" }, { jp: "安い", reading: "Yasui", mean: "便宜" }] },
+                { id: 1, jp: "すみません", romaji: "Sumimasen", kana: "すみません", sorami: "蘇咪媽線", desc: "不好意思 / 請問... (萬用起手式)", category: "基本禮貌", vocab: [{ jp: "はい", reading: "Hai", mean: "是" }] },
+                { id: 2, jp: "これをください", romaji: "Kore o kudasai", kana: "これ を ください", sorami: "口內 喔 哭打賽", desc: "請給我這個 (點餐/購物)", category: "購物", vocab: [{ jp: "これ", reading: "Kore", mean: "這個" }] },
+                { id: 3, jp: "いくらですか", romaji: "Ikura desu ka", kana: "いくら です か", sorami: "以哭啦", desc: "請問多少錢？", category: "購物", vocab: [{ jp: "円", reading: "En", mean: "日圓" }] },
                 { id: 4, jp: "カードは使えますか", romaji: "Kaado wa tsukaemasu ka", kana: "かーど は つかえます か", sorami: "卡多 哇 此卡ㄟ瑪蘇 卡", desc: "可以使用信用卡嗎？", category: "結帳", vocab: [{ jp: "現金", reading: "Genkin", mean: "現金" }, { jp: "ICカード", reading: "IC Kaado", mean: "交通卡" }, { jp: "別々で", reading: "Betsubetsu de", mean: "分開結帳" }] },
                 { id: 5, jp: "お会計をお願いします", romaji: "Okaikei o onegaishimasu", kana: "おかいけい を おねがいします", sorami: "歐開K 喔 歐內該洗媽蘇", desc: "麻煩結帳", category: "結帳", vocab: [{ jp: "ごちそうさま", reading: "Gochisousama", mean: "多謝款待" }, { jp: "美味しい", reading: "Oishii", mean: "好吃的" }] },
                 { id: 6, jp: "英語のメニューはありますか", romaji: "Eigo no menyuu wa arimasu ka", kana: "えいご の めにゅー は あります か", sorami: "A-Go NO 梅紐 哇 阿哩媽蘇 卡", desc: "請問有英文菜單嗎？", category: "餐廳", vocab: [{ jp: "英語", reading: "Eigo", mean: "英文" }, { jp: "中国語", reading: "Chuugokugo", mean: "中文" }, { jp: "写真", reading: "Shashin", mean: "照片" }] },
                 { id: 7, jp: "トイレはどこですか", romaji: "Toire wa doko desu ka", kana: "といれ は どこ です か", sorami: "拖衣蕾 哇 豆口", desc: "請問洗手間在哪裡？", category: "問路", vocab: [{ jp: "ここ", reading: "Koko", mean: "這裡" }, { jp: "駅", reading: "Eki", mean: "車站" }, { jp: "コンビニ", reading: "Konbini", mean: "便利商店" }] },
                 { id: 8, jp: "Wi-Fiはありますか", romaji: "Wi-Fi wa arimasu ka", kana: "わいふぁい は あります か", sorami: "歪Fai 哇 阿哩媽蘇 卡", desc: "請問有 Wi-Fi 嗎？", category: "設施", vocab: [{ jp: "パスワード", reading: "Pasuwaado", mean: "密碼" }, { jp: "充電", reading: "Juuden", mean: "充電" }] },
                 { id: 9, jp: "写真を撮ってもいいですか", romaji: "Shashin o totte mo ii desu ka", kana: "しゃしん を とって も いい です か", sorami: "瞎心 喔 偷貼 摸 一", desc: "請問可以拍照嗎？", category: "觀光", vocab: [{ jp: "写真", reading: "Shashin", mean: "照片" }, { jp: "大丈夫", reading: "Daijoubu", mean: "沒問題" }, { jp: "ダメ", reading: "Dame", mean: "不行" }] },
-                { id: 10, jp: "日本語がわかりません", romaji: "Nihongo ga wakarimasen", kana: "にほんご が わかりません", sorami: "你紅豆 尬 哇咖哩媽線", desc: "我不懂日文 (緊急/求助)", category: "緊急", vocab: [{ jp: "助けて", reading: "Tasukete", mean: "救命/幫忙" }, { jp: "警察", reading: "Keisatsu", mean: "警察" }, { jp: "病院", reading: "Byouin", mean: "醫院" }] }
+                { id: 10, jp: "日本語がわかりません", romaji: "Nihongo ga wakarimasen", kana: "にほんご が わかりません", sorami: "你紅豆 尬 哇咖哩媽線", desc: "我不懂日文 (緊急/求助)", category: "緊急", vocab: [{jp: "助けて", reading: "Tasukete", mean: "救命/幫忙"}, {jp: "警察", reading: "Keisatsu", mean: "警察"}, {jp: "病院", reading: "Byouin", mean: "醫院"}] },
+                { id: 11, jp: "荷物が出てきません", romaji: "Nimotsu ga dete kimasen", kana: "にもつ が でて きません", sorami: "尼默此 尬 得貼 Ki媽線", desc: "我的行李沒有出來", category: "機場", vocab: [{jp: "荷物", reading: "Nimotsu", mean: "行李"}] },
+                { id: 12, jp: "バス乗り場はどこですか", romaji: "Basu noriba wa doko desu ka", kana: "ばす のりば は どこ です か", sorami: "巴蘇 ノー里巴 哇 豆口", desc: "巴士乘車處在哪裡？", category: "機場", vocab: [{jp: "バス", reading: "Basu", mean: "巴士"}] },
+                { id: 13, jp: "チェックインをお願いします", romaji: "Chekkuin o onegaishimasu", kana: "ちぇっくいん を おねがいします", sorami: "切苦印 喔 歐內該洗媽蘇", desc: "我要辦理入住", category: "住宿", vocab: [{jp: "予約", reading: "Yoyaku", mean: "預約"}] },
+                { id: 14, jp: "荷物を預かってもらえますか", romaji: "Nimotsu o azukatte moraemasu ka", kana: "にもつ を あずかって もらえます か", sorami: "尼默此 喔 阿茲卡貼 摩拉A媽蘇 卡", desc: "可以寄放行李嗎？", category: "住宿", vocab: [{jp: "預かる", reading: "Azukaru", mean: "保管"}] },
+                { id: 15, jp: "Wi-Fiのパスワードは何ですか", romaji: "Wi-Fi no pasuwaado wa nan desu ka", kana: "わいふぁい の ぱすわーど は なん です か", sorami: "歪Fai NO Pass挖多 哇 難 得死 卡", desc: "Wi-Fi 密碼是多少？", category: "住宿", vocab: [{jp: "パスワード", reading: "Pasuwaado", mean: "密碼"}] },
+                { id: 16, jp: "おすすめは何ですか", romaji: "Osusume wa nan desu ka", kana: "おすすめ は なん です か", sorami: "歐蘇蘇妹 哇 難 得死 卡", desc: "有什麼推薦的嗎？", category: "餐廳", vocab: [{jp: "おすすめ", reading: "Osusume", mean: "推薦"}] },
+                { id: 17, jp: "お水をお願いします", romaji: "Omizu o onegaishimasu", kana: "おみず を おねがいします", sorami: "歐咪茲 喔 歐內該洗媽蘇", desc: "請給我水", category: "餐廳", vocab: [{jp: "水", reading: "Mizu", mean: "水"}] },
+                { id: 18, jp: "わさび抜きでお願いします", romaji: "Wasabi nuki de onegaishimasu", kana: "わさび ぬき で おねがいします", sorami: "哇沙比 奴Ki de", desc: "請不要加芥末", category: "餐廳", vocab: [{jp: "抜き", reading: "Nuki", mean: "去除"}] },
+                { id: 19, jp: "お会計をお願いします", romaji: "Okaikei o onegaishimasu", kana: "おかいけい を おねがいします", sorami: "歐開K 喔 歐內該洗媽蘇", desc: "麻煩結帳", category: "結帳", vocab: [{jp: "別々", reading: "Betsubetsu", mean: "分開付"}] },
+                { id: 20, jp: "試着してもいいですか", romaji: "Shichaku shite mo ii desu ka", kana: "しちゃく して も いい です か", sorami: "洗恰苦 吸貼 摸 一 得死 卡", desc: "可以試穿嗎？", category: "購物", vocab: [{jp: "試着", reading: "Shichaku", mean: "試穿"}] },
+                { id: 21, jp: "免税になりますか", romaji: "Menzei ni narimasu ka", kana: "めんぜい に なります か", sorami: "免賊 尼 那里媽蘇 卡", desc: "可以退稅嗎？", category: "購物", vocab: [{jp: "免税", reading: "Menzei", mean: "免稅"}] },
+                { id: 22, jp: "新しいのはありますか", romaji: "Atarashii no wa arimasu ka", kana: "あたらしい の は あります か", sorami: "阿塔拉吸 NO 哇 阿哩媽蘇 卡", desc: "有新的嗎？", category: "購物", vocab: [{jp: "新しい", reading: "Atarashii", mean: "新的"}] },
+                { id: 23, jp: "この電車は新宿に行きますか", romaji: "Kono densha wa Shinjuku ni ikimasu ka", kana: "この でんしゃ は しんじゅく に いきます か", sorami: "口諾 電瞎 哇 新宿 尼 一ki媽蘇 卡", desc: "這班電車會到新宿嗎？", category: "交通", vocab: [{jp: "電車", reading: "Densha", mean: "電車"}] },
+                { id: 24, jp: "切符をなくしました", romaji: "Kippu o nakushimashita", kana: "きっぷ を なくしました", sorami: "Ki噗 喔 那哭洗媽希塔", desc: "我的票不見了", category: "交通", vocab: [{jp: "切符", reading: "Kippu", mean: "車票"}] },
+                { id: 25, jp: "気分が悪いです", romaji: "Kibun ga warui desu", kana: "きぶん が わるい です", sorami: "Ki不恩 尬 瓦魯一 得死", desc: "我不舒服", category: "緊急", vocab: [{jp: "気分", reading: "Kibun", mean: "感覺"}] },
+                { id: 26, jp: "パスポートを落としました", romaji: "Pasupooto o otoshimashita", kana: "ぱすぽーと を おとしました", sorami: "Pass波多 喔 歐偷洗媽希塔", desc: "我弄丟護照了", category: "緊急", vocab: [{jp: "落とす", reading: "Otosu", mean: "弄丟"}] },
+                { id: 27, jp: "病院に連れて行ってください", romaji: "Byouin ni tsurete itte kudasai", kana: "びょういん に つれて いって ください", sorami: "Byo院 尼 此蕾貼 一貼 哭打賽", desc: "請帶我去醫院", category: "緊急", vocab: [{jp: "病院", reading: "Byouin", mean: "醫院"}] },
+                { id: 28, jp: "道に迷いました", romaji: "Michi ni mayoimashita", kana: "みち に まよい ました", sorami: "米七 尼 馬優衣 媽希塔", desc: "我迷路了", category: "緊急", vocab: [{jp: "道", reading: "Michi", mean: "路"}] },
+                { id: 29, jp: "これをお願いします", romaji: "Kore o onegaishimasu", kana: "これ を おねがいします", sorami: "口內 喔 歐內該洗媽蘇", desc: "麻煩這個(遞出東西時)", category: "萬用", vocab: [{jp: "お願い", reading: "Onegai", mean: "拜託"}] },
+                { id: 30, jp: "もう一度お願いします", romaji: "Mou ichido onegaishimasu", kana: "もう いちど おねがいします", sorami: "末 一七多 歐內該洗媽蘇", desc: "請再說一次", category: "溝通", vocab: [{jp: "もう一度", reading: "Mou ichido", mean: "再一次"}] }
             ],
             practice: [
                 { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱便當", npc: "お弁当、温めますか？", npc_mean: "便當需要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします", "onegaishimasu", "hai"] },
                 { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー", "ありますか", "menu", "eigo"] },
                 { id: 'p3', title: "飯店入住", desc: "告知櫃台要辦理入住", npc: "いらっしゃいませ。", npc_mean: "歡迎光臨。", target: "チェックインをお願いします。", target_mean: "麻煩幫我辦理入住。", keywords: ["チェックイン", "お願いします", "check-in", "checkin"] },
-                { id: 'p4', title: "問路", desc: "詢問這附近是否有車站", npc: "何かお困りですか？", npc_mean: "有什麼需要幫忙的嗎？", target: "近くに駅はありますか？", target_mean: "請問這附近有車站嗎？", keywords: ["近く", "駅", "ありますか", "eki", "chikaku"] }
+                { id: 'p4', title: "問路", desc: "詢問這附近是否有車站", npc: "何かお困りですか？", npc_mean: "有什麼需要幫忙的嗎？", target: "近くに駅はありますか？", target_mean: "請問這附近有車站嗎？", keywords: ["近く", "駅", "ありますか", "eki", "chikaku"] },
+                { id: 'p5', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします", "jusho", "address"] },
+                { id: 'p6', title: "藥妝店", desc: "詢問有無感冒藥", npc: "何かお探しですか？", npc_mean: "請問在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬", "ありますか", "kaze", "kusuri"] },
+                { id: 'p7', title: "咖啡廳", desc: "點一杯冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーを一つください。", target_mean: "請給我一杯冰咖啡。", keywords: ["アイス", "コーヒー", "ください", "coffee"] },
+                { id: 'p8', title: "結帳", desc: "詢問能否用西瓜卡", npc: "お支払いはどうされますか？", npc_mean: "請問要怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用 Suica 付款嗎？", keywords: ["Suica", "払えますか", "haraemasuka"] },
+                { id: 'p9', title: "遺失物", desc: "在車站詢問遺失物", npc: "どうされましたか？", npc_mean: "怎麼了嗎？", target: "財布をなくしてしまいました。", target_mean: "我不小心弄丟錢包了。", keywords: ["財布", "なくして", "saifu", "lost"] },
+                { id: 'p10', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼呢？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。(道地說法)", keywords: ["生", "nama", "beer"] }
             ],
             master: [
                 { id: 'm1', situation: "拒絕邀請", casual: { text: "ちょっと都合が悪いんだ。", audio: "ちょっと都合が悪いんだ" }, polite: { text: "あいにく都合がつきませんで...", audio: "あいにく都合がつきませんで" }, tip: "朋友之間用「悪い (warui)」直接表達不便；對上司則使用「あいにく (ainiku)」作為緩衝詞，並用「つきません」這種委婉的否定。" },
                 { id: 'm2', situation: "請求協助 (借筆)", casual: { text: "ペン、貸してくれない？", audio: "ペン、貸してくれない" }, polite: { text: "ペンをお借りしてもよろしいですか？", audio: "ペンをお借りしてもよろしいですか" }, tip: "朋友間用「〜くれない？」(能...嗎？)；正式場合用「お借りしても」(借用一下) 加上「よろしいですか」(可以嗎？) 展現極高禮貌。" },
-                { id: 'm3', situation: "表達感謝 (受人照顧)", casual: { text: "いろいろありがとう！", audio: "いろいろありがとう" }, polite: { text: "いろいろとお世話になりました。", audio: "いろいろとお世話になりました" }, tip: "一般的謝謝用「ありがとう」；但如果是受了長輩或客戶的長期照顧，必須用固定句型「お世話になりました」(承蒙您照顧了)。" }
+                { id: 'm3', situation: "表達感謝 (受人照顧)", casual: { text: "いろいろありがとう！", audio: "いろいろありがとう" }, polite: { text: "いろいろとお世話になりました。", audio: "いろいろとお世話になりました" }, tip: "一般的謝謝用「ありがとう」；但如果是受了長輩或客戶的長期照顧，必須用固定句型「お世話になりました」(承蒙您照顧了)。" },
+                { id: 'm4', situation: "道歉 (遲到)", casual: { text: "ごめん、遅れる！", audio: "ごめん、遅れる" }, polite: { text: "申し訳ございません、遅れます。", audio: "申し訳ございません、遅れます" }, tip: "朋友間用「ごめん (Gomen)」即可；商務場合必須用最高級的道歉「申し訳ございません (Moushiwake gozaimasen)」。" },
+                { id: 'm5', situation: "確認理解", casual: { text: "わかった？", audio: "わかった" }, polite: { text: "ご理解いただけましたでしょうか。", audio: "ご理解いただけましたでしょうか" }, tip: "對朋友用「わかった (Wakatta)」；對客戶要用尊敬語「ご理解 (Gorikai)」加上詢問句型，避免給人上對下的感覺。" },
+                { id: 'm6', situation: "請求稍等", casual: { text: "ちょっと待って。", audio: "ちょっと待って" }, polite: { text: "少々お待ちいただけますか。", audio: "少々お待ちいただけますか" }, tip: "「待って (Matte)」其實是命令形，對長輩不禮貌。正式場合請用「少々 (Shoushou)」代替「ちょっと」，並用疑問句結尾。" },
+                { id: 'm7', situation: "表達意見 (反對)", casual: { text: "それは違うと思う。", audio: "それは違うと思う" }, polite: { text: "その点については、少し異論がございます。", audio: "その点については、少し異論がございます" }, tip: "直接說「不一樣 (違う)」太強烈。商務日語會說「關於那一點 (その点については)」，我有「些許異議 (異論がございます)」，非常委婉。" },
+                { id: 'm8', situation: "電話應對 (不在位子上)", casual: { text: "今、いないよ。", audio: "今、いないよ" }, polite: { text: "ただいま席を外しております。", audio: "ただいま席を外しております" }, tip: "接聽公司電話時，同事不在不能說「いない (Inai)」，要說「席を外しております (Seki o hazushite orimasu)」，表示暫時離開。" }
             ],
             quotes: [
                 { jp: "継続は力なり", reading: "Keizoku wa chikara nari", mean: "堅持就是力量" },
@@ -521,6 +551,16 @@
             const percent = Math.min(100, (state.progress / state.dailyGoal) * 100);
             const ring = document.getElementById('goal-progress-ring');
             if(ring) ring.style.strokeDasharray = `${percent}, 100`;
+
+            // Update Counts
+            const countTravel = document.getElementById('count-travel');
+            if(countTravel) countTravel.textContent = `全 ${DB.travel.length} 句`;
+            
+            const countPractice = document.getElementById('count-practice');
+            if(countPractice) countPractice.textContent = `全 ${DB.practice.length} 情境`;
+            
+            const countMaster = document.getElementById('count-master');
+            if(countMaster) countMaster.textContent = `全 ${DB.master.length} 題`;
 
             renderCurrentCard();
             renderPractice();
@@ -645,7 +685,7 @@
             const data = DB.travel[state.currentCardIndex];
             const u = new SpeechSynthesisUtterance(data.jp);
             u.lang = 'ja-JP';
-            u.rate = 0.75; // Lowered speed
+            u.rate = 0.55; // Lowered speed
             
             u.onend = () => {
                 if(!isAutoPlaying) return;
@@ -792,7 +832,7 @@
         function playAudioCurrentCard(e) { playAudio(DB.travel[state.currentCardIndex].jp, e); }
         let jpVoice = null;
         function loadVoices() { if (!('speechSynthesis' in window)) return; const voices = window.speechSynthesis.getVoices(); jpVoice = voices.find(v => v.lang.includes('ja')) || null; }
-        function playAudio(text, event) { if(event) event.stopPropagation(); if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='ja-JP'; u.rate=0.75; if (jpVoice) { u.voice = jpVoice; } else { loadVoices(); if(jpVoice) u.voice = jpVoice; } window.speechSynthesis.speak(u); } }
+        function playAudio(text, event) { if(event) event.stopPropagation(); if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='ja-JP'; u.rate=0.55; if (jpVoice) { u.voice = jpVoice; } else { loadVoices(); if(jpVoice) u.voice = jpVoice; } window.speechSynthesis.speak(u); } }
         
         function resetAppDebug() { if(confirm('重置進度？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
         
