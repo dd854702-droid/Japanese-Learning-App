@@ -237,6 +237,11 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // --- 1. Global Vars (Top Level) ---
+        let rec; let isRec = false;
+        let autoPlayInterval = null; let isAutoPlaying = false; let jpVoice = null; let zhVoice = null;
+        let user = null; let db = null; let auth = null; let isOffline = false; let appId = '';
+
         const DB = {
             travel: [
                 { id: 1, jp: "すみません", romaji: "Sumimasen", kana: "すみません", sorami: "蘇咪媽線", desc: "不好意思 / 請問", category: "基本", vocab: [{ jp: "はい", reading: "Hai", mean: "是" }] },
@@ -333,188 +338,14 @@
             lucky: { colors: ["桜色", "若草色", "瑠璃色", "山吹色", "藤色"], items: ["手帕", "御守", "筆記本", "熱茶", "硬幣"] }
         };
 
-        const STORAGE_KEY = 'hibi_app_state_v18';
+        const STORAGE_KEY = 'hibi_app_state_v29';
         let state = { nickname: "", currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], srsData: {}, settings: { showRomaji: true, ttsSpeed: 0.65 }, omikujiData: null };
-        let autoPlayInterval = null; let isAutoPlaying = false; let jpVoice = null; let zhVoice = null;
-        let user = null; let db = null; let auth = null; let isOffline = false; let appId = '';
 
+        // --- 2. Helpers ---
         function getTodayString() { return new Date().toISOString().split('T')[0]; }
         function vibrate(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
 
-        function initApp() {
-            try {
-                if (typeof __firebase_config !== 'undefined') {
-                    const config = JSON.parse(__firebase_config);
-                    const fbApp = initializeApp(config);
-                    auth = getAuth(fbApp);
-                    db = getFirestore(fbApp);
-                    appId = typeof __app_id !== 'undefined' ? __app_id : 'hibi-demo';
-                    
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        signInWithCustomToken(auth, __initial_auth_token).catch(e => console.warn('Token auth failed', e));
-                    } else {
-                        signInAnonymously(auth).catch(e => console.warn('Anon auth failed', e));
-                    }
-
-                    onAuthStateChanged(auth, (u) => {
-                        if (u) { user = u; loadCloudData(); }
-                    });
-                } else { throw new Error("No config"); }
-            } catch (e) {
-                console.warn("Offline Mode", e);
-                isOffline = true;
-                loadState();
-                document.getElementById('app-loading').classList.add('hidden');
-                
-                if (!state.nickname) {
-                    document.getElementById('auth-screen').classList.remove('hidden');
-                } else {
-                    document.getElementById('main-app').classList.remove('hidden');
-                }
-            }
-        }
-
-        async function loadCloudData() {
-            if(!user || isOffline) return;
-            try {
-                const docRef = doc(db, 'artifacts', appId, 'users', user.uid, 'data', 'progress');
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    state = { ...state, ...docSnap.data() };
-                    checkDailyStreak();
-                    document.getElementById('auth-screen').classList.add('hidden');
-                    document.getElementById('main-app').classList.remove('hidden');
-                } else {
-                    document.getElementById('auth-screen').classList.remove('hidden');
-                }
-            } catch(e) { console.error(e); loadState(); }
-            updateUI();
-            document.getElementById('app-loading').classList.add('hidden');
-        }
-
-        function loadState() {
-            try {
-                const saved = localStorage.getItem(STORAGE_KEY);
-                if (saved) state = { ...state, ...JSON.parse(saved) };
-                checkDailyStreak();
-            } catch (e) {}
-            updateUI();
-        }
-
-        function checkDailyStreak() {
-            const today = getTodayString();
-            if(!state.lastLoginDate) { state.lastLoginDate = today; state.streak = 1; state.history=[today]; saveState(); return; }
-            if (state.lastLoginDate !== today) {
-                const d = Math.ceil(Math.abs(new Date(today) - new Date(state.lastLoginDate)) / (86400000));
-                if (d === 1) { state.streak++; state.points += 50; } else if (d > 1) state.streak = 1;
-                if (!state.history.includes(today)) state.history.push(today);
-                state.progress = 0; state.lastLoginDate = today;
-                saveState();
-            }
-            if (!state.hasSeenOmikuji) showOmikuji();
-        }
-
-        function saveState() {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
-            if (user && db && !isOffline) { 
-                setDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'data', 'progress'), state).catch(e=>{});
-                if(state.nickname) {
-                     setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'leaderboard', user.uid), {
-                        name: state.nickname,
-                        score: state.points,
-                        streak: state.streak
-                    }).catch(e=>{});
-                }
-            }
-            updateUI();
-        }
-
-        async function handleLogin() {
-            const name = document.getElementById('input-nickname').value.trim();
-            if(!name) return alert('請輸入暱稱');
-            state.nickname = name;
-            if (!state.lastLoginDate) {
-                state.lastLoginDate = getTodayString();
-                state.streak = 1;
-                state.history = [state.lastLoginDate];
-                state.points = 0;
-            }
-            saveState();
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            updateUI();
-        }
-
-        async function fetchLeaderboard() {
-            if(isOffline) {
-                document.getElementById('leaderboard-list').innerHTML = '<div class="text-center text-muji-sub py-4">離線模式無法讀取排行榜</div>';
-                return;
-            }
-            const list = document.getElementById('leaderboard-list');
-            list.innerHTML = '<div class="text-center text-muji-sub py-4">載入中...</div>';
-            
-            try {
-                const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard')); 
-                const querySnapshot = await getDocs(q);
-                let scores = [];
-                querySnapshot.forEach((doc) => {
-                    scores.push(doc.data());
-                });
-                
-                scores.sort((a, b) => b.score - a.score);
-                scores = scores.slice(0, 10);
-                
-                list.innerHTML = scores.map((p, i) => `
-                    <div class="flex items-center justify-between p-3 rounded-xl ${p.name===state.nickname ? 'bg-white border border-muji-green/50 shadow-sm' : 'border-b border-gray-100 last:border-0'}">
-                        <div class="flex items-center gap-3">
-                            <span class="font-bold w-6 text-center text-muji-sub">${i+1}</span>
-                            <div class="flex flex-col">
-                                <span class="font-medium text-muji-text text-sm">${p.name}</span>
-                                <span class="text-[10px] text-muji-sub">連勝 ${p.streak} 日</span>
-                            </div>
-                        </div>
-                        <span class="font-bold text-muji-gold text-sm">${p.score}</span>
-                    </div>
-                `).join('');
-                
-                if(scores.length === 0) list.innerHTML = '<div class="text-center text-muji-sub py-4">目前無人上榜</div>';
-                
-            } catch (e) {
-                console.error("Fetch LB failed", e);
-                list.innerHTML = '<div class="text-center text-red-300 py-4">載入失敗</div>';
-            }
-        }
-
-        function handleCardResult(isCorrect) {
-            const cid = DB.travel[state.currentCardIndex].id;
-            let s = state.srsData[cid] || { level: 0, nextReview: 0 };
-            if (isCorrect) { s.level++; state.points+=10; state.progress++; if(!state.masteredCards.includes(cid)) state.masteredCards.push(cid); showToast("✨ 熟記！", "bg-muji-green"); }
-            else { s.level=0; showToast("💪 稍後再複習", "bg-muji-red"); }
-            state.srsData[cid] = s; 
-            state.currentCardIndex = (state.currentCardIndex + 1) % DB.travel.length;
-            saveState();
-            const inner = document.querySelector('.card-inner');
-            if(inner) { inner.style.transition='none'; inner.classList.remove('rotate-y-180','animate-swipe-left','animate-swipe-right'); inner.style.transform=''; setTimeout(()=>inner.style.transition='all 0.5s ease',50); }
-            renderCurrentCard();
-        }
-
-        function updateUI() {
-            if(state.nickname) document.getElementById('user-badge').textContent = state.nickname;
-            document.getElementById('header-points').textContent = state.points;
-            document.getElementById('header-streak').textContent = state.streak;
-            document.getElementById('goal-text').textContent = `${state.progress}/${state.dailyGoal}`;
-            document.getElementById('goal-progress-ring').style.strokeDasharray = `${Math.min(100, (state.progress/state.dailyGoal)*100)}, 100`;
-            document.getElementById('count-travel').textContent = `全 ${DB.travel.length} 句`;
-            document.getElementById('count-practice').textContent = `全 ${DB.practice.length} 情境`;
-            document.getElementById('count-master').textContent = `全 ${DB.master.length} 題`;
-            
-            document.getElementById('toggle-romaji').checked = state.settings.showRomaji;
-            document.getElementById('speed-slider').value = state.settings.ttsSpeed;
-            document.getElementById('speed-val').textContent = state.settings.ttsSpeed;
-            
-            renderCurrentCard(); renderPractice(); renderMasterQuiz(); renderHeatmap();
-        }
-
+        // --- 3. Renderers (Defined early) ---
         function renderCurrentCard() {
             const d = DB.travel[state.currentCardIndex]; if(!d) return;
             document.getElementById('card-category').textContent = d.category;
@@ -545,12 +376,120 @@
             lucide.createIcons();
         }
         function renderHeatmap() { const c=document.getElementById('heatmap-container'); if(c) { c.innerHTML=''; const t=new Date(); for(let i=6;i>=0;i--){ const d=new Date(t); d.setDate(t.getDate()-i); const s=d.toISOString().split('T')[0]; c.innerHTML+=`<div class="w-2 h-2 rounded-full transition-all ${state.history.includes(s)?'bg-muji-green':'bg-gray-200'}"></div>`; } } }
+        
+        // 3.5 Missing Renderer Fixed
+        function updateProfileUI() {
+            document.getElementById('profile-streak').textContent = state.streak;
+            document.getElementById('profile-total').textContent = state.masteredCards.length;
+            const badgeContainer = document.getElementById('badge-container');
+            badgeContainer.innerHTML = (state.streak>=3?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="flame" class="text-red-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">3連勝</span></div>`:'') + (state.points>=100?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="star" class="text-yellow-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">百分</span></div>`:'');
+            lucide.createIcons();
+            fetchLeaderboard();
+        }
 
+        function updateUI() {
+            if(state.nickname) document.getElementById('user-badge').textContent = state.nickname;
+            document.getElementById('header-points').textContent = state.points;
+            document.getElementById('header-streak').textContent = state.streak;
+            document.getElementById('goal-text').textContent = `${state.progress}/${state.dailyGoal}`;
+            document.getElementById('goal-progress-ring').style.strokeDasharray = `${Math.min(100, (state.progress/state.dailyGoal)*100)}, 100`;
+            document.getElementById('count-travel').textContent = `全 ${DB.travel.length} 句`;
+            document.getElementById('count-practice').textContent = `全 ${DB.practice.length} 情境`;
+            document.getElementById('count-master').textContent = `全 ${DB.master.length} 題`;
+            document.getElementById('toggle-romaji').checked = state.settings.showRomaji;
+            document.getElementById('speed-slider').value = state.settings.ttsSpeed;
+            document.getElementById('speed-val').textContent = state.settings.ttsSpeed;
+            renderCurrentCard(); renderPractice(); renderMasterQuiz(); renderHeatmap();
+        }
+
+        // --- 4. Core Logic ---
+        function initApp() {
+            try {
+                if (typeof __firebase_config !== 'undefined') {
+                    const config = JSON.parse(__firebase_config);
+                    const fbApp = initializeApp(config);
+                    auth = getAuth(fbApp);
+                    db = getFirestore(fbApp);
+                    appId = typeof __app_id !== 'undefined' ? __app_id : 'hibi-demo';
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) signInWithCustomToken(auth, __initial_auth_token).catch(e=>{});
+                    else signInAnonymously(auth).catch(e=>{});
+                    onAuthStateChanged(auth, (u) => { if (u) { user = u; loadCloudData(); } });
+                } else throw new Error("No config");
+            } catch (e) {
+                isOffline = true; loadState();
+                document.getElementById('app-loading').classList.add('hidden');
+                if (!state.nickname) document.getElementById('auth-screen').classList.remove('hidden');
+                else document.getElementById('main-app').classList.remove('hidden');
+            }
+        }
+        async function loadCloudData() {
+            if(!user || isOffline) return;
+            try {
+                const docSnap = await getDoc(doc(db, 'artifacts', appId, 'users', user.uid, 'data', 'progress'));
+                if (docSnap.exists()) {
+                    state = { ...state, ...docSnap.data() };
+                    checkDailyStreak();
+                    document.getElementById('auth-screen').classList.add('hidden');
+                    document.getElementById('main-app').classList.remove('hidden');
+                } else { document.getElementById('auth-screen').classList.remove('hidden'); }
+            } catch(e) { loadState(); }
+            updateUI(); document.getElementById('app-loading').classList.add('hidden');
+        }
+        function loadState() { try { const s = localStorage.getItem(STORAGE_KEY); if (s) state = { ...state, ...JSON.parse(s) }; checkDailyStreak(); } catch (e) {} updateUI(); }
+        function checkDailyStreak() {
+            const today = getTodayString();
+            if(!state.lastLoginDate) { state.lastLoginDate=today; state.streak=1; state.history=[today]; saveState(); return; }
+            if(state.lastLoginDate !== today) {
+                const d = Math.ceil(Math.abs(new Date(today) - new Date(state.lastLoginDate))/86400000);
+                if(d===1) { state.streak++; state.points+=50; } else if(d>1) state.streak=1;
+                if(!state.history.includes(today)) state.history.push(today);
+                state.progress=0; state.lastLoginDate=today; saveState();
+            }
+            if (!state.hasSeenOmikuji) showOmikuji();
+        }
+        function saveState() { try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} if(user&&db&&!isOffline){ setDoc(doc(db,'artifacts',appId,'users',user.uid,'data','progress'),state).catch(e=>{}); if(state.nickname) setDoc(doc(db,'artifacts',appId,'public','data','leaderboard',user.uid),{name:state.nickname,score:state.points,streak:state.streak}).catch(e=>{}); } updateUI(); }
+        async function handleLogin() {
+            const name = document.getElementById('input-nickname').value.trim();
+            if(!name) return alert('請輸入暱稱');
+            state.nickname = name;
+            if(!state.lastLoginDate) { state.lastLoginDate=getTodayString(); state.streak=1; state.history=[state.lastLoginDate]; state.points=0; }
+            saveState();
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            updateUI();
+        }
+        async function fetchLeaderboard() {
+            if(isOffline) { document.getElementById('leaderboard-list').innerHTML = '<div class="text-center text-muji-sub py-4">離線模式無法讀取排行榜</div>'; return; }
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = '<div class="text-center text-muji-sub py-4">載入中...</div>';
+            try {
+                const q = query(collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard')); 
+                const querySnapshot = await getDocs(q);
+                let scores = [];
+                querySnapshot.forEach((doc) => { scores.push(doc.data()); });
+                scores.sort((a, b) => b.score - a.score);
+                scores = scores.slice(0, 10);
+                list.innerHTML = scores.map((p, i) => `<div class="flex items-center justify-between p-3 rounded-xl ${p.name===state.nickname ? 'bg-white border border-muji-green/50 shadow-sm' : 'border-b border-gray-100 last:border-0'}"><div class="flex items-center gap-3"><span class="font-bold w-6 text-center text-muji-sub">${i+1}</span><div class="flex flex-col"><span class="font-medium text-muji-text text-sm">${p.name}</span><span class="text-[10px] text-muji-sub">連勝 ${p.streak} 日</span></div></div><span class="font-bold text-muji-gold text-sm">${p.score}</span></div>`).join('');
+                if(scores.length === 0) list.innerHTML = '<div class="text-center text-muji-sub py-4">目前無人上榜</div>';
+            } catch (e) { list.innerHTML = '<div class="text-center text-red-300 py-4">載入失敗</div>'; }
+        }
+
+        // --- 5. Speech Init (Moved Up) ---
+        function initSpeech() { 
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(SR) { 
+                rec = new SR(); rec.lang='ja-JP'; 
+                rec.onresult=e=>{ const t=e.results[0][0].transcript; document.getElementById('transcript-text').textContent=t; if(e.results[0].isFinal) validateSpeech(t); }; 
+                rec.onend=()=>{ isRec=false; const fb=document.getElementById('feedback-area'); if(fb&&!fb.classList.contains('hidden')) updateRecordUI('idle'); }; 
+            } else { const b=document.getElementById('btn-record'); if(b) b.style.display='none'; } 
+        }
+
+        // --- 6. Audio Logic ---
         function loadVoices() { 
             if('speechSynthesis' in window) { 
                 const vs=window.speechSynthesis.getVoices(); 
                 jpVoice=vs.find(v=>v.lang.includes('ja'))||null; 
-                zhVoice=vs.find(v=>v.lang==='zh-TW'||v.lang==='zh_TW')||vs.find(v=>v.lang.includes('zh'))||null;
+                zhVoice=vs.find(v=>v.lang==='zh-TW'||v.lang==='zh_TW')||vs.find(v=>v.name.includes('Taiwan'))||vs.find(v=>v.lang.includes('zh'))||null;
             } 
         }
         function playAudio(text, e) {
@@ -564,6 +503,7 @@
             }
         }
         function playAudioCurrentCard(e) { playAudio(DB.travel[state.currentCardIndex].jp, e); }
+        
         function toggleAutoPlay() {
             const btn=document.getElementById('btn-autoplay'); if(!btn) return;
             const txt=document.getElementById('text-autoplay');
@@ -579,73 +519,41 @@
                 btn.classList.add('bg-muji-green','text-white'); btn.classList.remove('text-muji-sub');
                 document.getElementById('wrapper-icon-play').classList.add('opacity-0');
                 document.getElementById('wrapper-icon-pause').classList.remove('opacity-0');
-                if(!jpVoice) loadVoices();
+                if(!jpVoice || !zhVoice) loadVoices();
                 playNextAuto();
             }
         }
-        
-        // Updated playNextAuto: ZH -> JP
         function playNextAuto() {
             if(!isAutoPlaying) return;
             const d = DB.travel[state.currentCardIndex];
-            
-            // 1. ZH (Desc) - Normal speed
-            const u1 = new SpeechSynthesisUtterance(d.desc);
-            u1.lang = 'zh-TW'; 
-            u1.rate = 0.9; 
-            if(zhVoice) u1.voice = zhVoice;
-
-            // 2. JP (Target) - Configured speed
-            const u2 = new SpeechSynthesisUtterance(d.jp);
-            u2.lang = 'ja-JP'; 
-            u2.rate = state.settings.ttsSpeed; 
-            if(jpVoice) u2.voice = jpVoice;
-
-            u1.onend = () => {
-                if(isAutoPlaying) {
-                    // Pause 0.3s then speak JP
-                    setTimeout(() => window.speechSynthesis.speak(u2), 300);
-                }
-            };
-
-            u2.onend = () => {
-                if(isAutoPlaying) {
-                    // Pause 2s then next card
-                    autoPlayInterval = setTimeout(() => {
-                        state.currentCardIndex = (state.currentCardIndex + 1) % DB.travel.length;
-                        renderCurrentCard();
-                        playNextAuto();
-                    }, 2000);
-                }
-            };
-
+            const u1 = new SpeechSynthesisUtterance(d.desc); u1.lang = 'zh-TW'; u1.rate = 0.9; if(zhVoice) u1.voice = zhVoice;
+            const u2 = new SpeechSynthesisUtterance(d.jp); u2.lang = 'ja-JP'; u2.rate = state.settings.ttsSpeed; if(jpVoice) u2.voice = jpVoice;
+            u1.onend = () => { if(isAutoPlaying) setTimeout(() => window.speechSynthesis.speak(u2), 300); };
+            u2.onend = () => { if(isAutoPlaying) autoPlayInterval = setTimeout(() => { state.currentCardIndex=(state.currentCardIndex+1)%DB.travel.length; renderCurrentCard(); playNextAuto(); }, 2000); };
             window.speechSynthesis.speak(u1);
         }
 
+        // --- 7. Interactions ---
         function flipCard(el) { el.querySelector('.card-inner').classList.toggle('rotate-y-180'); }
         function switchTab(t) { state.currentTab=t; document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.target===`view-${t}`)); document.querySelectorAll('.view-section').forEach(s=>s.classList.toggle('hidden',s.id!==`view-${t}`)); saveState(); }
         function nextPractice() { state.currentPracticeIndex=(state.currentPracticeIndex+1)%DB.practice.length; saveState(); }
+        function handleCardResult(isCorrect) {
+            const cid = DB.travel[state.currentCardIndex].id;
+            let s = state.srsData[cid] || { level: 0, nextReview: 0 };
+            if (isCorrect) { s.level++; state.points+=10; state.progress++; if(!state.masteredCards.includes(cid)) state.masteredCards.push(cid); showToast("✨ 熟記！", "bg-muji-green"); }
+            else { s.level=0; showToast("💪 稍後再複習", "bg-muji-red"); }
+            state.srsData[cid] = s; 
+            state.currentCardIndex = (state.currentCardIndex + 1) % DB.travel.length;
+            saveState();
+            const inner = document.querySelector('.card-inner');
+            if(inner) { inner.style.transition='none'; inner.classList.remove('rotate-y-180'); inner.style.transform=''; setTimeout(()=>inner.style.transition='all 0.5s ease',50); }
+            renderCurrentCard();
+        }
         function showToast(m,c) { const t=document.getElementById('toast'); if(t){ t.innerHTML=m; t.className=`fixed top-24 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium opacity-100 transition-all duration-300 z-[99] shadow-float translate-y-0 text-white ${c}`; setTimeout(()=>{ t.classList.remove('opacity-100','translate-y-0'); t.classList.add('opacity-0','translate-y-[-10px]'); },2000); } }
         function resetAppDebug() { if(confirm('重置？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
+        function addPoints(v) { state.points+=v; saveState(); }
         function showBigText(e) { e.stopPropagation(); document.getElementById('bigtext-modal').classList.remove('opacity-0','pointer-events-none'); }
         function closeBigText() { document.getElementById('bigtext-modal').classList.add('opacity-0','pointer-events-none'); }
-
-        function showProfile() { 
-            document.getElementById('profile-modal').classList.remove('opacity-0','pointer-events-none'); 
-            document.getElementById('profile-streak').textContent = state.streak;
-            document.getElementById('profile-total').textContent = state.masteredCards.length;
-            const badgeContainer = document.getElementById('badge-container');
-            badgeContainer.innerHTML = (state.streak>=3?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="flame" class="text-red-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">3連勝</span></div>`:'') + (state.points>=100?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="star" class="text-yellow-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">百分</span></div>`:'');
-            lucide.createIcons();
-            fetchLeaderboard(); 
-        }
-        function closeProfile() { document.getElementById('profile-modal').classList.add('opacity-0','pointer-events-none'); }
-        function showSettings() { document.getElementById('settings-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('settings-content').classList.remove('scale-95'); }
-        function closeSettings() { document.getElementById('settings-modal').classList.add('opacity-0','pointer-events-none'); document.getElementById('settings-content').classList.add('scale-95'); }
-        function toggleRomajiSetting() { state.settings.showRomaji = !state.settings.showRomaji; saveState(); }
-        function updateSpeed(v) { state.settings.ttsSpeed = parseFloat(v); document.getElementById('speed-val').textContent=v; saveState(); }
-        function exportData() { navigator.clipboard.writeText(JSON.stringify(state)).then(()=>alert("已複製")); }
-        function importData() { const d=prompt("貼上代碼"); if(d) { try{ state=JSON.parse(d); saveState(); alert("成功"); location.reload(); }catch(e){alert("無效");} } }
         function showShareModal() { document.getElementById('share-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('share-modal-content').classList.add('scale-100'); setTimeout(generateShareImage,300); }
         function closeShareModal() { document.getElementById('share-modal').classList.add('opacity-0','pointer-events-none'); document.getElementById('share-modal-content').classList.remove('scale-100'); }
         function generateShareImage() { const c=document.getElementById('share-canvas'); const ctx=c.getContext('2d'); const w=c.width; const h=c.height; const d=DB.travel[state.currentCardIndex]; ctx.fillStyle='#FDFCFA'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#FFF'; ctx.fillRect(40,40,w-80,h-160); ctx.textAlign='center'; ctx.fillStyle='#373C38'; ctx.font='bold 48px sans-serif'; ctx.fillText(d.jp,w/2,h/2-20); ctx.fillStyle='#888'; ctx.font='24px sans-serif'; ctx.fillText(d.desc,w/2,h/2+30); document.getElementById('loading-canvas').style.display='none'; }
@@ -655,93 +563,32 @@
         function showHelp() { document.getElementById('help-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('help-modal-content').classList.add('scale-100'); }
         function closeHelp() { document.getElementById('help-modal').classList.add('opacity-0','pointer-events-none'); document.getElementById('help-modal-content').classList.remove('scale-100'); }
         function toggleRecording() { if(!rec) return alert('不支援'); if(isRec) rec.stop(); else { rec.start(); document.getElementById('feedback-area').classList.remove('hidden'); document.getElementById('feedback-text').textContent="聽取中..."; isRec=true; updateRecordUI('listening'); } }
+        function validateSpeech(t) { const k=DB.practice[state.currentPracticeIndex].keywords; if(k.some(w=>t.toLowerCase().includes(w))) { updateRecordUI('success'); addPoints(20); } else updateRecordUI('retry'); }
         function updateRecordUI(s) { const b=document.getElementById('btn-record'); const t=document.getElementById('btn-record-text'); if(!b) return; if(s==='listening') { b.classList.replace('bg-muji-green','bg-muji-red'); t.textContent='停止'; } else if(s==='success') { b.classList.replace('bg-muji-red','bg-muji-green'); t.textContent='試著說'; document.getElementById('feedback-text').textContent='太棒了！'; } else { b.classList.replace('bg-muji-red','bg-muji-green'); t.textContent='試著說'; } }
-
-        function drawOmikuji() {
-            vibrate([50, 50, 50]);
-            document.getElementById('omikuji-shaker').classList.add('animate-shake');
-            setTimeout(() => {
-                document.getElementById('omikuji-shaker').classList.remove('animate-shake');
-                document.getElementById('omikuji-box-state').classList.add('hidden');
-                const res = document.getElementById('omikuji-result-state');
-                res.classList.remove('hidden');
-                const f = ["大吉", "中吉", "小吉", "吉", "末吉"];
-                const q = DB.quotes[Math.floor(Math.random() * DB.quotes.length)];
-                const c = DB.lucky.colors[Math.floor(Math.random() * DB.lucky.colors.length)];
-                const i = DB.lucky.items[Math.floor(Math.random() * DB.lucky.items.length)];
-                const result = { text: f[Math.floor(Math.random()*f.length)], quote: q.jp+"\n"+q.mean, color: c, item: i };
-                state.omikujiData = { date: getTodayString(), result: result };
-                saveState();
-                document.getElementById('omikuji-text').textContent = result.text;
-                document.getElementById('omikuji-quote').textContent = result.quote;
-                document.getElementById('omikuji-color').textContent = result.color;
-                document.getElementById('omikuji-item').textContent = result.item;
-                setTimeout(() => { res.classList.remove('opacity-0', 'scale-90'); res.classList.add('animate-unfold'); }, 100);
-            }, 600);
-        }
+        function showSettings() { document.getElementById('settings-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('settings-content').classList.remove('scale-95'); }
+        function closeSettings() { document.getElementById('settings-modal').classList.add('opacity-0','pointer-events-none'); document.getElementById('settings-content').classList.add('scale-95'); }
+        function toggleRomajiSetting() { state.settings.showRomaji = !state.settings.showRomaji; saveState(); }
+        function updateSpeed(v) { state.settings.ttsSpeed = parseFloat(v); document.getElementById('speed-val').textContent=v; saveState(); }
+        function exportData() { navigator.clipboard.writeText(JSON.stringify(state)).then(()=>alert("已複製")); }
+        function importData() { const d=prompt("貼上代碼"); if(d) { try{ state=JSON.parse(d); saveState(); alert("成功"); location.reload(); }catch(e){alert("無效");} } }
+        function drawOmikuji() { vibrate([50, 50, 50]); document.getElementById('omikuji-shaker').classList.add('animate-shake'); setTimeout(() => { document.getElementById('omikuji-shaker').classList.remove('animate-shake'); document.getElementById('omikuji-box-state').classList.add('hidden'); const res = document.getElementById('omikuji-result-state'); res.classList.remove('hidden'); const f = ["大吉", "中吉", "小吉", "吉", "末吉"]; const q = DB.quotes[Math.floor(Math.random() * DB.quotes.length)]; const c = DB.lucky.colors[Math.floor(Math.random() * DB.lucky.colors.length)]; const i = DB.lucky.items[Math.floor(Math.random() * DB.lucky.items.length)]; const result = { text: f[Math.floor(Math.random()*f.length)], quote: q.jp+"\n"+q.mean, color: c, item: i }; state.omikujiData = { date: getTodayString(), result: result }; saveState(); document.getElementById('omikuji-text').textContent = result.text; document.getElementById('omikuji-quote').textContent = result.quote; document.getElementById('omikuji-color').textContent = result.color; document.getElementById('omikuji-item').textContent = result.item; setTimeout(() => { res.classList.remove('opacity-0', 'scale-90'); res.classList.add('animate-unfold'); }, 100); }, 600); }
         function closeOmikuji() { document.getElementById('omikuji-modal').classList.add('opacity-0', 'pointer-events-none'); }
-        function showOmikuji() { 
-            const m=document.getElementById('omikuji-modal'); const b=document.getElementById('omikuji-box-state'); const r=document.getElementById('omikuji-result-state');
-            if(!m) return;
-            const today = getTodayString();
-            if (state.omikujiData && state.omikujiData.date === today) {
-                const d = state.omikujiData.result;
-                document.getElementById('omikuji-text').textContent = d.text;
-                document.getElementById('omikuji-quote').textContent = d.quote;
-                document.getElementById('omikuji-color').textContent = d.color;
-                document.getElementById('omikuji-item').textContent = d.item;
-                b.classList.add('hidden'); r.classList.remove('hidden','opacity-0','scale-90'); r.classList.add('animate-unfold');
-            } else {
-                b.classList.remove('hidden'); r.classList.add('hidden','opacity-0'); r.classList.remove('animate-unfold');
-            }
-            m.classList.remove('opacity-0', 'pointer-events-none'); 
-        }
+        function showOmikuji() { const m=document.getElementById('omikuji-modal'); const b=document.getElementById('omikuji-box-state'); const r=document.getElementById('omikuji-result-state'); if(!m) return; const today = getTodayString(); if (state.omikujiData && state.omikujiData.date === today) { const d = state.omikujiData.result; document.getElementById('omikuji-text').textContent = d.text; document.getElementById('omikuji-quote').textContent = d.quote; document.getElementById('omikuji-color').textContent = d.color; document.getElementById('omikuji-item').textContent = d.item; b.classList.add('hidden'); r.classList.remove('hidden','opacity-0','scale-90'); r.classList.add('animate-unfold'); } else { b.classList.remove('hidden'); r.classList.add('hidden','opacity-0'); r.classList.remove('animate-unfold'); } m.classList.remove('opacity-0', 'pointer-events-none'); }
+        function showProfile() { document.getElementById('profile-modal').classList.remove('opacity-0','pointer-events-none'); updateProfileUI(); }
+        function closeProfile() { document.getElementById('profile-modal').classList.add('opacity-0','pointer-events-none'); }
+        
+        // Gestures
+        let tsX=0, tsY=0, isDrag=false, isScroll=false; const cc=document.getElementById('flashcard-container'); if(cc) { cc.addEventListener('touchstart',e=>{ tsX=e.touches[0].clientX; tsY=e.touches[0].clientY; isDrag=true; isScroll=false; const inr=cc.querySelector('.card-inner'); if(inr) inr.style.transition='none'; }, {passive:false}); cc.addEventListener('touchmove',e=>{ if(!isDrag) return; const dx=e.touches[0].clientX-tsX; const dy=e.touches[0].clientY-tsY; if(!isScroll) { if(Math.abs(dx)>Math.abs(dy)) e.preventDefault(); else { isScroll=true; return; } } if(isScroll) return; const inr=cc.querySelector('.card-inner'); if(inr) { inr.style.transform=`translateX(${dx}px) rotate(${dx*0.1}deg)`; if(dx>50) document.getElementById('hint-right').style.opacity=Math.min(1,(dx-50)/100); else if(dx<-50) document.getElementById('hint-left').style.opacity=Math.min(1,(-dx-50)/100); } }, {passive:false}); cc.addEventListener('touchend',e=>{ isDrag=false; if(isScroll) return; const dx=e.changedTouches[0].clientX-tsX; const inr=cc.querySelector('.card-inner'); if(inr) { inr.style.transition='all 0.5s ease'; if(Math.abs(dx)>=100) { if(dx>0) { inr.classList.add('animate-swipe-right'); setTimeout(()=>handleCardResult(true),300); } else { inr.classList.add('animate-swipe-left'); setTimeout(()=>handleCardResult(false),300); } } else { inr.style.transform=''; document.getElementById('hint-left').style.opacity='0'; document.getElementById('hint-right').style.opacity='0'; } } }); }
 
-        let tsX=0, tsY=0, isDrag=false, isScroll=false;
-        const cc=document.getElementById('flashcard-container');
-        if(cc) {
-            cc.addEventListener('touchstart',e=>{ tsX=e.touches[0].clientX; tsY=e.touches[0].clientY; isDrag=true; isScroll=false; const inr=cc.querySelector('.card-inner'); if(inr) inr.style.transition='none'; }, {passive:false});
-            cc.addEventListener('touchmove',e=>{ if(!isDrag) return; const dx=e.touches[0].clientX-tsX; const dy=e.touches[0].clientY-tsY; if(!isScroll) { if(Math.abs(dx)>Math.abs(dy)) e.preventDefault(); else { isScroll=true; return; } } if(isScroll) return; const inr=cc.querySelector('.card-inner'); if(inr) { inr.style.transform=`translateX(${dx}px) rotate(${dx*0.1}deg)`; if(dx>50) document.getElementById('hint-right').style.opacity=Math.min(1,(dx-50)/100); else if(dx<-50) document.getElementById('hint-left').style.opacity=Math.min(1,(-dx-50)/100); } }, {passive:false});
-            cc.addEventListener('touchend',e=>{ isDrag=false; if(isScroll) return; const dx=e.changedTouches[0].clientX-tsX; const inr=cc.querySelector('.card-inner'); if(inr) { inr.style.transition='all 0.5s ease'; if(Math.abs(dx)>=100) { if(dx>0) { inr.classList.add('animate-swipe-right'); setTimeout(()=>handleCardResult(true),300); } else { inr.classList.add('animate-swipe-left'); setTimeout(()=>handleCardResult(false),300); } } else { inr.style.transform=''; document.getElementById('hint-left').style.opacity='0'; document.getElementById('hint-right').style.opacity='0'; } } });
-        }
-
+        // --- Expose ---
         function exposeGlobals() {
-            window.handleLogin = handleLogin;
-            window.handleCardResult = handleCardResult;
-            window.playAudioCurrentCard = playAudioCurrentCard;
-            window.playAudio = playAudio;
-            window.toggleAutoPlay = toggleAutoPlay;
-            window.flipCard = flipCard;
-            window.switchTab = switchTab;
-            window.nextPractice = nextPractice;
-            window.renderMasterQuiz = renderMasterQuiz;
-            window.showShareModal = showShareModal;
-            window.closeShareModal = closeShareModal;
-            window.downloadShareImage = downloadShareImage;
-            window.shareProgress = shareProgress;
-            window.addToCalendar = addToCalendar;
-            window.showHelp = showHelp;
-            window.closeHelp = closeHelp;
-            window.toggleRecording = toggleRecording;
-            window.resetAppDebug = resetAppDebug;
-            window.drawOmikuji = drawOmikuji;
-            window.closeOmikuji = closeOmikuji;
-            window.showProfile = showProfile;
-            window.closeProfile = closeProfile;
-            window.showSettings = showSettings;
-            window.closeSettings = closeSettings;
-            window.toggleRomajiSetting = toggleRomajiSetting;
-            window.updateSpeed = updateSpeed;
-            window.exportData = exportData;
-            window.importData = importData;
-            window.showBigText = showBigText;
-            window.closeBigText = closeBigText;
-            window.showOmikuji = showOmikuji;
+            window.handleLogin = handleLogin; window.handleCardResult = handleCardResult; window.playAudioCurrentCard = playAudioCurrentCard; window.playAudio = playAudio; window.toggleAutoPlay = toggleAutoPlay; window.flipCard = flipCard; window.switchTab = switchTab; window.nextPractice = nextPractice; window.renderMasterQuiz = renderMasterQuiz; window.showShareModal = showShareModal; window.closeShareModal = closeShareModal; window.downloadShareImage = downloadShareImage; window.shareProgress = shareProgress; window.addToCalendar = addToCalendar; window.showHelp = showHelp; window.closeHelp = closeHelp; window.toggleRecording = toggleRecording; window.resetAppDebug = resetAppDebug; window.drawOmikuji = drawOmikuji; window.closeOmikuji = closeOmikuji; window.showProfile = showProfile; window.closeProfile = closeProfile; window.showSettings = showSettings; window.closeSettings = closeSettings; window.toggleRomajiSetting = toggleRomajiSetting; window.updateSpeed = updateSpeed; window.exportData = exportData; window.importData = importData; window.showBigText = showBigText; window.closeBigText = closeBigText; window.showOmikuji = showOmikuji;
         }
 
         window.addEventListener('DOMContentLoaded', () => { 
             initApp(); exposeGlobals(); initSpeech(); lucide.createIcons(); switchTab(state.currentTab); 
             if ('speechSynthesis' in window) { loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices; }
+            setTimeout(() => { const l=document.getElementById('app-loading'); if(l){ l.style.opacity='0'; setTimeout(()=>l.remove(),500); } }, 800);
         });
     </script>
 </body>
