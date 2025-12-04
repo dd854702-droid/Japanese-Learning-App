@@ -237,7 +237,7 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- Global Vars ---
+        // --- 1. Global Vars ---
         let rec; let isRec = false;
         let autoPlayInterval = null; let isAutoPlaying = false; let jpVoice = null; let zhVoice = null;
         let user = null; let db = null; let auth = null; let isOffline = false; let appId = '';
@@ -307,14 +307,14 @@
                 { id: 60, jp: "助けてください", romaji: "Tasukete kudasai", kana: "たすけて ください", sorami: "塔蘇K貼", desc: "請救救我", category: "緊急", vocab: [{jp: "助ける", reading: "Tasukeru", mean: "救助"}] }
             ],
             practice: [
-                { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱便當", npc: "お弁当、温めますか？", npc_mean: "便當需要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします", "onegaishimasu", "hai"] },
-                { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー", "ありますか", "menu", "eigo"] },
-                { id: 'p3', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします", "jusho", "address"] },
+                { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱", npc: "お弁当、温めますか？", npc_mean: "便當要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします"] },
+                { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー"] },
+                { id: 'p3', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします"] },
                 { id: 'p4', title: "問路", desc: "詢問車站位置", npc: "何かお困りですか？", npc_mean: "需要幫忙嗎？", target: "駅はどこですか？", target_mean: "請問車站在哪裡？", keywords: ["駅", "どこ"] },
-                { id: 'p5', title: "藥妝店", desc: "尋找感冒藥", npc: "何かお探しですか？", npc_mean: "在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬", "ありますか", "kaze", "kusuri"] },
-                { id: 'p6', title: "結帳", desc: "使用交通卡付款", npc: "お支払いは？", npc_mean: "怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用Suica嗎？", keywords: ["Suica", "払えますか", "haraemasuka"] },
-                { id: 'p7', title: "咖啡廳", desc: "點一杯冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーをください。", target_mean: "請給我冰咖啡。", keywords: ["アイス", "コーヒー", "ください", "coffee"] },
-                { id: 'p8', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。", keywords: ["生", "nama", "beer"] },
+                { id: 'p5', title: "藥妝店", desc: "尋找感冒藥", npc: "何かお探しですか？", npc_mean: "在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬"] },
+                { id: 'p6', title: "結帳", desc: "使用交通卡付款", npc: "お支払いは？", npc_mean: "怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用Suica嗎？", keywords: ["Suica", "払えますか"] },
+                { id: 'p7', title: "咖啡廳", desc: "點一杯冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーをください。", target_mean: "請給我冰咖啡。", keywords: ["アイス", "コーヒー"] },
+                { id: 'p8', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。", keywords: ["生", "nama"] },
                 { id: 'p9', title: "飯店櫃台", desc: "寄放行李", npc: "いらっしゃいませ。", npc_mean: "歡迎光臨。", target: "荷物を預かってください。", target_mean: "請幫我保管行李。", keywords: ["荷物", "預かって"] },
                 { id: 'p10', title: "遺失物", desc: "尋找錢包", npc: "どうされましたか？", npc_mean: "怎麼了嗎？", target: "財布を落としました。", target_mean: "我弄丟錢包了。", keywords: ["財布", "落としました"] },
                 { id: 'p11', title: "問天氣", desc: "詢問明天天氣", npc: "明日の予定は？", npc_mean: "明天有什麼計畫？", target: "明日の天気はどうですか？", target_mean: "明天的天氣如何？", keywords: ["天気", "どう"] },
@@ -339,7 +339,7 @@
             lucky: { colors: ["桜色", "若草色", "瑠璃色", "山吹色", "藤色"], items: ["手帕", "御守", "筆記本", "熱茶", "硬幣"] }
         };
 
-        const STORAGE_KEY = 'hibi_app_state_v33';
+        const STORAGE_KEY = 'hibi_app_state_v36';
         let state = { nickname: "", currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], srsData: {}, settings: { showRomaji: true, ttsSpeed: 0.65 }, omikujiData: null };
 
         // --- 2. Helpers ---
@@ -360,7 +360,6 @@
             document.getElementById('vocab-list').innerHTML = d.vocab.map(v => `<div class="flex justify-between items-center pb-2 border-b border-gray-100 last:border-0" onclick="playAudio('${v.jp}', event)"><span class="text-muji-text font-medium text-sm">${v.jp}</span><div class="text-right text-[10px] text-gray-400">${v.reading}<br>${v.mean}</div></div>`).join('');
             lucide.createIcons();
         }
-
         function renderPractice() {
             const d = DB.practice[state.currentPracticeIndex]; if(!d) return;
             document.getElementById('practice-title').textContent = d.title;
@@ -370,7 +369,6 @@
             document.getElementById('practice-target-text').textContent = d.target;
             document.getElementById('practice-target-mean').textContent = d.target_mean;
         }
-
         function renderMasterQuiz() {
             const c = document.getElementById('quiz-container'); const s = document.getElementById('master-search').value.toLowerCase(); c.innerHTML = '';
             const f = DB.master.filter(d => d.situation.toLowerCase().includes(s));
@@ -378,7 +376,6 @@
             f.forEach(d => { c.innerHTML += `<div class="bg-white rounded-2xl p-6 shadow-soft border border-muji-border mb-4"><div class="flex justify-between items-center mb-4"><span class="text-sm font-bold text-muji-sub">${d.situation}</span><i data-lucide="arrow-right-left" class="w-4 h-4 text-muji-sub"></i></div><div class="space-y-4"><div class="p-3 bg-gray-50 rounded-lg active:bg-gray-100 transition-colors" onclick="playAudio('${d.casual.audio}', event)"><p class="font-medium text-muji-text">${d.casual.text}</p><span class="text-[10px] text-muji-sub">Casual</span></div><div class="p-3 bg-muji-bg rounded-lg border border-muji-brown/30 active:bg-orange-50 transition-colors" onclick="playAudio('${d.polite.audio}', event)"><p class="font-medium text-muji-text">${d.polite.text}</p><span class="text-[10px] text-muji-sub">Polite</span></div></div></div>`; });
             lucide.createIcons();
         }
-
         function renderHeatmap() { const c=document.getElementById('heatmap-container'); if(c) { c.innerHTML=''; const t=new Date(); for(let i=6;i>=0;i--){ const d=new Date(t); d.setDate(t.getDate()-i); const s=d.toISOString().split('T')[0]; c.innerHTML+=`<div class="w-2 h-2 rounded-full transition-all ${state.history.includes(s)?'bg-muji-green':'bg-gray-200'}"></div>`; } } }
         
         async function fetchLeaderboard() {
@@ -441,7 +438,6 @@
                 else document.getElementById('main-app').classList.remove('hidden');
             }
         }
-        
         async function loadCloudData() {
             if(!user || isOffline) return;
             try {
@@ -455,9 +451,7 @@
             } catch(e) { loadState(); }
             updateUI(); document.getElementById('app-loading').classList.add('hidden');
         }
-
         function loadState() { try { const s = localStorage.getItem(STORAGE_KEY); if (s) state = { ...state, ...JSON.parse(s) }; checkDailyStreak(); } catch (e) {} updateUI(); }
-        
         function checkDailyStreak() {
             const today = getTodayString();
             if(!state.lastLoginDate) { state.lastLoginDate=today; state.streak=1; state.history=[today]; saveState(); return; }
@@ -469,9 +463,7 @@
             }
             if (!state.hasSeenOmikuji) showOmikuji();
         }
-
         function saveState() { try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} if(user&&db&&!isOffline){ setDoc(doc(db,'artifacts',appId,'users',user.uid,'data','progress'),state).catch(e=>{}); if(state.nickname) setDoc(doc(db,'artifacts',appId,'public','data','leaderboard',user.uid),{name:state.nickname,score:state.points,streak:state.streak}).catch(e=>{}); } updateUI(); }
-        
         async function handleLogin() {
             const name = document.getElementById('input-nickname').value.trim();
             if(!name) return alert('請輸入暱稱');
@@ -483,7 +475,7 @@
             updateUI();
         }
 
-        // --- 5. Speech Init ---
+        // --- 5. Speech Init (Moved Up) ---
         function initSpeech() { 
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if(SR) { 
@@ -501,7 +493,6 @@
                 zhVoice=vs.find(v=>v.lang==='zh-TW'||v.lang==='zh_TW')||vs.find(v=>v.name.includes('Taiwan'))||vs.find(v=>v.lang.includes('zh'))||null;
             } 
         }
-        
         function playAudio(text, e) {
             if(e) e.stopPropagation();
             if('speechSynthesis' in window) {
@@ -512,7 +503,6 @@
                 window.speechSynthesis.speak(u);
             }
         }
-        
         function playAudioCurrentCard(e) { playAudio(DB.travel[state.currentCardIndex].jp, e); }
         
         function toggleAutoPlay() {
@@ -535,53 +525,19 @@
             }
         }
         
-        // Updated playNextAuto: ZH -> JP
         function playNextAuto() {
             if(!isAutoPlaying) return;
             const d = DB.travel[state.currentCardIndex];
-            
-            // 1. ZH (Desc) - Normal speed
-            const u1 = new SpeechSynthesisUtterance(d.desc);
-            u1.lang = 'zh-TW'; 
-            u1.rate = 0.9; 
-            if(zhVoice) u1.voice = zhVoice;
-
-            // 2. JP (Target) - Configured speed
-            const u2 = new SpeechSynthesisUtterance(d.jp);
-            u2.lang = 'ja-JP'; 
-            u2.rate = state.settings.ttsSpeed; 
-            if(jpVoice) u2.voice = jpVoice;
-
-            u1.onend = () => {
-                if(isAutoPlaying) {
-                    setTimeout(() => window.speechSynthesis.speak(u2), 300);
-                }
-            };
-
-            u2.onend = () => {
-                if(isAutoPlaying) {
-                    autoPlayInterval = setTimeout(() => {
-                        state.currentCardIndex = (state.currentCardIndex + 1) % DB.travel.length;
-                        renderCurrentCard();
-                        playNextAuto();
-                    }, 2000);
-                }
-            };
-
+            const u1 = new SpeechSynthesisUtterance(d.desc); u1.lang = 'zh-TW'; u1.rate = 0.9; if(zhVoice) u1.voice = zhVoice;
+            const u2 = new SpeechSynthesisUtterance(d.jp); u2.lang = 'ja-JP'; u2.rate = state.settings.ttsSpeed; if(jpVoice) u2.voice = jpVoice;
+            u1.onend = () => { if(isAutoPlaying) setTimeout(() => window.speechSynthesis.speak(u2), 300); };
+            u2.onend = () => { if(isAutoPlaying) autoPlayInterval = setTimeout(() => { state.currentCardIndex=(state.currentCardIndex+1)%DB.travel.length; renderCurrentCard(); playNextAuto(); }, 2000); };
             window.speechSynthesis.speak(u1);
         }
 
         function flipCard(el) { el.querySelector('.card-inner').classList.toggle('rotate-y-180'); }
-        
-        function switchTab(t) { 
-            state.currentTab=t; 
-            document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.target===`view-${t}`)); 
-            document.querySelectorAll('.view-section').forEach(s=>s.classList.toggle('hidden',s.id!==`view-${t}`)); 
-            saveState(); 
-        }
-        
+        function switchTab(t) { state.currentTab=t; document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.target===`view-${t}`)); document.querySelectorAll('.view-section').forEach(s=>s.classList.toggle('hidden',s.id!==`view-${t}`)); saveState(); }
         function nextPractice() { state.currentPracticeIndex=(state.currentPracticeIndex+1)%DB.practice.length; saveState(); }
-        
         function handleCardResult(isCorrect) {
             const cid = DB.travel[state.currentCardIndex].id;
             let s = state.srsData[cid] || { level: 0, nextReview: 0 };
@@ -594,24 +550,19 @@
             if(inner) { inner.style.transition='none'; inner.classList.remove('rotate-y-180'); inner.style.transform=''; setTimeout(()=>inner.style.transition='all 0.5s ease',50); }
             renderCurrentCard();
         }
-        
         function showToast(m,c) { const t=document.getElementById('toast'); if(t){ t.innerHTML=m; t.className=`fixed top-24 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium opacity-100 transition-all duration-300 z-[99] shadow-float translate-y-0 text-white ${c}`; setTimeout(()=>{ t.classList.remove('opacity-100','translate-y-0'); t.classList.add('opacity-0','translate-y-[-10px]'); },2000); } }
         function resetAppDebug() { if(confirm('重置？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
         function addPoints(v) { state.points+=v; saveState(); }
-        
         function showBigText(e) { e.stopPropagation(); document.getElementById('bigtext-modal').classList.remove('opacity-0','pointer-events-none'); }
         function closeBigText() { document.getElementById('bigtext-modal').classList.add('opacity-0','pointer-events-none'); }
-        
         function showShareModal() { document.getElementById('share-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('share-modal-content').classList.add('scale-100'); setTimeout(generateShareImage,300); }
         function closeShareModal() { document.getElementById('share-modal').classList.add('opacity-0','pointer-events-none'); document.getElementById('share-modal-content').classList.remove('scale-100'); }
         function generateShareImage() { const c=document.getElementById('share-canvas'); const ctx=c.getContext('2d'); const w=c.width; const h=c.height; const d=DB.travel[state.currentCardIndex]; ctx.fillStyle='#FDFCFA'; ctx.fillRect(0,0,w,h); ctx.fillStyle='#FFF'; ctx.fillRect(40,40,w-80,h-160); ctx.textAlign='center'; ctx.fillStyle='#373C38'; ctx.font='bold 48px sans-serif'; ctx.fillText(d.jp,w/2,h/2-20); ctx.fillStyle='#888'; ctx.font='24px sans-serif'; ctx.fillText(d.desc,w/2,h/2+30); document.getElementById('loading-canvas').style.display='none'; }
         function downloadShareImage() { const l=document.createElement('a'); l.download='hibi.png'; l.href=document.getElementById('share-canvas').toDataURL(); l.click(); }
         async function shareProgress() { try { await navigator.share({title:'Hibi', text:'學習日語中', url:window.location.href}); } catch(e){} }
-        
         function addToCalendar() { window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=日日+Hibi&details=學習日語&recur=RRULE:FREQ=DAILY`, '_blank'); }
         function showHelp() { document.getElementById('help-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('help-modal-content').classList.add('scale-100'); }
         function closeHelp() { document.getElementById('help-modal').classList.add('opacity-0','pointer-events-none'); document.getElementById('help-modal-content').classList.remove('scale-100'); }
-        
         function toggleRecording() { if(!rec) return alert('不支援'); if(isRec) rec.stop(); else { rec.start(); document.getElementById('feedback-area').classList.remove('hidden'); document.getElementById('feedback-text').textContent="聽取中..."; isRec=true; updateRecordUI('listening'); } }
         function validateSpeech(t) { const k=DB.practice[state.currentPracticeIndex].keywords; if(k.some(w=>t.toLowerCase().includes(w))) { updateRecordUI('success'); addPoints(20); } else updateRecordUI('retry'); }
         function updateRecordUI(s) { const b=document.getElementById('btn-record'); const t=document.getElementById('btn-record-text'); if(!b) return; if(s==='listening') { b.classList.replace('bg-muji-green','bg-muji-red'); t.textContent='停止'; } else if(s==='success') { b.classList.replace('bg-muji-red','bg-muji-green'); t.textContent='試著說'; document.getElementById('feedback-text').textContent='太棒了！'; } else { b.classList.replace('bg-muji-red','bg-muji-green'); t.textContent='試著說'; } }
@@ -623,15 +574,19 @@
         function exportData() { navigator.clipboard.writeText(JSON.stringify(state)).then(()=>alert("已複製")); }
         function importData() { const d=prompt("貼上代碼"); if(d) { try{ state=JSON.parse(d); saveState(); alert("成功"); location.reload(); }catch(e){alert("無效");} } }
         
-        function drawOmikuji() { vibrate([50, 50, 50]); document.getElementById('omikuji-shaker').classList.add('animate-shake'); setTimeout(() => { document.getElementById('omikuji-shaker').classList.remove('animate-shake'); document.getElementById('omikuji-box-state').classList.add('hidden'); const res = document.getElementById('omikuji-result-state'); res.classList.remove('hidden'); const f = ["大吉", "中吉", "小吉", "吉", "末吉"]; const q = DB.quotes[Math.floor(Math.random() * DB.quotes.length)]; const c = DB.lucky.colors[Math.floor(Math.random() * DB.lucky.colors.length)]; const i = DB.lucky.items[Math.floor(Math.random() * DB.lucky.items.length)]; const result = { text: f[Math.floor(Math.random()*f.length)], quote: q.jp+"\n"+q.mean, color: c, item: i }; state.omikujiData = { date: getTodayString(), result: result }; saveState(); document.getElementById('omikuji-text').textContent = result.text; document.getElementById('omikuji-quote').textContent = result.quote; document.getElementById('omikuji-color').textContent = result.color; document.getElementById('omikuji-item').textContent = result.item; setTimeout(() => { res.classList.remove('opacity-0', 'scale-90'); res.classList.add('animate-unfold'); }, 100); }, 600); }
-        function closeOmikuji() { document.getElementById('omikuji-modal').classList.add('opacity-0', 'pointer-events-none'); }
-        function showOmikuji() { const m=document.getElementById('omikuji-modal'); const b=document.getElementById('omikuji-box-state'); const r=document.getElementById('omikuji-result-state'); if(!m) return; const today = getTodayString(); if (state.omikujiData && state.omikujiData.date === today) { const d = state.omikujiData.result; document.getElementById('omikuji-text').textContent = d.text; document.getElementById('omikuji-quote').textContent = d.quote; document.getElementById('omikuji-color').textContent = d.color; document.getElementById('omikuji-item').textContent = d.item; b.classList.add('hidden'); r.classList.remove('hidden','opacity-0','scale-90'); r.classList.add('animate-unfold'); } else { b.classList.remove('hidden'); r.classList.add('hidden','opacity-0'); r.classList.remove('animate-unfold'); } m.classList.remove('opacity-0', 'pointer-events-none'); }
-        
+        // --- Profile Functions (Now explicitly defined) ---
         function showProfile() { 
             document.getElementById('profile-modal').classList.remove('opacity-0','pointer-events-none'); 
             updateProfileUI(); 
         }
-        function closeProfile() { document.getElementById('profile-modal').classList.add('opacity-0','pointer-events-none'); }
+        
+        function closeProfile() { 
+            document.getElementById('profile-modal').classList.add('opacity-0','pointer-events-none'); 
+        }
+        
+        function drawOmikuji() { vibrate([50, 50, 50]); document.getElementById('omikuji-shaker').classList.add('animate-shake'); setTimeout(() => { document.getElementById('omikuji-shaker').classList.remove('animate-shake'); document.getElementById('omikuji-box-state').classList.add('hidden'); const res = document.getElementById('omikuji-result-state'); res.classList.remove('hidden'); const f = ["大吉", "中吉", "小吉", "吉", "末吉"]; const q = DB.quotes[Math.floor(Math.random() * DB.quotes.length)]; const c = DB.lucky.colors[Math.floor(Math.random() * DB.lucky.colors.length)]; const i = DB.lucky.items[Math.floor(Math.random() * DB.lucky.items.length)]; const result = { text: f[Math.floor(Math.random()*f.length)], quote: q.jp+"\n"+q.mean, color: c, item: i }; state.omikujiData = { date: getTodayString(), result: result }; saveState(); document.getElementById('omikuji-text').textContent = result.text; document.getElementById('omikuji-quote').textContent = result.quote; document.getElementById('omikuji-color').textContent = result.color; document.getElementById('omikuji-item').textContent = result.item; setTimeout(() => { res.classList.remove('opacity-0', 'scale-90'); res.classList.add('animate-unfold'); }, 100); }, 600); }
+        function closeOmikuji() { document.getElementById('omikuji-modal').classList.add('opacity-0', 'pointer-events-none'); }
+        function showOmikuji() { const m=document.getElementById('omikuji-modal'); const b=document.getElementById('omikuji-box-state'); const r=document.getElementById('omikuji-result-state'); if(!m) return; const today = getTodayString(); if (state.omikujiData && state.omikujiData.date === today) { const d = state.omikujiData.result; document.getElementById('omikuji-text').textContent = d.text; document.getElementById('omikuji-quote').textContent = d.quote; document.getElementById('omikuji-color').textContent = d.color; document.getElementById('omikuji-item').textContent = d.item; b.classList.add('hidden'); r.classList.remove('hidden','opacity-0','scale-90'); r.classList.add('animate-unfold'); } else { b.classList.remove('hidden'); r.classList.add('hidden','opacity-0'); r.classList.remove('animate-unfold'); } m.classList.remove('opacity-0', 'pointer-events-none'); }
         
         // Gestures
         let tsX=0, tsY=0, isDrag=false, isScroll=false; const cc=document.getElementById('flashcard-container'); if(cc) { cc.addEventListener('touchstart',e=>{ tsX=e.touches[0].clientX; tsY=e.touches[0].clientY; isDrag=true; isScroll=false; const inr=cc.querySelector('.card-inner'); if(inr) inr.style.transition='none'; }, {passive:false}); cc.addEventListener('touchmove',e=>{ if(!isDrag) return; const dx=e.touches[0].clientX-tsX; const dy=e.touches[0].clientY-tsY; if(!isScroll) { if(Math.abs(dx)>Math.abs(dy)) e.preventDefault(); else { isScroll=true; return; } } if(isScroll) return; const inr=cc.querySelector('.card-inner'); if(inr) { inr.style.transform=`translateX(${dx}px) rotate(${dx*0.1}deg)`; if(dx>50) document.getElementById('hint-right').style.opacity=Math.min(1,(dx-50)/100); else if(dx<-50) document.getElementById('hint-left').style.opacity=Math.min(1,(-dx-50)/100); } }, {passive:false}); cc.addEventListener('touchend',e=>{ isDrag=false; if(isScroll) return; const dx=e.changedTouches[0].clientX-tsX; const inr=cc.querySelector('.card-inner'); if(inr) { inr.style.transition='all 0.5s ease'; if(Math.abs(dx)>=100) { if(dx>0) { inr.classList.add('animate-swipe-right'); setTimeout(()=>handleCardResult(true),300); } else { inr.classList.add('animate-swipe-left'); setTimeout(()=>handleCardResult(false),300); } } else { inr.style.transform=''; document.getElementById('hint-left').style.opacity='0'; document.getElementById('hint-right').style.opacity='0'; } } }); }
