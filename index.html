@@ -237,7 +237,6 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Data (Extended)
         const DB = {
             travel: [
                 { id: 1, jp: "すみません", romaji: "Sumimasen", kana: "すみません", sorami: "蘇咪媽線", desc: "不好意思 / 請問", category: "基本", vocab: [{ jp: "はい", reading: "Hai", mean: "是" }] },
@@ -302,22 +301,16 @@
                 { id: 60, jp: "助けてください", romaji: "Tasukete kudasai", kana: "たすけて ください", sorami: "塔蘇K貼", desc: "請救救我", category: "緊急", vocab: [{jp: "助ける", reading: "Tasukeru", mean: "救助"}] }
             ],
             practice: [
-                // Basic
                 { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱", npc: "お弁当、温めますか？", npc_mean: "便當要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします"] },
                 { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー"] },
-                // Transport
                 { id: 'p3', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします"] },
                 { id: 'p4', title: "問路", desc: "詢問車站位置", npc: "何かお困りですか？", npc_mean: "需要幫忙嗎？", target: "駅はどこですか？", target_mean: "請問車站在哪裡？", keywords: ["駅", "どこ"] },
-                // Shopping
                 { id: 'p5', title: "藥妝店", desc: "尋找感冒藥", npc: "何かお探しですか？", npc_mean: "在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬"] },
                 { id: 'p6', title: "結帳", desc: "使用交通卡付款", npc: "お支払いは？", npc_mean: "怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用Suica嗎？", keywords: ["Suica", "払えますか"] },
-                // Dining
                 { id: 'p7', title: "咖啡廳", desc: "點冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーをください。", target_mean: "請給我冰咖啡。", keywords: ["アイス", "コーヒー"] },
                 { id: 'p8', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。", keywords: ["生", "nama"] },
-                // Hotel
                 { id: 'p9', title: "飯店櫃台", desc: "寄放行李", npc: "いらっしゃいませ。", npc_mean: "歡迎光臨。", target: "荷物を預かってください。", target_mean: "請幫我保管行李。", keywords: ["荷物", "預かって"] },
                 { id: 'p10', title: "遺失物", desc: "尋找錢包", npc: "どうされましたか？", npc_mean: "怎麼了嗎？", target: "財布を落としました。", target_mean: "我弄丟錢包了。", keywords: ["財布", "落としました"] },
-                // Life
                 { id: 'p11', title: "問天氣", desc: "詢問明天天氣", npc: "明日の予定は？", npc_mean: "明天有什麼計畫？", target: "明日の天気はどうですか？", target_mean: "明天的天氣如何？", keywords: ["天気", "どう"] },
                 { id: 'p12', title: "拍照", desc: "請求幫忙拍照", npc: "（目が合った）", npc_mean: "(眼神交會)", target: "写真を撮ってもらえますか？", target_mean: "可以幫我拍照嗎？", keywords: ["写真", "撮って"] },
                 { id: 'p13', title: "搭訕", desc: "稱讚對方", npc: "（隣に座った）", npc_mean: "(坐在旁邊)", target: "その服、素敵ですね。", target_mean: "這件衣服很好看呢。", keywords: ["服", "素敵"] },
@@ -336,21 +329,13 @@
                 { id: 'm9', situation: "初次見面", casual: { text: "よろしく！", audio: "よろしく" }, polite: { text: "お目にかかれて光栄です。", audio: "お目にかかれて光栄です" }, tip: "對尊貴的人初次見面，用「能見到您深感榮幸」。" },
                 { id: 'm10', situation: "送別", casual: { text: "またね！", audio: "またね" }, polite: { text: "今後のご活躍をお祈り申し上げます。", audio: "今後のご活躍をお祈り申し上げます" }, tip: "離職或畢業時，祝福對方前程似錦的正式說法。" }
             ],
-            quotes: [
-                { jp: "継続は力なり", reading: "Keizoku wa chikara nari", mean: "堅持就是力量" },
-                { jp: "一期一会", reading: "Ichigo Ichie", mean: "一生只有一次的相遇" },
-                { jp: "七転び八起き", reading: "Nanakorobi Yaoki", mean: "跌倒七次，爬起來八次 (百折不撓)" },
-                { jp: "日日是好日", reading: "Nichi nichi kore koujitsu", mean: "每一天都是好日子" }
-            ],
-            lucky: {
-                colors: ["桜色 (櫻花粉)", "若草色 (嫩綠)", "瑠璃色 (深藍)", "山吹色 (金黃)", "藤色 (淡紫)", "生成り (米白)"],
-                items: ["手帕", "御守", "筆記本", "熱茶", "手錶", "硬幣", "耳機"]
-            }
+            quotes: [ { jp: "一期一会", reading: "Ichigo Ichie", mean: "一生只有一次的相遇" }, { jp: "日日是好日", reading: "Nichi nichi kore koujitsu", mean: "每一天都是好日子" } ],
+            lucky: { colors: ["桜色", "若草色", "瑠璃色", "山吹色", "藤色"], items: ["手帕", "御守", "筆記本", "熱茶", "硬幣"] }
         };
 
-        const STORAGE_KEY = 'hibi_app_state_v15';
+        const STORAGE_KEY = 'hibi_app_state_v18';
         let state = { nickname: "", currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], srsData: {}, settings: { showRomaji: true, ttsSpeed: 0.65 }, omikujiData: null };
-        let autoPlayInterval = null; let isAutoPlaying = false; let jpVoice = null;
+        let autoPlayInterval = null; let isAutoPlaying = false; let jpVoice = null; let zhVoice = null;
         let user = null; let db = null; let auth = null; let isOffline = false; let appId = '';
 
         function getTodayString() { return new Date().toISOString().split('T')[0]; }
@@ -426,7 +411,7 @@
                 state.progress = 0; state.lastLoginDate = today;
                 saveState();
             }
-            // Don't force omikuji here, let user click
+            if (!state.hasSeenOmikuji) showOmikuji();
         }
 
         function saveState() {
@@ -454,7 +439,7 @@
                 state.history = [state.lastLoginDate];
                 state.points = 0;
             }
-            saveState(); // Saves immediately
+            saveState();
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             updateUI();
@@ -561,7 +546,13 @@
         }
         function renderHeatmap() { const c=document.getElementById('heatmap-container'); if(c) { c.innerHTML=''; const t=new Date(); for(let i=6;i>=0;i--){ const d=new Date(t); d.setDate(t.getDate()-i); const s=d.toISOString().split('T')[0]; c.innerHTML+=`<div class="w-2 h-2 rounded-full transition-all ${state.history.includes(s)?'bg-muji-green':'bg-gray-200'}"></div>`; } } }
 
-        function loadVoices() { if('speechSynthesis' in window) { const vs=window.speechSynthesis.getVoices(); jpVoice=vs.find(v=>v.lang.includes('ja'))||null; } }
+        function loadVoices() { 
+            if('speechSynthesis' in window) { 
+                const vs=window.speechSynthesis.getVoices(); 
+                jpVoice=vs.find(v=>v.lang.includes('ja'))||null; 
+                zhVoice=vs.find(v=>v.lang==='zh-TW'||v.lang==='zh_TW')||vs.find(v=>v.lang.includes('zh'))||null;
+            } 
+        }
         function playAudio(text, e) {
             if(e) e.stopPropagation();
             if('speechSynthesis' in window) {
@@ -592,13 +583,43 @@
                 playNextAuto();
             }
         }
+        
+        // Updated playNextAuto: ZH -> JP
         function playNextAuto() {
             if(!isAutoPlaying) return;
-            const d=DB.travel[state.currentCardIndex];
-            const u=new SpeechSynthesisUtterance(d.jp);
-            u.lang='ja-JP'; u.rate=state.settings.ttsSpeed; if(jpVoice) u.voice=jpVoice;
-            u.onend = () => { if(isAutoPlaying) autoPlayInterval = setTimeout(() => { state.currentCardIndex=(state.currentCardIndex+1)%DB.travel.length; renderCurrentCard(); playNextAuto(); }, 2500); };
-            window.speechSynthesis.speak(u);
+            const d = DB.travel[state.currentCardIndex];
+            
+            // 1. ZH (Desc) - Normal speed
+            const u1 = new SpeechSynthesisUtterance(d.desc);
+            u1.lang = 'zh-TW'; 
+            u1.rate = 0.9; 
+            if(zhVoice) u1.voice = zhVoice;
+
+            // 2. JP (Target) - Configured speed
+            const u2 = new SpeechSynthesisUtterance(d.jp);
+            u2.lang = 'ja-JP'; 
+            u2.rate = state.settings.ttsSpeed; 
+            if(jpVoice) u2.voice = jpVoice;
+
+            u1.onend = () => {
+                if(isAutoPlaying) {
+                    // Pause 0.3s then speak JP
+                    setTimeout(() => window.speechSynthesis.speak(u2), 300);
+                }
+            };
+
+            u2.onend = () => {
+                if(isAutoPlaying) {
+                    // Pause 2s then next card
+                    autoPlayInterval = setTimeout(() => {
+                        state.currentCardIndex = (state.currentCardIndex + 1) % DB.travel.length;
+                        renderCurrentCard();
+                        playNextAuto();
+                    }, 2000);
+                }
+            };
+
+            window.speechSynthesis.speak(u1);
         }
 
         function flipCard(el) { el.querySelector('.card-inner').classList.toggle('rotate-y-180'); }
@@ -613,7 +634,6 @@
             document.getElementById('profile-modal').classList.remove('opacity-0','pointer-events-none'); 
             document.getElementById('profile-streak').textContent = state.streak;
             document.getElementById('profile-total').textContent = state.masteredCards.length;
-            
             const badgeContainer = document.getElementById('badge-container');
             badgeContainer.innerHTML = (state.streak>=3?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="flame" class="text-red-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">3連勝</span></div>`:'') + (state.points>=100?`<div class="flex flex-col items-center p-2 bg-gray-50 rounded-xl"><i data-lucide="star" class="text-yellow-400 w-6 h-6 mb-1"></i><span class="text-[10px] text-muji-sub">百分</span></div>`:'');
             lucide.createIcons();
@@ -634,11 +654,7 @@
         function addToCalendar() { window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=日日+Hibi&details=學習日語&recur=RRULE:FREQ=DAILY`, '_blank'); }
         function showHelp() { document.getElementById('help-modal').classList.remove('opacity-0','pointer-events-none'); document.getElementById('help-modal-content').classList.add('scale-100'); }
         function closeHelp() { document.getElementById('help-modal').classList.add('opacity-0','pointer-events-none'); document.getElementById('help-modal-content').classList.remove('scale-100'); }
-
-        let rec; let isRec=false;
-        function initSpeech() { const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if(SR) { rec=new SR(); rec.lang='ja-JP'; rec.onresult=e=>{ const t=e.results[0][0].transcript; document.getElementById('transcript-text').textContent=t; if(e.results[0].isFinal) validateSpeech(t); }; rec.onend=()=>{ isRec=false; const fb=document.getElementById('feedback-area'); if(fb&&!fb.classList.contains('hidden')) updateRecordUI('idle'); }; } else { const b=document.getElementById('btn-record'); if(b) b.style.display='none'; } }
         function toggleRecording() { if(!rec) return alert('不支援'); if(isRec) rec.stop(); else { rec.start(); document.getElementById('feedback-area').classList.remove('hidden'); document.getElementById('feedback-text').textContent="聽取中..."; isRec=true; updateRecordUI('listening'); } }
-        function validateSpeech(t) { const k=DB.practice[state.currentPracticeIndex].keywords; if(k.some(w=>t.toLowerCase().includes(w))) { updateRecordUI('success'); addPoints(20); } else updateRecordUI('retry'); }
         function updateRecordUI(s) { const b=document.getElementById('btn-record'); const t=document.getElementById('btn-record-text'); if(!b) return; if(s==='listening') { b.classList.replace('bg-muji-green','bg-muji-red'); t.textContent='停止'; } else if(s==='success') { b.classList.replace('bg-muji-red','bg-muji-green'); t.textContent='試著說'; document.getElementById('feedback-text').textContent='太棒了！'; } else { b.classList.replace('bg-muji-red','bg-muji-green'); t.textContent='試著說'; } }
 
         function drawOmikuji() {
@@ -653,16 +669,13 @@
                 const q = DB.quotes[Math.floor(Math.random() * DB.quotes.length)];
                 const c = DB.lucky.colors[Math.floor(Math.random() * DB.lucky.colors.length)];
                 const i = DB.lucky.items[Math.floor(Math.random() * DB.lucky.items.length)];
-                
                 const result = { text: f[Math.floor(Math.random()*f.length)], quote: q.jp+"\n"+q.mean, color: c, item: i };
                 state.omikujiData = { date: getTodayString(), result: result };
                 saveState();
-
                 document.getElementById('omikuji-text').textContent = result.text;
                 document.getElementById('omikuji-quote').textContent = result.quote;
                 document.getElementById('omikuji-color').textContent = result.color;
                 document.getElementById('omikuji-item').textContent = result.item;
-
                 setTimeout(() => { res.classList.remove('opacity-0', 'scale-90'); res.classList.add('animate-unfold'); }, 100);
             }, 600);
         }
