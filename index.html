@@ -133,7 +133,7 @@
 
         <!-- Content -->
         <main class="flex-1 overflow-y-auto no-scrollbar relative w-full max-w-md mx-auto" id="app-container">
-            <!-- Tab 1: 旅 -->
+            <!-- Tab 1: 旅 (Travel) -->
             <div id="view-travel" class="view-section px-6 py-4 space-y-6 animate-fade-in pb-32">
                 <div class="text-center mb-6 relative">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muji-green/10 mb-2"><span class="text-muji-green text-xs font-bold tracking-widest">TRAVEL</span><span class="w-1 h-1 rounded-full bg-muji-green"></span><span id="count-travel" class="text-muji-green text-[10px] font-medium">-- 句</span></div>
@@ -148,7 +148,18 @@
                     <div class="card-inner relative w-full h-full transition-all duration-500 preserve-3d shadow-soft rounded-2xl bg-white">
                         <div class="absolute w-full h-full backface-hidden bg-muji-card rounded-2xl flex flex-col items-center justify-center p-6 border border-muji-border">
                             <span id="card-desc" class="text-sm text-muji-sub mb-4">...</span><h3 id="card-jp" class="text-3xl font-bold text-muji-text mb-2 text-center leading-relaxed">...</h3>
-                            <div class="mt-6 px-6 py-2.5 rounded-full bg-muji-bg text-muji-green animate-float flex items-center gap-2 shadow-sm border border-muji-green/20"><span class="text-sm font-bold tracking-widest">聽答案</span><i data-lucide="rotate-cw" class="w-4 h-4"></i></div>
+                            
+                            <!-- Big Text Button Restored here -->
+                            <div class="mt-8 flex gap-3 items-center z-10">
+                                <div class="px-6 py-2.5 rounded-full bg-muji-bg text-muji-green animate-float flex items-center gap-2 shadow-sm border border-muji-green/20 cursor-pointer" onclick="event.stopPropagation(); flipCard(this.closest('#flashcard-container'));">
+                                    <span class="text-sm font-bold tracking-widest">聽答案</span>
+                                    <i data-lucide="rotate-cw" class="w-4 h-4"></i>
+                                </div>
+                                <button onclick="showBigText(event)" class="p-2.5 rounded-full bg-white text-muji-text shadow-sm border border-gray-100 hover:bg-gray-50 active:scale-95 transition-transform">
+                                    <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+
                         </div>
                         <div class="absolute w-full h-full backface-hidden bg-muji-text text-white rounded-2xl rotate-y-180 flex flex-col items-center justify-center p-6">
                             <p id="card-romaji" class="text-2xl font-bold mb-2 text-center transition-opacity duration-300">...</p><p id="card-kana" class="text-sm text-gray-300 mb-2 text-center">...</p><p id="card-sorami" class="text-xs text-muji-green font-medium mb-6 tracking-wide opacity-90 text-center">...</p>
@@ -344,7 +355,7 @@
             lucky: { colors: ["桜色", "若草色", "瑠璃色", "山吹色", "藤色"], items: ["手帕", "御守", "筆記本", "熱茶", "硬幣"] }
         };
 
-        const STORAGE_KEY = 'hibi_app_state_v41';
+        const STORAGE_KEY = 'hibi_app_state_v39';
         let state = { nickname: "", currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], srsData: {}, settings: { showRomaji: true, ttsSpeed: 0.65 }, omikujiData: null };
 
         // --- 2. Helpers ---
@@ -466,7 +477,7 @@
                 if(!state.history.includes(today)) state.history.push(today);
                 state.progress=0; state.lastLoginDate=today; saveState();
             }
-            // Omikuji auto-open logic removed to respect button click
+            if (!state.hasSeenOmikuji) showOmikuji();
         }
         function saveState() { try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} if(user&&db&&!isOffline){ setDoc(doc(db,'artifacts',appId,'users',user.uid,'data','progress'),state).catch(e=>{}); if(state.nickname) setDoc(doc(db,'artifacts',appId,'public','data','leaderboard',user.uid),{name:state.nickname,score:state.points,streak:state.streak}).catch(e=>{}); } updateUI(); }
         async function handleLogin() {
@@ -495,13 +506,7 @@
             if('speechSynthesis' in window) { 
                 const vs=window.speechSynthesis.getVoices(); 
                 jpVoice=vs.find(v=>v.lang.includes('ja'))||null; 
-                // Improved iOS Chinese Voice Detection: Prioritize TW > HK > CN > Generic
-                zhVoice = vs.find(v => v.lang === 'zh-TW' || v.lang === 'zh_TW') 
-                       || vs.find(v => v.name.includes('Taiwan'))
-                       || vs.find(v => v.name.includes('Mei-Jia')) 
-                       || vs.find(v => v.lang === 'zh-CN' || v.lang === 'zh_CN') // Fallback to Mandarin instead of Cantonese
-                       || vs.find(v => v.lang.includes('zh'))
-                       || null;
+                zhVoice=vs.find(v=>v.lang==='zh-TW'||v.lang==='zh_TW')||vs.find(v=>v.name.includes('Taiwan'))||vs.find(v=>v.lang.includes('zh'))||null;
             } 
         }
         function playAudio(text, e) {
@@ -525,7 +530,7 @@
                 isAutoPlaying=false; 
                 clearTimeout(autoPlayInterval); 
                 window.speechSynthesis.cancel();
-                if(silentAudio) silentAudio.pause(); // Stop silent audio
+                if(silentAudio) silentAudio.pause(); 
                 
                 if(txt) txt.textContent='聽流';
                 btn.classList.remove('bg-muji-green','text-white'); btn.classList.add('text-muji-sub');
@@ -533,35 +538,29 @@
                 document.getElementById('wrapper-icon-pause').classList.add('opacity-0');
             } else {
                 isAutoPlaying=true;
+                if(silentAudio) silentAudio.play().catch(e => console.log("Silent audio play failed", e));
                 
-                // Hack for iOS background playback
-                if(silentAudio) {
-                    silentAudio.play().catch(e => console.log("Silent audio play failed", e));
-                }
+                loadVoices();
 
                 if(txt) txt.textContent='播放中';
                 btn.classList.add('bg-muji-green','text-white'); btn.classList.remove('text-muji-sub');
                 document.getElementById('wrapper-icon-play').classList.add('opacity-0');
                 document.getElementById('wrapper-icon-pause').classList.remove('opacity-0');
                 
-                if(!jpVoice || !zhVoice) loadVoices();
                 playNextAuto();
             }
         }
         
-        // Updated playNextAuto: ZH -> JP with Background Support
         function playNextAuto() {
             if(!isAutoPlaying) return;
             const d = DB.travel[state.currentCardIndex];
             
-            // 1. ZH (Desc)
-            const u1 = new SpeechSynthesisUtterance(d.desc);
+            const u1 = new SpeechSynthesisUtterance(d.desc); 
             u1.lang = 'zh-TW'; 
             u1.rate = 0.9; 
             if(zhVoice) u1.voice = zhVoice;
 
-            // 2. JP (Target)
-            const u2 = new SpeechSynthesisUtterance(d.jp);
+            const u2 = new SpeechSynthesisUtterance(d.jp); 
             u2.lang = 'ja-JP'; 
             u2.rate = state.settings.ttsSpeed; 
             if(jpVoice) u2.voice = jpVoice;
@@ -591,14 +590,7 @@
         function handleCardResult(isCorrect) {
             const cid = DB.travel[state.currentCardIndex].id;
             let s = state.srsData[cid] || { level: 0, nextReview: 0 };
-            if (isCorrect) { 
-                s.level++; 
-                state.points+=10; 
-                state.progress++; 
-                if(state.progress === state.dailyGoal) confetti({particleCount: 100, spread: 70, origin: { y: 0.6 }});
-                if(!state.masteredCards.includes(cid)) state.masteredCards.push(cid); 
-                showToast("✨ 熟記！", "bg-muji-green"); 
-            }
+            if (isCorrect) { s.level++; state.points+=10; state.progress++; if(!state.masteredCards.includes(cid)) state.masteredCards.push(cid); showToast("✨ 熟記！", "bg-muji-green"); }
             else { s.level=0; showToast("💪 稍後再複習", "bg-muji-red"); }
             state.srsData[cid] = s; 
             state.currentCardIndex = (state.currentCardIndex + 1) % DB.travel.length;
@@ -632,16 +624,11 @@
         function drawOmikuji() { vibrate([50, 50, 50]); document.getElementById('omikuji-shaker').classList.add('animate-shake'); setTimeout(() => { document.getElementById('omikuji-shaker').classList.remove('animate-shake'); document.getElementById('omikuji-box-state').classList.add('hidden'); const res = document.getElementById('omikuji-result-state'); res.classList.remove('hidden'); const f = ["大吉", "中吉", "小吉", "吉", "末吉"]; const q = DB.quotes[Math.floor(Math.random() * DB.quotes.length)]; const c = DB.lucky.colors[Math.floor(Math.random() * DB.lucky.colors.length)]; const i = DB.lucky.items[Math.floor(Math.random() * DB.lucky.items.length)]; const result = { text: f[Math.floor(Math.random()*f.length)], quote: q.jp+"\n"+q.mean, color: c, item: i }; state.omikujiData = { date: getTodayString(), result: result }; saveState(); document.getElementById('omikuji-text').textContent = result.text; document.getElementById('omikuji-quote').textContent = result.quote; document.getElementById('omikuji-color').textContent = result.color; document.getElementById('omikuji-item').textContent = result.item; setTimeout(() => { res.classList.remove('opacity-0', 'scale-90'); res.classList.add('animate-unfold'); }, 100); }, 600); }
         function closeOmikuji() { document.getElementById('omikuji-modal').classList.add('opacity-0', 'pointer-events-none'); }
         function showOmikuji() { const m=document.getElementById('omikuji-modal'); const b=document.getElementById('omikuji-box-state'); const r=document.getElementById('omikuji-result-state'); if(!m) return; const today = getTodayString(); if (state.omikujiData && state.omikujiData.date === today) { const d = state.omikujiData.result; document.getElementById('omikuji-text').textContent = d.text; document.getElementById('omikuji-quote').textContent = d.quote; document.getElementById('omikuji-color').textContent = d.color; document.getElementById('omikuji-item').textContent = d.item; b.classList.add('hidden'); r.classList.remove('hidden','opacity-0','scale-90'); r.classList.add('animate-unfold'); } else { b.classList.remove('hidden'); r.classList.add('hidden','opacity-0'); r.classList.remove('animate-unfold'); } m.classList.remove('opacity-0', 'pointer-events-none'); }
-        
-        // --- Profile Functions (Restored) ---
         function showProfile() { 
             document.getElementById('profile-modal').classList.remove('opacity-0','pointer-events-none'); 
             updateProfileUI(); 
         }
-        
-        function closeProfile() { 
-            document.getElementById('profile-modal').classList.add('opacity-0','pointer-events-none'); 
-        }
+        function closeProfile() { document.getElementById('profile-modal').classList.add('opacity-0','pointer-events-none'); }
         
         // Gestures
         let tsX=0, tsY=0, isDrag=false, isScroll=false; const cc=document.getElementById('flashcard-container'); if(cc) { cc.addEventListener('touchstart',e=>{ tsX=e.touches[0].clientX; tsY=e.touches[0].clientY; isDrag=true; isScroll=false; const inr=cc.querySelector('.card-inner'); if(inr) inr.style.transition='none'; }, {passive:false}); cc.addEventListener('touchmove',e=>{ if(!isDrag) return; const dx=e.touches[0].clientX-tsX; const dy=e.touches[0].clientY-tsY; if(!isScroll) { if(Math.abs(dx)>Math.abs(dy)) e.preventDefault(); else { isScroll=true; return; } } if(isScroll) return; const inr=cc.querySelector('.card-inner'); if(inr) { inr.style.transform=`translateX(${dx}px) rotate(${dx*0.1}deg)`; if(dx>50) document.getElementById('hint-right').style.opacity=Math.min(1,(dx-50)/100); else if(dx<-50) document.getElementById('hint-left').style.opacity=Math.min(1,(-dx-50)/100); } }, {passive:false}); cc.addEventListener('touchend',e=>{ isDrag=false; if(isScroll) return; const dx=e.changedTouches[0].clientX-tsX; const inr=cc.querySelector('.card-inner'); if(inr) { inr.style.transition='all 0.5s ease'; if(Math.abs(dx)>=100) { if(dx>0) { inr.classList.add('animate-swipe-right'); setTimeout(()=>handleCardResult(true),300); } else { inr.classList.add('animate-swipe-left'); setTimeout(()=>handleCardResult(false),300); } } else { inr.style.transform=''; document.getElementById('hint-left').style.opacity='0'; document.getElementById('hint-right').style.opacity='0'; } } }); }
