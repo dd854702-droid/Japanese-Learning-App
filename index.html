@@ -64,7 +64,7 @@
 </head>
 <body class="h-[100dvh] w-full overflow-hidden flex flex-col font-sans select-none">
 
-    <!-- Audio for background playback hack -->
+    <!-- Audio for background playback hack (CRITICAL for Bluetooth) -->
     <audio id="silent-audio" loop style="display:none;">
         <source src="data:audio/mp3;base64,SUQzBAAAAAABAFRYWFgAAAASAAADbWFqb3JfYnJhbmQAbXA0MgBUWFhYAAAAEQAAA21pbm9yX3ZlcnNpb24AMABUWFhYAAAAHAAAA2NvbXBhdGlibZVfYnJhbmRzAGlzb21tcDQyAFRTU0UAAAAPAAADTGF2ZjU3LjU2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIWFhYWZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm//OEAAAAAAAAAAAAAAAAAAAAAAAMTGF2YzU3LjY0AAAAAAAAAAAAAAAAJAAAAAAAAAAAASAAaAAAAAA==" type="audio/mpeg">
     </audio>
@@ -323,12 +323,12 @@
                 { id: 60, jp: "助けてください", romaji: "Tasukete kudasai", kana: "たすけて ください", sorami: "塔蘇K貼", desc: "請救救我", category: "緊急", vocab: [{jp: "助ける", reading: "Tasukeru", mean: "救助"}] }
             ],
             practice: [
-                { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱便當", npc: "お弁当、温めますか？", npc_mean: "便當需要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします"] },
-                { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー"] },
-                { id: 'p3', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします"] },
+                { id: 'p1', title: "便利商店", desc: "店員詢問是否加熱便當", npc: "お弁当、温めますか？", npc_mean: "便當需要加熱嗎？", target: "はい、お願いします。", target_mean: "是的，麻煩你了。", keywords: ["はい", "お願いします", "onegaishimasu", "hai"] },
+                { id: 'p2', title: "餐廳點餐", desc: "詢問是否有外語菜單", npc: "ご注文はお決まりですか？", npc_mean: "請問決定好要點什麼了嗎？", target: "英語のメニューはありますか？", target_mean: "請問有英文菜單嗎？", keywords: ["英語", "メニュー", "ありますか", "menu", "eigo"] },
+                { id: 'p3', title: "計程車", desc: "告知司機目的地", npc: "どちらまで行かれますか？", npc_mean: "請問要去哪裡？", target: "この住所までお願いします。", target_mean: "請載我到這個地址。", keywords: ["住所", "お願いします", "jusho", "address"] },
                 { id: 'p4', title: "問路", desc: "詢問車站位置", npc: "何かお困りですか？", npc_mean: "需要幫忙嗎？", target: "駅はどこですか？", target_mean: "請問車站在哪裡？", keywords: ["駅", "どこ"] },
-                { id: 'p5', title: "藥妝店", desc: "尋找感冒藥", npc: "何かお探しですか？", npc_mean: "在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬"] },
-                { id: 'p6', title: "結帳", desc: "使用交通卡付款", npc: "お支払いは？", npc_mean: "怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用Suica嗎？", keywords: ["Suica", "払えますか"] },
+                { id: 'p5', title: "藥妝店", desc: "尋找感冒藥", npc: "何かお探しですか？", npc_mean: "在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬", "ありますか", "kaze", "kusuri"] },
+                { id: 'p6', title: "結帳", desc: "使用交通卡付款", npc: "お支払いは？", npc_mean: "怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用Suica嗎？", keywords: ["Suica", "払えますか", "haraemasuka"] },
                 { id: 'p7', title: "咖啡廳", desc: "點一杯冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーをください。", target_mean: "請給我冰咖啡。", keywords: ["アイス", "コーヒー"] },
                 { id: 'p8', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。", keywords: ["生", "nama"] },
                 { id: 'p9', title: "飯店櫃台", desc: "寄放行李", npc: "いらっしゃいませ。", npc_mean: "歡迎光臨。", target: "荷物を預かってください。", target_mean: "請幫我保管行李。", keywords: ["荷物", "預かって"] },
@@ -355,7 +355,7 @@
             lucky: { colors: ["桜色", "若草色", "瑠璃色", "山吹色", "藤色"], items: ["手帕", "御守", "筆記本", "熱茶", "硬幣"] }
         };
 
-        const STORAGE_KEY = 'hibi_app_state_v40';
+        const STORAGE_KEY = 'hibi_app_state_v41';
         let state = { nickname: "", currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], srsData: {}, settings: { showRomaji: true, ttsSpeed: 0.65 }, omikujiData: null };
 
         // --- 2. Helpers ---
@@ -519,7 +519,12 @@
             if('speechSynthesis' in window) { 
                 const vs=window.speechSynthesis.getVoices(); 
                 jpVoice=vs.find(v=>v.lang.includes('ja'))||null; 
-                zhVoice=vs.find(v=>v.lang==='zh-TW'||v.lang==='zh_TW')||vs.find(v=>v.name.includes('Taiwan'))||vs.find(v=>v.lang.includes('zh'))||null;
+                // Improved iOS Chinese Voice Detection
+                zhVoice = vs.find(v => v.name.includes('Mei-Jia')) 
+                       || vs.find(v => v.lang === 'zh-TW' || v.lang === 'zh_TW') 
+                       || vs.find(v => v.lang === 'zh-CN') // Fallback for iOS
+                       || vs.find(v => v.lang.includes('zh'))
+                       || null;
             } 
         }
         function playAudio(text, e) {
