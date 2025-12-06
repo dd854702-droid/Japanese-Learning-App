@@ -64,7 +64,7 @@
 </head>
 <body class="h-[100dvh] w-full overflow-hidden flex flex-col font-sans select-none">
 
-    <!-- Audio for background playback hack (CRITICAL for Bluetooth) -->
+    <!-- Audio for background playback hack -->
     <audio id="silent-audio" loop style="display:none;">
         <source src="data:audio/mp3;base64,SUQzBAAAAAABAFRYWFgAAAASAAADbWFqb3JfYnJhbmQAbXA0MgBUWFhYAAAAEQAAA21pbm9yX3ZlcnNpb24AMABUWFhYAAAAHAAAA2NvbXBhdGlibZVfYnJhbmRzAGlzb21tcDQyAFRTU0UAAAAPAAADTGF2ZjU3LjU2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIWFhYWZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZm//OEAAAAAAAAAAAAAAAAAAAAAAAMTGF2YzU3LjY0AAAAAAAAAAAAAAAAJAAAAAAAAAAAASAAaAAAAAA==" type="audio/mpeg">
     </audio>
@@ -149,7 +149,7 @@
                         <div class="absolute w-full h-full backface-hidden bg-muji-card rounded-2xl flex flex-col items-center justify-center p-6 border border-muji-border">
                             <span id="card-desc" class="text-sm text-muji-sub mb-4">...</span><h3 id="card-jp" class="text-3xl font-bold text-muji-text mb-2 text-center leading-relaxed">...</h3>
                             
-                            <!-- Big Text Button Restored with improved container (no z-10, explicit id) -->
+                            <!-- Big Text Button with fixed ID and transitions -->
                             <div id="front-actions" class="mt-8 flex gap-3 items-center transition-opacity duration-300">
                                 <div class="px-6 py-2.5 rounded-full bg-muji-bg text-muji-green animate-float flex items-center gap-2 shadow-sm border border-muji-green/20 cursor-pointer" onclick="event.stopPropagation(); flipCard(this.closest('#flashcard-container'));">
                                     <span class="text-sm font-bold tracking-widest">聽答案</span>
@@ -163,7 +163,8 @@
                         </div>
                         <div class="absolute w-full h-full backface-hidden bg-muji-text text-white rounded-2xl rotate-y-180 flex flex-col items-center justify-center p-6">
                             <p id="card-romaji" class="text-2xl font-bold mb-2 text-center transition-opacity duration-300">...</p><p id="card-kana" class="text-sm text-gray-300 mb-2 text-center">...</p><p id="card-sorami" class="text-xs text-muji-green font-medium mb-6 tracking-wide opacity-90 text-center">...</p>
-                            <button onclick="playAudioCurrentCard(event)" class="flex items-center gap-2 px-6 py-3 rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-sm active:scale-95"><i data-lucide="volume-2" class="w-5 h-5"></i><span class="text-sm">播放</span></button>
+                            <!-- Back button forced rate -->
+                            <button onclick="playAudioCurrentCard(event, 0.65)" class="flex items-center gap-2 px-6 py-3 rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-sm active:scale-95"><i data-lucide="volume-2" class="w-5 h-5"></i><span class="text-sm">播放</span></button>
                         </div>
                     </div>
                 </div>
@@ -329,7 +330,7 @@
                 { id: 'p4', title: "問路", desc: "詢問車站位置", npc: "何かお困りですか？", npc_mean: "需要幫忙嗎？", target: "駅はどこですか？", target_mean: "請問車站在哪裡？", keywords: ["駅", "どこ"] },
                 { id: 'p5', title: "藥妝店", desc: "尋找感冒藥", npc: "何かお探しですか？", npc_mean: "在找什麼嗎？", target: "風邪薬はありますか？", target_mean: "請問有感冒藥嗎？", keywords: ["風邪", "薬", "ありますか", "kaze", "kusuri"] },
                 { id: 'p6', title: "結帳", desc: "使用交通卡付款", npc: "お支払いは？", npc_mean: "怎麼付款？", target: "Suicaで払えますか？", target_mean: "可以用Suica嗎？", keywords: ["Suica", "払えますか", "haraemasuka"] },
-                { id: 'p7', title: "咖啡廳", desc: "點一杯冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーをください。", target_mean: "請給我冰咖啡。", keywords: ["アイス", "コーヒー"] },
+                { id: 'p7', title: "咖啡廳", desc: "點一杯冰咖啡", npc: "ご注文をどうぞ。", npc_mean: "請點餐。", target: "アイスコーヒーをください。", target_mean: "請給我冰咖啡。", keywords: ["アイス", "コーヒー", "ください", "coffee"] },
                 { id: 'p8', title: "居酒屋", desc: "點生啤酒", npc: "お飲み物は？", npc_mean: "要喝什麼？", target: "とりあえず生で。", target_mean: "先來杯生啤吧。", keywords: ["生", "nama"] },
                 { id: 'p9', title: "飯店櫃台", desc: "寄放行李", npc: "いらっしゃいませ。", npc_mean: "歡迎光臨。", target: "荷物を預かってください。", target_mean: "請幫我保管行李。", keywords: ["荷物", "預かって"] },
                 { id: 'p10', title: "遺失物", desc: "尋找錢包", npc: "どうされましたか？", npc_mean: "怎麼了嗎？", target: "財布を落としました。", target_mean: "我弄丟錢包了。", keywords: ["財布", "落としました"] },
@@ -355,7 +356,7 @@
             lucky: { colors: ["桜色", "若草色", "瑠璃色", "山吹色", "藤色"], items: ["手帕", "御守", "筆記本", "熱茶", "硬幣"] }
         };
 
-        const STORAGE_KEY = 'hibi_app_state_v41';
+        const STORAGE_KEY = 'hibi_app_state_v47';
         let state = { nickname: "", currentTab: 'travel', progress: 0, dailyGoal: 5, points: 0, streak: 0, lastLoginDate: null, history: [], currentCardIndex: 0, currentPracticeIndex: 0, masteredCards: [], srsData: {}, settings: { showRomaji: true, ttsSpeed: 0.65 }, omikujiData: null };
 
         // --- 2. Helpers ---
@@ -410,7 +411,6 @@
             } catch (e) { list.innerHTML = '<div class="text-center text-red-300 py-4">載入失敗</div>'; }
         }
 
-        // --- 3.5 Missing functions from previous version fixed here ---
         function updateProfileUI() {
             document.getElementById('profile-streak').textContent = state.streak;
             document.getElementById('profile-total').textContent = state.masteredCards.length;
@@ -527,17 +527,18 @@
                        || null;
             } 
         }
-        function playAudio(text, e) {
+        function playAudio(text, e, rateOverride = null) {
             if(e) e.stopPropagation();
             if('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const u = new SpeechSynthesisUtterance(text);
-                u.lang = 'ja-JP'; u.rate = state.settings.ttsSpeed;
+                u.lang = 'ja-JP'; 
+                u.rate = rateOverride !== null ? rateOverride : state.settings.ttsSpeed;
                 if(jpVoice) u.voice = jpVoice; else loadVoices();
                 window.speechSynthesis.speak(u);
             }
         }
-        function playAudioCurrentCard(e) { playAudio(DB.travel[state.currentCardIndex].jp, e); }
+        function playAudioCurrentCard(e, rate = null) { playAudio(DB.travel[state.currentCardIndex].jp, e, rate); }
         
         function toggleAutoPlay() {
             const btn=document.getElementById('btn-autoplay'); if(!btn) return;
@@ -603,7 +604,26 @@
             window.speechSynthesis.speak(u1);
         }
 
-        function flipCard(el) { el.querySelector('.card-inner').classList.toggle('rotate-y-180'); }
+        function flipCard(el) {
+            const inner = el.querySelector('.card-inner');
+            const actions = document.getElementById('front-actions');
+            const isFlipped = inner.classList.toggle('rotate-y-180');
+            
+            if (isFlipped) {
+                if(actions) {
+                    actions.style.opacity = '0';
+                    actions.style.pointerEvents = 'none';
+                }
+            } else {
+                if(actions) {
+                    setTimeout(() => {
+                        actions.style.opacity = '1';
+                        actions.style.pointerEvents = 'auto';
+                    }, 300);
+                }
+            }
+        }
+
         function switchTab(t) { state.currentTab=t; document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.target===`view-${t}`)); document.querySelectorAll('.view-section').forEach(s=>s.classList.toggle('hidden',s.id!==`view-${t}`)); saveState(); }
         function nextPractice() { state.currentPracticeIndex=(state.currentPracticeIndex+1)%DB.practice.length; saveState(); }
         function handleCardResult(isCorrect) {
@@ -617,6 +637,9 @@
             const inner = document.querySelector('.card-inner');
             if(inner) { inner.style.transition='none'; inner.classList.remove('rotate-y-180'); inner.style.transform=''; setTimeout(()=>inner.style.transition='all 0.5s ease',50); }
             renderCurrentCard();
+            // Reset front actions visibility
+            const actions = document.getElementById('front-actions');
+            if(actions) { actions.style.opacity = '1'; actions.style.pointerEvents = 'auto'; }
         }
         function showToast(m,c) { const t=document.getElementById('toast'); if(t){ t.innerHTML=m; t.className=`fixed top-24 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full text-sm font-medium opacity-100 transition-all duration-300 z-[99] shadow-float translate-y-0 text-white ${c}`; setTimeout(()=>{ t.classList.remove('opacity-100','translate-y-0'); t.classList.add('opacity-0','translate-y-[-10px]'); },2000); } }
         function resetAppDebug() { if(confirm('重置？')) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
